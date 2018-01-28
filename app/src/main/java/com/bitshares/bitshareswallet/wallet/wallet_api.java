@@ -1112,7 +1112,7 @@ public class wallet_api {
         createAccountObject.owner_key = publicOwnerKeyType;
         createAccountObject.memo_key = publicActiveKeyType;
         createAccountObject.refcode = null;
-        createAccountObject.referrer = "bituniverse";
+        createAccountObject.referrer = "evraz";
         Gson gson = global_config_object.getInstance().getGsonBuilder().create();
 
         String strAddress = strServerUrl;
