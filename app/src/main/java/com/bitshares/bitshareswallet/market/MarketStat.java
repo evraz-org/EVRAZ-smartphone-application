@@ -5,13 +5,13 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.format.DateUtils;
 
+import com.bitshares.bitshareswallet.data.HistoryPrice;
 import com.bitshares.bitshareswallet.wallet.BitsharesWalletWraper;
 import com.bitshares.bitshareswallet.wallet.account_object;
 import com.bitshares.bitshareswallet.wallet.asset;
 import com.bitshares.bitshareswallet.wallet.full_account_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.asset_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.bucket_object;
-import com.bitshares.bitshareswallet.wallet.graphene.chain.global_config_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.limit_order_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.price;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MarketStat {
     private static final String TAG = "MarketStat";
-    private static final long DEFAULT_BUCKET_SECS = TimeUnit.MINUTES.toSeconds(5);
+    private static final long DEFAULT_BUCKET_SECS = TimeUnit.HOURS.toSeconds(1);
 
     public static final int STAT_MARKET_HISTORY = 0x01;
     public static final int STAT_MARKET_TICKER = 0x02;
@@ -40,11 +40,11 @@ public class MarketStat {
     private static boolean isDeserializerRegistered = false;
 
     public MarketStat() {
-        if (!isDeserializerRegistered) {
+        /*if (!isDeserializerRegistered) {
             isDeserializerRegistered = true;
             global_config_object.getInstance().getGsonBuilder().registerTypeAdapter(
                     full_account_object.class, new full_account_object.deserializer());
-        }
+        }*/
     }
 
     public void subscribe(String base, String quote, int stats, long intervalMillis,
@@ -79,15 +79,6 @@ public class MarketStat {
 
     private static String makeMarketName(String base, String quote) {
         return String.format("%s_%s", base.toLowerCase(), quote.toLowerCase());
-    }
-
-    public static class HistoryPrice {
-        public double high;
-        public double low;
-        public double open;
-        public double close;
-        public double volume;
-        public Date date;
     }
 
     public static class Stat {
@@ -204,7 +195,7 @@ public class MarketStat {
 
         private HistoryPrice[] getMarketHistory() {
             // 服务器每次最多返回200个bucket对象
-            final int maxBucketCount = 200;
+            /*final int maxBucketCount = 200;
             Date startDate1 = new Date(
                     System.currentTimeMillis() - bucketSecs * maxBucketCount * 1000);
             Date startDate2 = new Date(
@@ -228,7 +219,19 @@ public class MarketStat {
                     prices[priceIndex++] = priceFromBucket(bucket);
                 }
             }
-            return prices;
+            return prices;*/
+
+            Date startDate = new Date(System.currentTimeMillis() - 24 * 3600 * 7 * 1000);
+            Date endDate = new Date(System.currentTimeMillis() + DateUtils.DAY_IN_MILLIS);
+            List<bucket_object> bucketObjectList = getMarketHistory(startDate, endDate);
+            if (bucketObjectList != null) {
+                HistoryPrice[] prices = new HistoryPrice[bucketObjectList.size()];
+                for (int i = 0; i < prices.length; ++i) {
+                    prices[i] = priceFromBucket(bucketObjectList.get(i));
+                }
+                return prices;
+            }
+            return null;
         }
 
         private List<bucket_object> getMarketHistory(Date start, Date end) {

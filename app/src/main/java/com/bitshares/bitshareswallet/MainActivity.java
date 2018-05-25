@@ -1,18 +1,23 @@
 package com.bitshares.bitshareswallet;
 
 import android.app.Activity;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -20,15 +25,10 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.preference.ListPreference;
-import android.support.v7.preference.ListPreferenceDialogFragmentCompat;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.preference.PreferenceManager;
-import android.support.v7.preference.PreferenceScreen;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
-import android.view.ContextThemeWrapper;
+import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -38,24 +38,37 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bitshares.bitshareswallet.room.BitsharesAsset;
+import com.bitshares.bitshareswallet.room.BitsharesDao;
+import com.bitshares.bitshareswallet.room.BitsharesOperationHistory;
+import com.bitshares.bitshareswallet.viewmodel.QuotationViewModel;
+import com.bitshares.bitshareswallet.viewmodel.WalletViewModel;
 import com.bitshares.bitshareswallet.wallet.BitsharesWalletWraper;
 import com.bitshares.bitshareswallet.wallet.Broadcast;
 import com.bitshares.bitshareswallet.wallet.account_object;
 import com.bitshares.bitshareswallet.wallet.fc.crypto.sha256_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.signed_transaction;
+import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
+import java.util.List;
 
-import java.util.Collection;
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
+
 
 
 public class MainActivity extends AppCompatActivity
         implements OnFragmentInteractionListener{
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     public static boolean rasingColorRevers = false;
 
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
-    private ViewPager mViewPager;
+    private NonScrollViewPager mViewPager;
 
     private WalletFragment mWalletFragment;
     private QuotationFragment mQuotationFragment;
@@ -64,6 +77,7 @@ public class MainActivity extends AppCompatActivity
     private TextView mTxtTitle;
     private LinearLayout mLayoutTitle;
     private BottomNavigationView mBottomNavigation;
+    private Handler mHandler = new Handler();
 
     private static final int REQUEST_CODE_SETTINGS = 1;
 
@@ -75,13 +89,15 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == REQUEST_CODE_SETTINGS && resultCode == RESULT_OK) {
             String strChanged = data.getStringExtra("setting_changed");
             if (strChanged.equals("currency_setting")) {
-                onCurrencyUpdate();
+                WalletViewModel walletViewModel = ViewModelProviders.of(this).get(WalletViewModel.class);
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
+                String strCurrency = prefs.getString("currency_setting", "Default");
+                walletViewModel.changeCurrency(strCurrency);
             }
         }
     }
 
     private void onCurrencyUpdate(){
-        mWalletFragment.fetchData(true);
         updateTitle();
         LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Broadcast.CURRENCY_UPDATED));
     }
@@ -93,8 +109,13 @@ public class MainActivity extends AppCompatActivity
 
     private void updateTitle(){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
-        String strCurrencySetting = prefs.getString("currency_setting", "USD");
-        mTxtTitle.setText(String.format("%s : %s ","BTS", strCurrencySetting));
+        String strCurrencySetting = prefs.getString("quotation_currency_pair", "BTS:USD");
+        String strAsset[] = strCurrencySetting.split(":");
+
+        mTxtTitle.setText(String.format("%s : %s ",
+                utils.getAssetSymbolDisply(strAsset[0]),
+                utils.getAssetSymbolDisply(strAsset[1]))
+        );
     }
 
     private void setTitleVisible(boolean visible){
@@ -104,6 +125,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         rasingColorRevers = getResources().getConfiguration().locale.getCountry().equals("CN");
         setContentView(R.layout.activity_main);
 
@@ -134,7 +156,7 @@ public class MainActivity extends AppCompatActivity
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
         mActionBarDrawerToggle.syncState();
 
-        mViewPager = (ViewPager)findViewById(R.id.viewPager);
+        mViewPager = (NonScrollViewPager) findViewById(R.id.viewPager);
 
         mMainFragmentPageAdapter = new BtsFragmentPageAdapter(getSupportFragmentManager());
 
@@ -195,6 +217,11 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        WalletViewModel walletViewModel = ViewModelProviders.of(this).get(WalletViewModel.class);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
+        String strCurrency = prefs.getString("currency_setting", "USD");
+        walletViewModel.changeCurrency(strCurrency);
+
 
         if (BitsharesWalletWraper.getInstance().load_wallet_file() != 0 ||
                 BitsharesWalletWraper.getInstance().is_new() == true ){
@@ -230,24 +257,34 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
+
         mBottomNavigation = (BottomNavigationView) findViewById(R.id.navigation_bottom);
         mBottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.navigation_wallet:
-                        mViewPager.setCurrentItem(0,true);
+                        mViewPager.setCurrentItem(0, true);
                         return true;
                     case R.id.navigation_quotation:
-                        mViewPager.setCurrentItem(1,true);
+                        mViewPager.setCurrentItem(1, true);
                         return true;
                     case R.id.navigation_exchange:
-                        mViewPager.setCurrentItem(2,true);
+                        mViewPager.setCurrentItem(2, true);
                         return true;
                 }
                 return false;
             }
         });
+
+        QuotationViewModel viewModel = ViewModelProviders.of(this).get(QuotationViewModel.class);
+        viewModel.getSelectedMarketTicker().observe(this,
+                currencyPair -> {
+                    mTxtTitle.setText(String.format("%s : %s ",
+                            utils.getAssetSymbolDisply(currencyPair.second),
+                            utils.getAssetSymbolDisply(currencyPair.first))
+                    );
+                });
     }
 
     @Override
@@ -271,7 +308,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void notifyTransferComplete(signed_transaction signedTransaction) {
         // 沿用该线程，阻塞住了系统来进行数据更新
-        mWalletFragment.notifyTransferComplete(signedTransaction);
+        //mWalletFragment.notifyTransferComplete(signedTransaction);
+    }
+
+    @Override
+    public void notifyCurrencyPairChange() {
+        onCurrencyUpdate();
     }
 
 
@@ -302,6 +344,18 @@ public class MainActivity extends AppCompatActivity
         builder.setPositiveButton(R.string.log_out_dialog_confirm_button, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                Flowable.just(0)
+                        .subscribeOn(Schedulers.io())
+                        .map(integer -> {
+                            BitsharesDao bitsharesDao = BitsharesApplication.getInstance().getBitsharesDatabase().getBitsharesDao();;
+                            List<BitsharesAsset> bitsharesAssetList = bitsharesDao.queryBalanceList();
+                            List<BitsharesOperationHistory> bitsharesOperationHistoryList = bitsharesDao.queryOperationHistoryList();
+                            bitsharesDao.deleteBalance(bitsharesAssetList);
+                            bitsharesDao.deleteOperationHistory(bitsharesOperationHistoryList);
+
+                            return 0;
+                        }).subscribe();
+
                 BitsharesWalletWraper.getInstance().reset();
                 Intent intent = new Intent(MainActivity.this, SignUpButtonActivity.class);
                 startActivity(intent);
@@ -323,9 +377,9 @@ public class MainActivity extends AppCompatActivity
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivity.this);
         dialogBuilder.setTitle(R.string.title_select_currency);
         Resources res = getResources();
-        final String[] arrValues = res.getStringArray(R.array.bts_currency_unit_values);
+        final String[] arrValues = res.getStringArray(R.array.quotation_currency_pair_values);
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
-        String strCurrencySetting = prefs.getString("currency_setting", "USD");
+        String strCurrencySetting = prefs.getString("quotation_currency_pair", "BTS:USD");
         int currSelectIndex = 0;
         for(int i=0; i<arrValues.length; i++){
             if(arrValues[i].equals(strCurrencySetting)){
@@ -333,13 +387,17 @@ public class MainActivity extends AppCompatActivity
                 break;
             }
         }
-        dialogBuilder.setSingleChoiceItems(R.array.bts_currency_unit_options, currSelectIndex, new DialogInterface.OnClickListener() {
+        dialogBuilder.setSingleChoiceItems(R.array.quotation_currency_pair_options, currSelectIndex, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 prefs.edit().
-                        putString("currency_setting",arrValues[which])
+                        putString("quotation_currency_pair", arrValues[which])
                         .apply();
+                String strAsset[] = arrValues[which].split(":");
+                QuotationViewModel viewModel = ViewModelProviders.of(MainActivity.this).get(QuotationViewModel.class);
+                viewModel.selectedMarketTicker(new Pair(strAsset[1], strAsset[0]));
+
                 onCurrencyUpdate();
             }
         });
@@ -351,6 +409,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        AlertDialog dialog = dialogBuilder.show();
+        dialogBuilder.show();
     }
 }
