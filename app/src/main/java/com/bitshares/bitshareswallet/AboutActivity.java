@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bitshares.bitshareswallet.wallet.fc.crypto.sha256_object;
+import com.ngse.ui.NewMainActivity;
 
 import org.evrazcoin.evrazwallet.R;
 
@@ -64,7 +65,8 @@ public class AboutActivity extends AppCompatActivity {
         findViewById(R.id.btn_donate).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AboutActivity.this, MainActivity.class);
+                Intent intent = new Intent(AboutActivity.this, NewMainActivity.class);
+//                Intent intent = new Intent(AboutActivity.this, MainActivity.class);
                 intent.putExtra("action", "donate");
                 intent.putExtra("name", strName);
                 intent.putExtra("amount", "10");

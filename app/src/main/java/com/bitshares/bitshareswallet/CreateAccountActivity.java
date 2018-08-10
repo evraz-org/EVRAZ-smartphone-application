@@ -96,7 +96,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                     if (checkBox.isChecked() == true) {
                         processCreateAccount(strAccount, strPassword, strPasswordConfirm);
                     } else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(CreateAccountActivity.this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(CreateAccountActivity.this, R.style.CustomDialogTheme);
                         builder.setMessage(R.string.create_account_check_box_confirm);
                         builder.show();
                         mProcessHud.dismiss();

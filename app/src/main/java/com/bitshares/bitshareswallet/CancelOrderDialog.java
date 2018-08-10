@@ -22,7 +22,7 @@ public class CancelOrderDialog {
     private boolean confirm = false;
     public CancelOrderDialog(Activity mActivity, OpenOrder order) {
         this.mActivity = mActivity;
-        mDialogBuilder = new AlertDialog.Builder(mActivity);
+        mDialogBuilder = new AlertDialog.Builder(mActivity, R.style.CustomDialogTheme);
         mDialogBuilder.setTitle(R.string.label_confirm_cancel_order);
 
         View view = mActivity.getLayoutInflater().inflate(R.layout.dialog_cancel_order, null);

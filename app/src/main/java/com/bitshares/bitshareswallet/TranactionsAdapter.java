@@ -192,7 +192,7 @@ class TranactionsAdapter extends RecyclerView.Adapter<TranactionsAdapter.Transac
     }
 
     private void processMemoUnlockClick() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(transactionsFragment.getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(transactionsFragment.getActivity(), R.style.CustomDialogTheme);
         LayoutInflater layoutInflater = transactionsFragment.getActivity().getLayoutInflater();
         final View viewGroup = layoutInflater.inflate(R.layout.dialog_password_unlock, null);
         builder.setPositiveButton(
@@ -253,7 +253,7 @@ class TranactionsAdapter extends RecyclerView.Adapter<TranactionsAdapter.Transac
                 layoutTransaction.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(transactionsFragment.getActivity());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(transactionsFragment.getActivity(), R.style.CustomDialogTheme);
                         builder.setMessage(strMemo);
                         builder.show();
                     }

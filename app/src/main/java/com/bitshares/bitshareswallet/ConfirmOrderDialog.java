@@ -115,7 +115,7 @@ public class ConfirmOrderDialog {
     public ConfirmOrderDialog(Activity mActivity, ConfirmOrderData confirmOrderData) {
         this.mActivity = mActivity;
 
-        mDialogBuilder = new AlertDialog.Builder(mActivity);
+        mDialogBuilder = new AlertDialog.Builder(mActivity, R.style.CustomDialogTheme);
         mDialogBuilder.setTitle(R.string.label_please_confirm);
 
         View view = mActivity.getLayoutInflater().inflate(R.layout.dialog_confirm_order, null);

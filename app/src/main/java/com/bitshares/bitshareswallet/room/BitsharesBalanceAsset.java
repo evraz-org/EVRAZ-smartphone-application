@@ -1,8 +1,5 @@
 package com.bitshares.bitshareswallet.room;
 
-import com.bitshares.bitshareswallet.wallet.graphene.chain.asset_object;
-import com.bitshares.bitshareswallet.wallet.graphene.chain.object_id;
-
 /**
  * Created by lorne on 31/10/2017.
  */
@@ -19,5 +16,17 @@ public class BitsharesBalanceAsset {
     public long balance;
     public long currency_precision;
 
-
+    @Override
+    public String toString() {
+        return "id =" + id + "\n" +
+                "amount =" + amount + "\n" +
+                "base =" + base + "\n" +
+                "base_precision =" + base_precision + "\n" +
+                "quote =" + quote + "\n" +
+                "total =" + total + "\n" +
+                "quote_precision =" + quote_precision + "\n" +
+                "currency =" + currency + "\n" +
+                "balance =" + balance + "\n" +
+                "currency_precision =" + currency_precision + "\n";
+    }
 }

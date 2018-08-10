@@ -28,4 +28,13 @@
     <color name="ma5">#823E66</color>
     <color name="ma10">#B99C7A</color>
     <color name="ma20">#3C7193</color>
+
+    <!--new-->
+    <color name="beige_color">#f6efcc</color>
+    <color name="gray_color">#424242</color>
+    <color name="table_gray_color">#ededed</color>
+    <color name="light_gray_color">#938e8e</color>
+    <color name="dark_gray_color">#2e2e2e</color>
+    <color name="light_green_color">#7fe478</color>
+    <color name="light_red_color">#f07777</color>
 </resources>

@@ -343,7 +343,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void processLogout() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.CustomDialogTheme);
         builder.setPositiveButton(R.string.log_out_dialog_confirm_button, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -377,7 +377,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void processChooseCurency(){
-        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivity.this);
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivity.this, R.style.CustomDialogTheme);
         dialogBuilder.setTitle(R.string.title_select_currency);
         Resources res = getResources();
         final String[] arrValues = res.getStringArray(R.array.quotation_currency_pair_values);

@@ -18,7 +18,7 @@ public class TransactionSellBuyPasswordDialog {
     public TransactionSellBuyPasswordDialog(Activity mActivity) {
         this.mActivity = mActivity;
 
-        mDialogBuilder = new AlertDialog.Builder(mActivity);
+        mDialogBuilder = new AlertDialog.Builder(mActivity, R.style.CustomDialogTheme);
 
         View view = mActivity.getLayoutInflater().inflate(R.layout.dialog_transaction_password_order, null);
         editTextPassword = (EditText)view.findViewById(R.id.editTextPassword);
