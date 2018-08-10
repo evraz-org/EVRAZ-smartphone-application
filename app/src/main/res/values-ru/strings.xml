@@ -1,7 +1,62 @@
 <resources>
     <string name="app_name_full">Evraz Кошелек</string>
     <string name="app_name">Evraz Кошелек</string>
+    <!--new-->
 
+    <string name="back">Назад</string>
+    <string name="registration">Регистрация</string>
+    <string name="auth">Авторизация</string>
+    <string name="wallet">Wallet</string>
+    <string name="login_description">Вход в приложение осуществляется только по Модели Аккаунта (Account model)</string>
+    <string name="app_description">Данное мобильное приложение позволяет зарегистрироваться  по Модели Аккаунта (Account Model). Модель Аккаунта дает возможность управлять счетом с любого места, используя только пароль, и не требует загрузки .bin файла.
+
+\n\nКлючи для Аккаунта будут получены с использованием созданного Вами пароля. Они не будут храниться в браузере или на центральном сервере, поэтому необходимо убедиться, что Вы запомнили свой пароль.
+
+\n\nВведите желаемое имя аккаунта. Это имя будет публично зарегистрировано в блокчейне и являться идентификатором для любой Вашей транзакции.
+
+\n\nИмя должно содержать прописные буквы, цифры и тире "-", и быть более шести знаков.</string>
+    <string name="continue_registration">Продолжить регистрацию</string>
+    <string name="account_name">Имя аккаунта</string>
+    <string name="create_password">Создайте пароль</string>
+    <string name="confirm_password">Подтвердите пароль</string>
+    <string name="reg_checkbox_1">Я понимаю, что потеряю доступ к своим средствам, если потеряю свой пароль </string>
+    <string name="reg_checkbox_2">Я понимаю, что никто не может восстановить мой пароль, если я потеряю или забуду его</string>
+    <string name="reg_checkbox_3">Я записал или иным образом сохранил мой пароль</string>
+    <!--<string name="sign_up">Зарегистрироваться</string>-->
+    <string name="balance">Баланс</string>
+    <string name="send">Отправить</string>
+    <string name="exchange">Биржа</string>
+    <string name="exchange_title">Мои рынки</string>
+    <!--<string name="sum_usd">(%d USD)</string>-->
+    <string name="portfolio">Портфель</string>
+    <string name="open_orders">Открытые ордера</string>
+    <string name="position_provision">Обеспечение позиций</string>
+    <string name="transactions">Транзакции</string>
+    <string name="total_usd">Всего: %d %s</string>
+    <string name="assets">Актив</string>
+    <string name="short_count">Кол-во</string>
+    <string name="usd_rate">Курс (%s)</string>
+    <string name="usd_cost">Стоимость (%s)</string>
+    <string name="description">Описание</string>
+    <string name="price">Цена</string>
+    <!--<string name="market_price">Рыноч.цена</string>-->
+    <string name="from">От</string>
+    <string name="to">Кому</string>
+    <string name="count">Количество</string>
+    <string name="note">Заметка</string>
+    <string name="comission">Комиссия</string>
+    <string name="undo">Отменить</string>
+    <string name="my_markets">Мои рынки</string>
+    <string name="trading_schedule">График торгов</string>
+    <string name="buy">Купить</string>
+    <string name="sell">Продать</string>
+    <string name="orders">Ордера</string>
+    <string name="my_orders">Мои ордера</string>
+    <string name="cancel">Отмена</string>
+    <string name="buy_string">%s %s за %s</string>
+
+    <string name="orders_to_buy">Ордера на покупку</string>
+    <string name="orders_to_sell">Ордера на продажу</string>
     <!--侧边栏-->
     <string name="navigation_drawer_open">Открыть панель навигации</string>
     <string name="navigation_drawer_close">Закрыть панель навигации</string>
@@ -128,7 +183,7 @@
     <string name="tab_transactions">Транзакция</string>
     <string name="title_currency_settings">Настройки валюты</string>
     <string name="title_full_node_api_server_select">Выбор API-сервера</string>
-    <string name="title_select_currency">Выберите пару</string>
+    <string name="title_select_currency">Выберите валюту</string>
     <string name="title_select_api_server">Выберите API-сервер</string>
 
     <string name="label_file_path">Путь к файлу:</string>

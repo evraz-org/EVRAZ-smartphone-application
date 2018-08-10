@@ -1,7 +1,57 @@
 <resources>
     <string name="app_name_full">Evraz Wallet</string>
     <string name="app_name">Evraz Wallet</string>
+    <string name="auth_title" translatable="false">Bitshares blockhain</string>
 
+    <string name="back">back</string>
+    <string name="registration">Sign up</string>
+    <string name="auth">Log in</string>
+    <string name="wallet">Wallet</string>
+    <string name="login_description">Application log in is implemented only through Account Model</string>
+    <string name="app_description">
+        Current mobile application allows to register through Account Model. Account Model enable to manage the account from anywhere, using only password and without loading .bin file.\n\n
+        Keys for Account will be received with using your password. They won\'t be saved in browser or central server, that\'s why it is necessary  to make sure that you\'ve recognized the password.\n\n
+        Please enter desired account name. This name will be registered openly in blockchain and be the identifier for any of your transactions.\n\n
+        The name should include more than 6 characters with dash, numbers and u.c.
+    </string>
+    <string name="continue_registration">To continue the registration</string>
+    <string name="account_name">Account name</string>
+    <string name="create_password">Create the password</string>
+    <string name="confirm_password">Confirm the password</string>
+    <string name="reg_checkbox_1">I realize that I will lose access to my funds if I lose my password пароль </string>
+    <string name="reg_checkbox_2">I realize, that nobody can restore my password if I lose or forget it</string>
+    <string name="reg_checkbox_3">I wrote down or have saved in the other way my password</string>
+    <string name="balance">Balance</string>
+    <string name="send">Send</string>
+    <string name="exchange">Exchange</string>
+    <string name="exchange_title">My markets</string>
+    <string name="portfolio">Portfolio</string>
+    <string name="open_orders">Open orders</string>
+    <string name="position_provision">Position provision</string>
+    <string name="transactions">Transactions</string>
+    <string name="total_usd">Total: %d %s</string>
+    <string name="assets">Assets</string>
+    <string name="short_count">Amount</string>
+    <string name="usd_rate">Rate (%s)</string>
+    <string name="usd_cost">Cost (%s)</string>
+    <string name="description">Description</string>
+    <string name="price">Price</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="count">Amount</string>
+    <string name="note">Note</string>
+    <string name="comission">Commission</string>
+    <string name="undo">Undo</string>
+    <string name="my_markets">My markets</string>
+    <string name="trading_schedule">Trading schedule</string>
+    <string name="buy">Buy</string>
+    <string name="sell">Sell</string>
+    <string name="orders">Orders</string>
+    <string name="cancel">Cancel</string>
+    <string name="buy_string">%s %s for %s</string>
+    <string name="orders_to_buy">Orders to buy</string>
+    <string name="orders_to_sell">Orders to sell</string>
+    <string name="my_orders">My orders</string>
     <!--侧边栏-->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
