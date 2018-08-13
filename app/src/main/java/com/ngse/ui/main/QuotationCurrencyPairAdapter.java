@@ -112,7 +112,7 @@ public class QuotationCurrencyPairAdapter extends RecyclerView.Adapter<Quotation
         holder.mCurrencyIconView.setImageResource(nId);
 
 
-        DecimalFormat decimalFormat = new DecimalFormat("#.####");
+        DecimalFormat decimalFormat = new DecimalFormat("#.#####");
         holder.mViewPrice.setText(decimalFormat.format(marketTicker.latest));
 
         double percent_change = 0.f;
