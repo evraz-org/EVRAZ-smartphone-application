@@ -166,9 +166,9 @@ public class BalanceRepository {
 
         List<BitsharesMarketTicker> bitsharesMarketTickerList = new ArrayList<>();
         for (BitsharesAsset bitsharesAsset : bitsharesAssetList) {
-            if (bitsharesAsset.currency.compareTo("BTS") != 0) {
+            if (bitsharesAsset.currency.compareTo("EVRAZ") != 0) {
                 MarketTicker marketTicker = BitsharesWalletWraper.getInstance().get_ticker(
-                        "BTS",
+                        "EVRAZ",
                         bitsharesAsset.currency
                 );
                 BitsharesMarketTicker bitsharesMarketTicker = new BitsharesMarketTicker();
@@ -180,8 +180,8 @@ public class BalanceRepository {
         BitsharesMarketTicker bitsharesMarketTicker = new BitsharesMarketTicker();
         bitsharesMarketTicker.marketTicker = new MarketTicker();
         bitsharesMarketTicker.id = 0;
-        bitsharesMarketTicker.marketTicker.base = "BTS";
-        bitsharesMarketTicker.marketTicker.quote = "BTS";
+        bitsharesMarketTicker.marketTicker.base = "EVRAZ";
+        bitsharesMarketTicker.marketTicker.quote = "EVRAZ";
         bitsharesMarketTicker.marketTicker.latest = 1;
         bitsharesMarketTicker.marketTicker.lowest_ask = 1;
         bitsharesMarketTicker.marketTicker.highest_bid = 1;
@@ -192,7 +192,7 @@ public class BalanceRepository {
 
         MarketTicker marketTicker = BitsharesWalletWraper.getInstance().get_ticker(
                 "USD",
-                "BTS"
+                "EVRAZ"
         );
         bitsharesMarketTicker = new BitsharesMarketTicker();
         bitsharesMarketTicker.id = 0;
@@ -201,7 +201,7 @@ public class BalanceRepository {
 
         marketTicker = BitsharesWalletWraper.getInstance().get_ticker(
                 "CNY",
-                "BTS"
+                "EVRAZ"
         );
         bitsharesMarketTicker = new BitsharesMarketTicker();
         bitsharesMarketTicker.id = 0;
@@ -212,7 +212,7 @@ public class BalanceRepository {
 
         marketTicker = BitsharesWalletWraper.getInstance().get_ticker(
                 "EUR",
-                "BTS"
+                "EVRAZ"
         );
         bitsharesMarketTicker = new BitsharesMarketTicker();
         bitsharesMarketTicker.id = 0;
@@ -223,7 +223,7 @@ public class BalanceRepository {
 
         marketTicker = BitsharesWalletWraper.getInstance().get_ticker(
                 "RUBLE",
-                "BTS"
+                "EVRAZ"
         );
         bitsharesMarketTicker = new BitsharesMarketTicker();
         bitsharesMarketTicker.id = 0;
