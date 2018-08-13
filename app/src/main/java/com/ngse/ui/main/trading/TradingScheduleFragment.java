@@ -281,21 +281,21 @@ public class TradingScheduleFragment extends BaseFragment {
         xAxis.setLabelCount(3);
         //xAxis.setSpaceBetweenLabels(4);
 
-        YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setLabelCount(4, false);
-        leftAxis.setDrawGridLines(true);
-        leftAxis.setDrawAxisLine(true);
-        leftAxis.setGridColor(colorLine);
-        leftAxis.setTextColor(colorText);
-
         YAxis rightAxis = mChart.getAxisRight();
-        rightAxis.setTextSize(8);
-        rightAxis.setLabelCount(5, false);
-        rightAxis.setDrawGridLines(false);
+        rightAxis.setLabelCount(4, false);
+        rightAxis.setDrawGridLines(true);
         rightAxis.setDrawAxisLine(true);
         rightAxis.setGridColor(colorLine);
         rightAxis.setTextColor(colorText);
-        rightAxis.setAxisMinimum(0);
+
+        YAxis leftAxis = mChart.getAxisLeft();
+        leftAxis.setTextSize(8);
+        leftAxis.setLabelCount(5, false);
+        leftAxis.setDrawGridLines(false);
+        leftAxis.setDrawAxisLine(true);
+        leftAxis.setGridColor(colorLine);
+        leftAxis.setTextColor(colorText);
+        leftAxis.setAxisMinimum(0);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -378,7 +378,7 @@ public class TradingScheduleFragment extends BaseFragment {
         }
 
         CandleDataSet set = new CandleDataSet(candleEntryList, "");
-        set.setAxisDependency(YAxis.AxisDependency.LEFT);
+        set.setAxisDependency(YAxis.AxisDependency.RIGHT);
         set.setShadowWidth(0.7f);
         set.setDecreasingPaintStyle(Paint.Style.FILL);
         int nColorGreen = ContextCompat.getColor(getActivity(), R.color.candle_green);
@@ -400,7 +400,7 @@ public class TradingScheduleFragment extends BaseFragment {
         set.setForm(Legend.LegendForm.EMPTY);
 
         BarDataSet barDataSet = new BarDataSet(barEntryList, "");
-        barDataSet.setAxisDependency(YAxis.AxisDependency.RIGHT);
+        barDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
         barDataSet.setColor(getResources().getColor(R.color.grey), 25);
         barDataSet.setDrawValues(false);
         barDataSet.setForm(Legend.LegendForm.EMPTY);
