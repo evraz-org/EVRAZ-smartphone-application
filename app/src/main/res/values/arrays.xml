@@ -7,18 +7,24 @@
     <string-array name="bts_currency_unit_options">
         <item>USD</item>
         <item>CNY</item>
+        <item>EUR</item>
+        <item>RUBLE</item>
     </string-array>
 
     <string-array name="bts_currency_unit_values">
         <item>USD</item>
         <item>CNY</item>
+        <item>EUR</item>
+        <item>RUBLE</item>
     </string-array>
 
     <string-array name="quotation_currency_pair_options">
+        <item>EVRAZ:CNY</item>
+        <item>EVRAZ:EUR</item>
+        <item>EVRAZ:BTC</item>
         <item>EVRAZ:BTS</item>
         <item>EVRAZ:USD</item>
         <item>EVRAZ:RUBLE</item>
-        <item>EVRAZ:ESCROW.RUBLE</item>
         <item>BTS:USD</item>
         <item>BTS:CNY</item>
         <item>BTC:BTS</item>
@@ -32,10 +38,12 @@
     </string-array>
 
     <string-array name="quotation_currency_pair_values">
+        <item>EVRAZ:CNY</item>
+        <item>EVRAZ:EUR</item>
+        <item>EVRAZ:BTC</item>
         <item>EVRAZ:BTS</item>
         <item>EVRAZ:USD</item>
         <item>EVRAZ:RUBLE</item>
-        <item>EVRAZ:ESCROW.RUBLE</item>
         <item>BTS:USD</item>
         <item>BTS:CNY</item>
         <item>OPEN.BTC:BTS</item>

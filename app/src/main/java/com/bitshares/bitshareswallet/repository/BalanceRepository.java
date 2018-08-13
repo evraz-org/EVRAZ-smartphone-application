@@ -209,5 +209,27 @@ public class BalanceRepository {
         bitsharesMarketTickerList.add(bitsharesMarketTicker);
 
         bitsharesDao.insertMarketTicker(bitsharesMarketTickerList);
+
+        marketTicker = BitsharesWalletWraper.getInstance().get_ticker(
+                "EUR",
+                "BTS"
+        );
+        bitsharesMarketTicker = new BitsharesMarketTicker();
+        bitsharesMarketTicker.id = 0;
+        bitsharesMarketTicker.marketTicker = marketTicker;
+        bitsharesMarketTickerList.add(bitsharesMarketTicker);
+
+        bitsharesDao.insertMarketTicker(bitsharesMarketTickerList);
+
+        marketTicker = BitsharesWalletWraper.getInstance().get_ticker(
+                "RUBLE",
+                "BTS"
+        );
+        bitsharesMarketTicker = new BitsharesMarketTicker();
+        bitsharesMarketTicker.id = 0;
+        bitsharesMarketTicker.marketTicker = marketTicker;
+        bitsharesMarketTickerList.add(bitsharesMarketTicker);
+
+        bitsharesDao.insertMarketTicker(bitsharesMarketTickerList);
     }
 }
