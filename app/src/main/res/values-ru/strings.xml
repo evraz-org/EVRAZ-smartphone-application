@@ -150,7 +150,7 @@
     <string name="label_quantity">Количество:</string>
     <string name="label_total">Всего:</string>
     <string name="label_fee">Комиссия:</string>
-    <string name="label_balance">Баланс:</string>
+    <string name="label_balance">Доступно:</string>
     <string name="label_lowest_ask">Лучший запрос:</string>
     <string name="label_highest_bid">Лучшее предложение:</string>
 
