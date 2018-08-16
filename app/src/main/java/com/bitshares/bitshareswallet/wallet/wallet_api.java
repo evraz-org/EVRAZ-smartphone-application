@@ -595,6 +595,7 @@ public class wallet_api {
 
     public asset transfer_calculate_fee(String strAmount,
                                         String strAssetSymbol,
+                                        String strFeeAssetSymbol,
                                         String strMemo) throws NetworkStatusException {
         object_id<asset_object> assetObjectId = object_id.create_from_string(strAssetSymbol);
         asset_object assetObject = null;
@@ -611,6 +612,17 @@ public class wallet_api {
         transferOperation.to = new object_id<account_object>(0, account_object.class);
         transferOperation.amount = assetObject.amount_from_string(strAmount);
         transferOperation.extensions = new HashSet<>();
+
+        object_id<asset_object> assetFeeObjectId = object_id.create_from_string(strFeeAssetSymbol);
+        asset_object assetFeeObject = null;
+        if (assetFeeObjectId == null) {
+            assetFeeObject = lookup_asset_symbols(strFeeAssetSymbol);
+        } else {
+            List<object_id<asset_object>> listAssetObjectId = new ArrayList<>();
+            listAssetObjectId.add(assetFeeObjectId);
+            assetFeeObject = get_assets(listAssetObjectId).get(0);
+        }
+//        transferOperation.fee.asset_id = assetFeeObject.id;
         /*if (TextUtils.isEmpty(strMemo) == false) {
 
         }*/
@@ -623,7 +635,7 @@ public class wallet_api {
         tx.operations = new ArrayList<>();
         tx.operations.add(operationType);
         tx.extensions = new HashSet<>();
-        set_operation_fees(tx, get_global_properties().parameters.current_fees);
+        set_operation_fees(tx, get_global_properties().parameters.current_fees, assetFeeObject.id);
 
         return transferOperation.fee;
     }
@@ -962,6 +974,11 @@ public class wallet_api {
         }
     }
 
+    private void set_operation_fees(signed_transaction tx, fee_schedule feeSchedule, object_id<asset_object> feeAsset) {
+        for (operations.operation_type operationType : tx.operations) {
+            feeSchedule.set_fee(operationType, price.unit_price(feeAsset));
+        }
+    }
 
     private private_key derive_private_key(String strWifKey, int nSeqNumber) {
         String strData = strWifKey + " " + nSeqNumber;

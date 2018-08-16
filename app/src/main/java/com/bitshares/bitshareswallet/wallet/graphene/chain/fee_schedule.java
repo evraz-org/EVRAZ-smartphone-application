@@ -65,7 +65,7 @@ public class fee_schedule {
 
         long lResult = bigScaled.divide(bigDefault).longValue();
 
-        asset assetResult = new asset(lResult, new object_id<asset_object>(0, asset_object.class)).multipy(core_exchange_rate);
+        asset assetResult = new asset(lResult, core_exchange_rate.base.asset_id).multipy(core_exchange_rate);
 
         while (assetResult.multipy(core_exchange_rate).amount < lResult) {
             assetResult.amount++;

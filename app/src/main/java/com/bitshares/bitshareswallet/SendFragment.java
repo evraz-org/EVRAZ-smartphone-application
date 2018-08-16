@@ -426,6 +426,7 @@ public class SendFragment extends BaseFragment {
                     asset fee = BitsharesWalletWraper.getInstance().transfer_calculate_fee(
                             strQuantity,
                             strSymbol,
+                            "",
                             strMemo
                     );
 

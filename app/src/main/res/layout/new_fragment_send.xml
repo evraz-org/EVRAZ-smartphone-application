@@ -156,11 +156,12 @@
 
                     <android.support.v7.widget.AppCompatSpinner
                         android:id="@+id/spinner_unit"
-                        android:layout_width="65dp"
+                        android:layout_width="95dp"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="16dp"
                         android:entries="@array/bts_unit"
                         android:textColor="@color/beige_color"
+                        tools:listitem="@layout/new_custom_spinner_item"
                         android:textSize="@dimen/send_fragment_text_size"
                         app:backgroundTint="@color/beige_color" />
                 </LinearLayout>
@@ -219,12 +220,14 @@
 
                     <android.support.v7.widget.AppCompatSpinner
                         android:id="@+id/spinner_fee_unit"
-                        android:layout_width="65dp"
+                        android:layout_width="95dp"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="16dp"
-
+                        tools:entries="@array/bts_unit"
+                        android:textColor="@color/beige_color"
+                        tools:listitem="@layout/new_custom_spinner_item"
                         android:textSize="@dimen/send_fragment_text_size"
-                        app:backgroundTint="@color/beige_color" />
+                        app:backgroundTint="@color/beige_color"  />
                 </LinearLayout>
 
 

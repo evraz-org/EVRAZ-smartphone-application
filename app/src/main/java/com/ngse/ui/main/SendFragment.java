@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -66,18 +67,16 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class SendFragment extends BaseFragment {
 
+    @BindView(R.id.editTextTo)
+    EditText mEditTextTo;
+    @BindView(R.id.textViewToId)
+    TextView mTextViewId;
+    @BindView(R.id.editTextQuantity)
+    EditText mEditTextQuantitiy;
     private KProgressHUD mProcessHud;
     private Spinner mSpinner;
-
-
-
+    private Spinner feeSpinner;
     private OnFragmentInteractionListener mListener;
-
-    @BindView(R.id.editTextTo) EditText mEditTextTo;
-    @BindView(R.id.textViewToId) TextView mTextViewId;
-
-    @BindView(R.id.editTextQuantity) EditText mEditTextQuantitiy;
-
     private View mView;
     private Handler mHandler = new Handler();
 
@@ -98,6 +97,22 @@ public class SendFragment extends BaseFragment {
         return new SendFragment();
     }
 
+    public static void hideSoftKeyboard(View view, Context context) {
+        if (view != null && context != null) {
+            InputMethodManager imm = (InputMethodManager) context
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    public static void showSoftKeyboard(View view, Context context) {
+        if (view != null && context != null) {
+            InputMethodManager imm = (InputMethodManager) context
+                    .getSystemService(Activity.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(view, 0);
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -105,7 +120,7 @@ public class SendFragment extends BaseFragment {
         mView = inflater.inflate(R.layout.new_fragment_send, container, false);
         ButterKnife.bind(this, mView);
 
-        EditText editTextFrom = (EditText)mView.findViewById(R.id.editTextFrom);
+        EditText editTextFrom = (EditText) mView.findViewById(R.id.editTextFrom);
 
         String strName = BitsharesWalletWraper.getInstance().get_account().name;
         editTextFrom.setText(strName);
@@ -113,10 +128,10 @@ public class SendFragment extends BaseFragment {
         sha256_object.encoder encoder = new sha256_object.encoder();
         encoder.write(strName.getBytes());
 
-        WebView webViewFrom = (WebView)mView.findViewById(R.id.webViewAvatarFrom);
+        WebView webViewFrom = (WebView) mView.findViewById(R.id.webViewAvatarFrom);
         loadWebView(webViewFrom, 40, encoder.result().toString());
 
-        TextView textView = (TextView)mView.findViewById(R.id.textViewFromId);
+        TextView textView = (TextView) mView.findViewById(R.id.textViewFromId);
         String strId = String.format(
                 Locale.ENGLISH, "#%d",
                 BitsharesWalletWraper.getInstance().get_account().id.get_instance()
@@ -147,7 +162,7 @@ public class SendFragment extends BaseFragment {
             }
         });
 
-        final WebView webViewTo = (WebView)mView.findViewById(R.id.webViewAvatarTo);
+        final WebView webViewTo = (WebView) mView.findViewById(R.id.webViewAvatarTo);
         mEditTextTo.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -192,6 +207,7 @@ public class SendFragment extends BaseFragment {
         });
 
         mSpinner = (Spinner) mView.findViewById(R.id.spinner_unit);
+        feeSpinner = (Spinner) mView.findViewById(R.id.spinner_fee_unit);
 
         SendViewModel viewModel = ViewModelProviders.of(this).get(SendViewModel.class);
         viewModel.getBalancesList().observe(this, bitsharesBalanceAssetList -> {
@@ -207,6 +223,39 @@ public class SendFragment extends BaseFragment {
 
                 arrayAdapter.setDropDownViewResource(R.layout.new_spinner_style);
                 mSpinner.setAdapter(arrayAdapter);
+
+
+                ArrayAdapter<String> feeAdapter = new ArrayAdapter<String>(
+                        getActivity(),
+                        android.R.layout.simple_spinner_item,
+                        symbolList
+                );
+                feeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                feeSpinner.setAdapter(feeAdapter);
+            }
+        });
+
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                processCalculateFee();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        feeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                processCalculateFee();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
 
@@ -326,8 +375,8 @@ public class SendFragment extends BaseFragment {
                         String strFrom = ((EditText) view.findViewById(R.id.editTextFrom)).getText().toString();
                         String strTo = ((EditText) view.findViewById(R.id.editTextTo)).getText().toString();
                         String strQuantity = ((EditText) view.findViewById(R.id.editTextQuantity)).getText().toString();
-                        String strSymbol = (String)mSpinner.getSelectedItem();
-                        String strMemo = ((EditText)view.findViewById(R.id.editTextMemo)).getText().toString();
+                        String strSymbol = (String) mSpinner.getSelectedItem();
+                        String strMemo = ((EditText) view.findViewById(R.id.editTextMemo)).getText().toString();
                         processTransfer(strFrom, strTo, strQuantity, strSymbol, strMemo);
                     } else {
                         viewGroup.findViewById(R.id.textViewPasswordInvalid).setVisibility(View.VISIBLE);
@@ -339,8 +388,8 @@ public class SendFragment extends BaseFragment {
             String strFrom = ((EditText) view.findViewById(R.id.editTextFrom)).getText().toString();
             String strTo = ((EditText) view.findViewById(R.id.editTextTo)).getText().toString();
             String strQuantity = ((EditText) view.findViewById(R.id.editTextQuantity)).getText().toString();
-            String strSymbol = (String)mSpinner.getSelectedItem();
-            String strMemo = ((EditText)view.findViewById(R.id.editTextMemo)).getText().toString();
+            String strSymbol = (String) mSpinner.getSelectedItem();
+            String strMemo = ((EditText) view.findViewById(R.id.editTextMemo)).getText().toString();
 
             processTransfer(strFrom, strTo, strQuantity, strSymbol, strMemo);
         }
@@ -372,23 +421,6 @@ public class SendFragment extends BaseFragment {
                 });
     }
 
-
-
-    public static void hideSoftKeyboard(View view, Context context) {
-        if (view != null && context != null) {
-            InputMethodManager imm = (InputMethodManager) context
-                    .getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-    public static void showSoftKeyboard(View view, Context context) {
-        if (view != null && context != null) {
-            InputMethodManager imm = (InputMethodManager) context
-                    .getSystemService(Activity.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(view, 0);
-        }
-    }
-
     @Override
     public void notifyUpdate() {
 
@@ -397,6 +429,7 @@ public class SendFragment extends BaseFragment {
     private void processCalculateFee() {
         final String strQuantity = ((EditText) mView.findViewById(R.id.editTextQuantity)).getText().toString();
         final String strSymbol = (String) mSpinner.getSelectedItem();
+        final String strFeeSymbol = (String) feeSpinner.getSelectedItem();
         final String strMemo = ((EditText) mView.findViewById(R.id.editTextMemo)).getText().toString();
 
         // 用户没有任何货币，这个symbol会为空，则会出现崩溃，进行该处理进行规避
@@ -410,6 +443,7 @@ public class SendFragment extends BaseFragment {
                     asset fee = BitsharesWalletWraper.getInstance().transfer_calculate_fee(
                             strQuantity,
                             strSymbol,
+                            strFeeSymbol,
                             strMemo
                     );
 
@@ -476,26 +510,26 @@ public class SendFragment extends BaseFragment {
         String strResult = String.format(
                 Locale.ENGLISH,
                 "%f (%s)",
-                (double)fee.amount / assetObject.precision,
-                "Cannot be modified"
+                (double) fee.amount / assetObject.precision,
+                ""
         );
         editTextFee.setText(strResult);
 
-        Spinner spinner = (Spinner) mView.findViewById(R.id.spinner_fee_unit);
-
-        List<String> listSymbols = new ArrayList<>();
-        listSymbols.add(assetObject.symbol);
-
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                getActivity(),
-                R.layout.new_custom_spinner_item,
-                listSymbols
-        );
-
-        if (mSpinner != null) {
-            arrayAdapter.setDropDownViewResource(R.layout.new_spinner_style);
-            spinner.setAdapter(arrayAdapter);
-        }
+//        Spinner spinner = (Spinner) mView.findViewById(R.id.spinner_fee_unit);
+//
+//        List<String> listSymbols = new ArrayList<>();
+//        listSymbols.add(assetObject.symbol);
+//
+//        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+//                getActivity(),
+//                R.layout.new_custom_spinner_item,
+//                listSymbols
+//        );
+//
+//        if (mSpinner != null) {
+//            arrayAdapter.setDropDownViewResource(R.layout.new_spinner_style);
+//            spinner.setAdapter(arrayAdapter);
+//        }
     }
 
     private void loadWebView(WebView webView, int size, String encryptText) {
