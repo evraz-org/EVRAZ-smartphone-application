@@ -206,33 +206,34 @@ public class SendFragment extends BaseFragment {
             }
         });
 
-        mSpinner = (Spinner) mView.findViewById(R.id.spinner_unit);
-        feeSpinner = (Spinner) mView.findViewById(R.id.spinner_fee_unit);
+        mSpinner = mView.findViewById(R.id.spinner_unit);
+        feeSpinner = mView.findViewById(R.id.spinner_fee_unit);
 
         SendViewModel viewModel = ViewModelProviders.of(this).get(SendViewModel.class);
         viewModel.getBalancesList().observe(this, bitsharesBalanceAssetList -> {
             List<String> symbolList = new ArrayList<>();
             for (BitsharesBalanceAsset bitsharesBalanceAsset : bitsharesBalanceAssetList) {
                 symbolList.add(bitsharesBalanceAsset.quote);
-
-                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                        getActivity(),
-                        R.layout.new_custom_spinner_item,
-                        symbolList
-                );
-
-                arrayAdapter.setDropDownViewResource(R.layout.new_spinner_style);
-                mSpinner.setAdapter(arrayAdapter);
-
-
-                ArrayAdapter<String> feeAdapter = new ArrayAdapter<String>(
-                        getActivity(),
-                        android.R.layout.simple_spinner_item,
-                        symbolList
-                );
-                feeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                feeSpinner.setAdapter(feeAdapter);
             }
+
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                    getActivity(),
+                    R.layout.new_custom_spinner_item,
+                    symbolList
+            );
+
+            arrayAdapter.setDropDownViewResource(R.layout.new_spinner_style);
+            mSpinner.setAdapter(arrayAdapter);
+
+
+            ArrayAdapter<String> feeAdapter = new ArrayAdapter<String>(
+                    getActivity(),
+                    R.layout.new_custom_spinner_item,
+                    symbolList
+            );
+            feeAdapter.setDropDownViewResource(R.layout.new_spinner_style);
+            feeSpinner.setAdapter(feeAdapter);
+
         });
 
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -509,7 +510,7 @@ public class SendFragment extends BaseFragment {
         EditText editTextFee = (EditText) mView.findViewById(R.id.editTextFee);
         String strResult = String.format(
                 Locale.ENGLISH,
-                "%f (%s)",
+                "%f %s",
                 (double) fee.amount / assetObject.precision,
                 ""
         );

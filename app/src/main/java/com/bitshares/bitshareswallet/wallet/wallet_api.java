@@ -635,7 +635,7 @@ public class wallet_api {
         tx.operations = new ArrayList<>();
         tx.operations.add(operationType);
         tx.extensions = new HashSet<>();
-        set_operation_fees(tx, get_global_properties().parameters.current_fees, assetFeeObject.id);
+        set_operation_fees(tx, get_global_properties().parameters.current_fees, assetFeeObject);
 
         return transferOperation.fee;
     }
@@ -974,9 +974,9 @@ public class wallet_api {
         }
     }
 
-    private void set_operation_fees(signed_transaction tx, fee_schedule feeSchedule, object_id<asset_object> feeAsset) {
+    private void set_operation_fees(signed_transaction tx, fee_schedule feeSchedule, asset_object feeAsset) {
         for (operations.operation_type operationType : tx.operations) {
-            feeSchedule.set_fee(operationType, price.unit_price(feeAsset));
+            feeSchedule.set_fee(operationType, feeAsset.options.core_exchange_rate);
         }
     }
 
