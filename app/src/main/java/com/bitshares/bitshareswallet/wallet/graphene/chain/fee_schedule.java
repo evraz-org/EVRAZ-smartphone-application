@@ -1,5 +1,5 @@
-package com.bitshares.bitshareswallet.wallet.graphene.chain;
 
+package com.bitshares.bitshareswallet.wallet.graphene.chain;
 import com.bitshares.bitshareswallet.wallet.asset;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
