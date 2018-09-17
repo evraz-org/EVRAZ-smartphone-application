@@ -644,7 +644,7 @@ public class wallet_api {
                                        String strTo,
                                        String strAmount,
                                        String strAssetSymbol,
-                                       String strMemo) throws NetworkStatusException {
+                                       String strMemo, String strFeeAssetSymbol) throws NetworkStatusException {
 
         object_id<asset_object> assetObjectId = object_id.create_from_string(strAssetSymbol);
         asset_object assetObject = null;
@@ -654,6 +654,16 @@ public class wallet_api {
             List<object_id<asset_object>> listAssetObjectId = new ArrayList<>();
             listAssetObjectId.add(assetObjectId);
             assetObject = get_assets(listAssetObjectId).get(0);
+        }
+
+        object_id<asset_object> assetFeeObjectId = object_id.create_from_string(strFeeAssetSymbol);
+        asset_object assetFeeObject = null;
+        if (assetFeeObjectId == null) {
+            assetFeeObject = lookup_asset_symbols(strFeeAssetSymbol);
+        } else {
+            List<object_id<asset_object>> listAssetObjectId = new ArrayList<>();
+            listAssetObjectId.add(assetFeeObjectId);
+            assetFeeObject = get_assets(listAssetObjectId).get(0);
         }
 
         account_object accountObjectFrom = get_account(strFrom);
@@ -697,7 +707,7 @@ public class wallet_api {
         tx.operations = new ArrayList<>();
         tx.operations.add(operationType);
         tx.extensions = new HashSet<>();
-        set_operation_fees(tx, get_global_properties().parameters.current_fees);
+        set_operation_fees(tx, get_global_properties().parameters.current_fees, assetFeeObject);
 
 
         //// TODO: 07/09/2017 tx.validate();
@@ -706,7 +716,8 @@ public class wallet_api {
 
     public asset calculate_sell_asset_fee(String amountToSell, asset_object assetToSell,
                                           String minToReceive, asset_object assetToReceive,
-                                          global_property_object globalPropertyObject) {
+                                          global_property_object globalPropertyObject, String strFeeAssetSymbol)
+            throws NetworkStatusException {
         operations.limit_order_create_operation op = new operations.limit_order_create_operation();
         op.amount_to_sell = assetToSell.amount_from_string(amountToSell);
         op.min_to_receive = assetToReceive.amount_from_string(minToReceive);
@@ -720,28 +731,39 @@ public class wallet_api {
         tx.operations.add(operationType);
 
         tx.extensions = new HashSet<>();
-        set_operation_fees(tx, globalPropertyObject.parameters.current_fees);
+
+        object_id<asset_object> assetFeeObjectId = object_id.create_from_string(strFeeAssetSymbol);
+        asset_object assetFeeObject = null;
+        if (assetFeeObjectId == null) {
+            assetFeeObject = lookup_asset_symbols(strFeeAssetSymbol);
+        } else {
+            List<object_id<asset_object>> listAssetObjectId = new ArrayList<>();
+            listAssetObjectId.add(assetFeeObjectId);
+            assetFeeObject = get_assets(listAssetObjectId).get(0);
+        }
+
+        set_operation_fees(tx, globalPropertyObject.parameters.current_fees, assetFeeObject);
 
         return op.fee;
     }
 
     public asset calculate_sell_fee(asset_object assetToSell, asset_object assetToReceive,
                                     double rate, double amount,
-                                    global_property_object globalPropertyObject) {
+                                    global_property_object globalPropertyObject, String strFeeAssetSymbol) throws NetworkStatusException {
         return calculate_sell_asset_fee(Double.toString(amount), assetToSell,
-                Double.toString(rate * amount), assetToReceive, globalPropertyObject);
+                Double.toString(rate * amount), assetToReceive, globalPropertyObject, strFeeAssetSymbol);
     }
 
     public asset calculate_buy_fee(asset_object assetToReceive, asset_object assetToSell,
                                    double rate, double amount,
-                                   global_property_object globalPropertyObject) {
+                                   global_property_object globalPropertyObject, String strFeeAssetSymbol) throws NetworkStatusException {
         return calculate_sell_asset_fee(Double.toString(rate * amount), assetToSell,
-                Double.toString(amount), assetToReceive, globalPropertyObject);
+                Double.toString(amount), assetToReceive, globalPropertyObject, strFeeAssetSymbol);
     }
 
     public signed_transaction sell_asset(String amountToSell, String symbolToSell,
                                          String minToReceive, String symbolToReceive,
-                                         int timeoutSecs, boolean fillOrKill)
+                                         int timeoutSecs, boolean fillOrKill, String strFeeAssetSymbol)
             throws NetworkStatusException {
         // 这是用于出售的帐号
         account_object accountObject = list_my_accounts().get(0);
@@ -769,7 +791,19 @@ public class wallet_api {
         tx.operations.add(operationType);
 
         tx.extensions = new HashSet<>();
-        set_operation_fees(tx, get_global_properties().parameters.current_fees);
+
+
+        object_id<asset_object> assetFeeObjectId = object_id.create_from_string(strFeeAssetSymbol);
+        asset_object assetFeeObject = null;
+        if (assetFeeObjectId == null) {
+            assetFeeObject = lookup_asset_symbols(strFeeAssetSymbol);
+        } else {
+            List<object_id<asset_object>> listAssetObjectId = new ArrayList<>();
+            listAssetObjectId.add(assetFeeObjectId);
+            assetFeeObject = get_assets(listAssetObjectId).get(0);
+        }
+
+        set_operation_fees(tx, get_global_properties().parameters.current_fees, assetFeeObject);
 
         return sign_transaction(tx);
     }
@@ -782,15 +816,15 @@ public class wallet_api {
      * @throws NetworkStatusException
      */
     public signed_transaction sell(String symbolToSell, String symbolToReceive, double rate,
-                                   double amount) throws NetworkStatusException {
+                                   double amount, String strFeeAssetSymbol) throws NetworkStatusException {
         return sell_asset(Double.toString(amount), symbolToSell, Double.toString(rate * amount),
-                symbolToReceive, 0, false);
+                symbolToReceive, 0, false, strFeeAssetSymbol);
     }
 
     public signed_transaction sell(String symbolToSell, String symbolToReceive, double rate,
-                                   double amount, int timeoutSecs) throws NetworkStatusException {
+                                   double amount, int timeoutSecs, String strFeeAssetSymbol) throws NetworkStatusException {
         return sell_asset(Double.toString(amount), symbolToSell, Double.toString(rate * amount),
-                symbolToReceive, timeoutSecs, false);
+                symbolToReceive, timeoutSecs, false, strFeeAssetSymbol);
     }
 
     /**
@@ -801,15 +835,15 @@ public class wallet_api {
      * @throws NetworkStatusException
      */
     public signed_transaction buy(String symbolToReceive, String symbolToSell, double rate,
-                                  double amount) throws NetworkStatusException {
+                                  double amount, String strFeeAssetSymbol) throws NetworkStatusException {
         return sell_asset(Double.toString(rate * amount), symbolToSell, Double.toString(amount),
-                symbolToReceive, 0, false);
+                symbolToReceive, 0, false, strFeeAssetSymbol);
     }
 
     public signed_transaction buy(String symbolToReceive, String symbolToSell, double rate,
-                                  double amount, int timeoutSecs) throws NetworkStatusException {
+                                  double amount, int timeoutSecs, String strFeeAssetSymbol) throws NetworkStatusException {
         return sell_asset(Double.toString(rate * amount), symbolToSell, Double.toString(amount),
-                symbolToReceive, timeoutSecs, false);
+                symbolToReceive, timeoutSecs, false, strFeeAssetSymbol);
     }
 
     public signed_transaction cancel_order(object_id<limit_order_object> id)

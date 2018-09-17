@@ -169,10 +169,17 @@
                 android:layout_height="match_parent"
                 android:background="@color/beige_color" />
 
-            <TextView
+            <android.support.v7.widget.AppCompatSpinner
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="8dp"
+                android:textColor="@color/beige_color"
                 android:id="@+id/fTextLastView"
-                style="@style/EvrazTextSellBuyTableStyle"
-                android:text="@string/label_bts" />
+                app:backgroundTint="@color/beige_color"
+                tools:entries="@array/bts_unit"
+                tools:listitem="@layout/new_custom_spinner_item_fee" />
         </LinearLayout>
 
 

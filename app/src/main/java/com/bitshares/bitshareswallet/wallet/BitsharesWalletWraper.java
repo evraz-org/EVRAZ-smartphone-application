@@ -1,11 +1,6 @@
 package com.bitshares.bitshareswallet.wallet;
 
-import android.content.SharedPreferences;
-import android.support.v7.preference.PreferenceManager;
-import android.util.Pair;
-
 import com.bitshares.bitshareswallet.BitsharesApplication;
-import org.evrazcoin.evrazwallet.R;
 import com.bitshares.bitshareswallet.market.MarketTicker;
 import com.bitshares.bitshareswallet.market.MarketTrade;
 import com.bitshares.bitshareswallet.wallet.common.ErrorCode;
@@ -22,19 +17,16 @@ import com.bitshares.bitshareswallet.wallet.graphene.chain.object_id;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.operation_history_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.operations;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.signed_transaction;
-import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
 import com.google.common.collect.Sets;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -443,16 +435,17 @@ public class BitsharesWalletWraper {
     }
 
     public signed_transaction transfer(String strFrom,
-                         String strTo,
-                         String strAmount,
-                         String strAssetSymbol,
-                         String strMemo) throws NetworkStatusException {
+                                       String strTo,
+                                       String strAmount,
+                                       String strAssetSymbol,
+                                       String strMemo, String strFeeSymbol) throws NetworkStatusException {
         signed_transaction signedTransaction = mWalletApi.transfer(
                 strFrom,
                 strTo,
                 strAmount,
                 strAssetSymbol,
-                strMemo
+                strMemo,
+                strFeeSymbol
         );
         return signedTransaction;
     }
@@ -554,44 +547,44 @@ public class BitsharesWalletWraper {
 
     public signed_transaction sell_asset(String amountToSell, String symbolToSell,
                                          String minToReceive, String symbolToReceive,
-                                         int timeoutSecs, boolean fillOrKill)
+                                         int timeoutSecs, boolean fillOrKill, String strFeeAssetSymbol)
             throws NetworkStatusException {
         return mWalletApi.sell_asset(amountToSell, symbolToSell, minToReceive, symbolToReceive,
-                timeoutSecs, fillOrKill);
+                timeoutSecs, fillOrKill, strFeeAssetSymbol);
     }
 
     public asset calculate_sell_fee(asset_object assetToSell, asset_object assetToReceive,
                                     double rate, double amount,
-                                    global_property_object globalPropertyObject) {
+                                    global_property_object globalPropertyObject, String strFeeAssetSymbol) throws NetworkStatusException {
         return mWalletApi.calculate_sell_fee(assetToSell, assetToReceive, rate, amount,
-                globalPropertyObject);
+                globalPropertyObject, strFeeAssetSymbol);
     }
 
     public asset calculate_buy_fee(asset_object assetToReceive, asset_object assetToSell,
                                    double rate, double amount,
-                                   global_property_object globalPropertyObject) {
+                                   global_property_object globalPropertyObject, String strFeeAssetSymbol) throws NetworkStatusException {
         return mWalletApi.calculate_buy_fee(assetToReceive, assetToSell, rate, amount,
-                globalPropertyObject);
+                globalPropertyObject, strFeeAssetSymbol);
     }
 
-    public signed_transaction sell(String base, String quote, double rate, double amount)
+    public signed_transaction sell(String base, String quote, double rate, double amount, String strFeeAssetSymbol)
             throws NetworkStatusException {
-        return mWalletApi.sell(base, quote, rate, amount);
+        return mWalletApi.sell(base, quote, rate, amount, strFeeAssetSymbol);
     }
 
     public signed_transaction sell(String base, String quote, double rate, double amount,
-                                   int timeoutSecs) throws NetworkStatusException {
-        return mWalletApi.sell(base, quote, rate, amount, timeoutSecs);
+                                   int timeoutSecs, String strFeeAssetSymbol) throws NetworkStatusException {
+        return mWalletApi.sell(base, quote, rate, amount, timeoutSecs, strFeeAssetSymbol);
     }
 
-    public signed_transaction buy(String base, String quote, double rate, double amount)
+    public signed_transaction buy(String base, String quote, double rate, double amount, String strFeeAssetSymbol)
             throws NetworkStatusException {
-        return mWalletApi.buy(base, quote, rate, amount);
+        return mWalletApi.buy(base, quote, rate, amount, strFeeAssetSymbol);
     }
 
     public signed_transaction buy(String base, String quote, double rate, double amount,
-                                  int timeoutSecs) throws NetworkStatusException {
-        return mWalletApi.buy(base, quote, rate, amount, timeoutSecs);
+                                  int timeoutSecs, String strFeeAssetSymbol) throws NetworkStatusException {
+        return mWalletApi.buy(base, quote, rate, amount, timeoutSecs, strFeeAssetSymbol);
     }
 
     /*public BitshareData getBitshareData() {

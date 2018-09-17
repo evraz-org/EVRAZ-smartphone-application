@@ -282,8 +282,8 @@ public class SendFragment extends BaseFragment {
                             strTo,
                             strQuantity,
                             strSymbol,
-                            strMemo
-                    );
+                            strMemo,
+                            "");
                     return signedTransaction;
                 }).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(signedTransaction -> {
