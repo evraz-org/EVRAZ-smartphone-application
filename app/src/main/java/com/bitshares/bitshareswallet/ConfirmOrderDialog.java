@@ -80,7 +80,7 @@ public class ConfirmOrderDialog {
             return free;
         }
 
-        public void setFree(String free) {
+        public void setFee(String free) {
             this.free = free;
         }
 
@@ -138,8 +138,8 @@ public class ConfirmOrderDialog {
         TextView txtTargetCoin = (TextView)view.findViewById(R.id.dco_txt_target_coin);
         txtTargetCoin.setText(confirmOrderData.getQuantity());
 
-        //TextView txtTargetCoinName = (TextView)view.findViewById(R.id.dco_txt_target_coin_name);
-        //txtTargetCoinName.setText(confirmOrderData.getQuantityType() + ":");
+        TextView txtTargetCoinName = (TextView)view.findViewById(R.id.dco_txt_target_coin_name);
+        txtTargetCoinName.setText(confirmOrderData.getQuantityType() + ":");
 
         TextView txtExpiration = (TextView)view.findViewById(R.id.dco_txt_expiration);
         txtExpiration.setText(confirmOrderData.getTimeExpiration());

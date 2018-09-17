@@ -187,6 +187,7 @@
 
     <string name="label_bts_cny">bitCNY/BTS</string>
     <string name="label_bts">BTS</string>
+    <string name="label_evraz">EVRAZ</string>
     <string name="label_cny">bitCNY</string>
 
     <string name="create_account_activity_title">Sign Up</string>

@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
@@ -29,6 +31,7 @@ import android.widget.Toast;
 import com.bitshares.bitshareswallet.BaseFragment;
 import com.bitshares.bitshareswallet.BitsharesApplication;
 import com.bitshares.bitshareswallet.OnFragmentInteractionListener;
+import com.bitshares.bitshareswallet.room.BitsharesAsset;
 import com.bitshares.bitshareswallet.room.BitsharesAssetObject;
 import com.bitshares.bitshareswallet.room.BitsharesBalanceAsset;
 import com.bitshares.bitshareswallet.viewmodel.SendViewModel;
@@ -40,11 +43,18 @@ import com.bitshares.bitshareswallet.wallet.exception.ErrorCodeException;
 import com.bitshares.bitshareswallet.wallet.exception.NetworkStatusException;
 import com.bitshares.bitshareswallet.wallet.fc.crypto.sha256_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.signed_transaction;
+import com.bituniverse.network.Status;
 import com.bituniverse.utils.NumericUtil;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.evrazcoin.evrazwallet.R;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -55,6 +65,8 @@ import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.exceptions.Exceptions;
 import io.reactivex.schedulers.Schedulers;
+
+import static com.ngse.utility.Utils.*;
 
 
 /**
@@ -73,6 +85,11 @@ public class SendFragment extends BaseFragment {
     TextView mTextViewId;
     @BindView(R.id.editTextQuantity)
     EditText mEditTextQuantitiy;
+    @BindView(R.id.editTextAvailable)
+    TextView mEditTextAvailable;
+    @BindView(R.id.editTextFee)
+    TextView editTextFee;
+
     private KProgressHUD mProcessHud;
     private Spinner mSpinner;
     private Spinner feeSpinner;
@@ -179,6 +196,7 @@ public class SendFragment extends BaseFragment {
                 sha256_object.encoder encoder = new sha256_object.encoder();
                 encoder.write(s.toString().getBytes());
                 loadWebView(webViewTo, 40, encoder.result().toString());
+                processGetTransferToId(mEditTextTo.getText().toString(), mTextViewId);
             }
         });
 
@@ -216,30 +234,50 @@ public class SendFragment extends BaseFragment {
                 symbolList.add(bitsharesBalanceAsset.quote);
             }
 
+            String selectedItem = (String) mSpinner.getSelectedItem();
+            selectedItem = selectedItem == null ? getString(R.string.label_evraz) : selectedItem;
+
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                     getActivity(),
                     R.layout.new_custom_spinner_item,
                     symbolList
-            );
+            ) {
+                @NonNull
+                @Override
+                public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                    View view = super.getView(position, convertView, parent);
+                    view.findViewById(R.id.text1).setSelected(true);
+                    return view;
+                }
+            };
 
             arrayAdapter.setDropDownViewResource(R.layout.new_spinner_style);
             mSpinner.setAdapter(arrayAdapter);
 
+            int position = arrayAdapter.getPosition(selectedItem);
+            mSpinner.setSelection(position);
 
             ArrayAdapter<String> feeAdapter = new ArrayAdapter<String>(
                     getActivity(),
                     R.layout.new_custom_spinner_item,
                     symbolList
             );
+
+            selectedItem = (String) feeSpinner.getSelectedItem();
+            selectedItem = selectedItem == null ? getString(R.string.label_evraz) : selectedItem;
+
             feeAdapter.setDropDownViewResource(R.layout.new_spinner_style);
             feeSpinner.setAdapter(feeAdapter);
 
+            position = feeAdapter.getPosition(selectedItem);
+            feeSpinner.setSelection(position);
         });
 
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 processCalculateFee();
+                viewModel.changeBalanceAsset((String) mSpinner.getSelectedItem());
             }
 
             @Override
@@ -260,7 +298,103 @@ public class SendFragment extends BaseFragment {
             }
         });
 
+        viewModel.getAvaliableBalance().observe(this, bitsharesAssetResource -> {
+            String str = "";
+            if (bitsharesAssetResource.status == Status.SUCCESS) {
+                BitsharesAsset bitsharesAsset = bitsharesAssetResource.data;
+                if (bitsharesAsset != null) {
+                    str = decimalFormat.format((double) bitsharesAsset.amount / bitsharesAsset.precision);
+                } else {
+                    str = "0";
+                }
+            }
+
+            mEditTextAvailable.setText(str);
+        });
+
+        mEditTextAvailable.setOnClickListener(view -> {
+            if (mSpinner.getSelectedItem() == feeSpinner.getSelectedItem()) {
+                Double available = getAvailable();
+                Double fee = getFee();
+                double number = Math.max(available - fee, 0);
+                mEditTextQuantitiy.setText(decimalFormat.format(number));
+            } else {
+                mEditTextQuantitiy.setText(mEditTextAvailable.getText());
+            }
+        });
+
+        mEditTextQuantitiy.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                processLock();
+            }
+        });
+
+        editTextFee.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                processLock();
+            }
+        });
+
         return mView;
+    }
+
+    private void processLock() {
+        mView.findViewById(R.id.btn_send).setEnabled(getSendAvailable());
+
+        if (getSendAvailable()) {
+            mEditTextAvailable.setTextColor(getResources().getColor(R.color.beige_color));
+            mView.findViewById(R.id.btn_send).setBackground(getResources().getDrawable(R.drawable.btn_green_background));
+        } else {
+            mEditTextAvailable.setTextColor(getResources().getColor(R.color.label_red));
+            mView.findViewById(R.id.btn_send).setBackground(getResources().getDrawable(R.drawable.btn_red_background));
+        }
+    }
+
+    private boolean getSendAvailable() {
+        Double available = getAvailable();
+        Double amount = getAmount();
+        Double fee = getFee();
+        if (mSpinner.getSelectedItem() == feeSpinner.getSelectedItem()) {
+            double diff = available - sumDouble(amount, fee);
+            return diff >= 0.0d;
+        } else {
+            double diff = available - amount;
+            return diff >= 0.0d;
+        }
+    }
+
+    private Double getAvailable() {
+        return parseDouble(mEditTextAvailable.getText().toString());
+    }
+
+    private Double getFee() {
+        return parseDouble(editTextFee.getText().toString());
+    }
+
+    private Double getAmount() {
+        return parseDouble(mEditTextQuantitiy.getText().toString());
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -306,7 +440,7 @@ public class SendFragment extends BaseFragment {
                                  final String strTo,
                                  final String strQuantity,
                                  final String strSymbol,
-                                 final String strMemo) {
+                                 final String strMemo, String strFeeSymbol) {
         mProcessHud.show();
         Flowable.just(0)
                 .subscribeOn(Schedulers.io())
@@ -316,7 +450,8 @@ public class SendFragment extends BaseFragment {
                             strTo,
                             strQuantity,
                             strSymbol,
-                            strMemo
+                            strMemo,
+                            strFeeSymbol
                     );
                     return signedTransaction;
                 }).observeOn(AndroidSchedulers.mainThread())
@@ -377,8 +512,9 @@ public class SendFragment extends BaseFragment {
                         String strTo = ((EditText) view.findViewById(R.id.editTextTo)).getText().toString();
                         String strQuantity = ((EditText) view.findViewById(R.id.editTextQuantity)).getText().toString();
                         String strSymbol = (String) mSpinner.getSelectedItem();
+                        String strFeeSymbol = (String) feeSpinner.getSelectedItem();
                         String strMemo = ((EditText) view.findViewById(R.id.editTextMemo)).getText().toString();
-                        processTransfer(strFrom, strTo, strQuantity, strSymbol, strMemo);
+                        processTransfer(strFrom, strTo, strQuantity, strSymbol, strMemo, strFeeSymbol);
                     } else {
                         viewGroup.findViewById(R.id.textViewPasswordInvalid).setVisibility(View.VISIBLE);
                     }
@@ -390,9 +526,10 @@ public class SendFragment extends BaseFragment {
             String strTo = ((EditText) view.findViewById(R.id.editTextTo)).getText().toString();
             String strQuantity = ((EditText) view.findViewById(R.id.editTextQuantity)).getText().toString();
             String strSymbol = (String) mSpinner.getSelectedItem();
+            String strFeeSymbol = (String) feeSpinner.getSelectedItem();
             String strMemo = ((EditText) view.findViewById(R.id.editTextMemo)).getText().toString();
 
-            processTransfer(strFrom, strTo, strQuantity, strSymbol, strMemo);
+            processTransfer(strFrom, strTo, strQuantity, strSymbol, strMemo, strFeeSymbol);
         }
     }
 
@@ -459,78 +596,20 @@ public class SendFragment extends BaseFragment {
                 }, throwable -> {
                     if (throwable instanceof NetworkStatusException) {
                         if (getActivity() != null && getActivity().isFinishing() == false) {
-                            EditText editTextFee = (EditText) mView.findViewById(R.id.editTextFee);
                             editTextFee.setText("N/A");
                         }
                     } else {
                         throw Exceptions.propagate(throwable);
                     }
                 });
-
-        /*new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    asset fee = BitsharesWalletWraper.getInstance().transfer_calculate_fee(
-                            strQuantity,
-                            strSymbol,
-                            strMemo
-                    );
-
-                    BitsharesAssetObject assetObject = BitsharesApplication.getInstance()
-                            .getBitsharesDatabase().getBitsharesDao().queryAssetObjectById(fee.asset_id.toString());
-
-
-
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (getActivity() != null && getActivity().isFinishing() == false) {
-                                processDisplayFee(legibleObject);
-                            }
-                        }
-                    });
-                } catch (NetworkStatusException e) {
-                    e.printStackTrace();
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (getActivity() != null && getActivity().isFinishing() == false) {
-                                EditText editTextFee = (EditText) mView.findViewById(R.id.editTextFee);
-                                editTextFee.setText("N/A");
-                            }
-                        }
-                    });
-                }
-            }
-        }).start();*/
     }
 
-    private void processDisplayFee(asset fee, BitsharesAssetObject assetObject) {
-        EditText editTextFee = (EditText) mView.findViewById(R.id.editTextFee);
-        String strResult = String.format(
-                Locale.ENGLISH,
-                "%f %s",
-                (double) fee.amount / assetObject.precision,
-                ""
-        );
-        editTextFee.setText(strResult);
+    DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
+    DecimalFormat decimalFormat = new DecimalFormat("#.#####", symbols);
 
-//        Spinner spinner = (Spinner) mView.findViewById(R.id.spinner_fee_unit);
-//
-//        List<String> listSymbols = new ArrayList<>();
-//        listSymbols.add(assetObject.symbol);
-//
-//        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-//                getActivity(),
-//                R.layout.new_custom_spinner_item,
-//                listSymbols
-//        );
-//
-//        if (mSpinner != null) {
-//            arrayAdapter.setDropDownViewResource(R.layout.new_spinner_style);
-//            spinner.setAdapter(arrayAdapter);
-//        }
+    private void processDisplayFee(asset fee, BitsharesAssetObject assetObject) {
+        String str = decimalFormat.format((double) fee.amount / assetObject.precision);
+        editTextFee.setText(str);
     }
 
     private void loadWebView(WebView webView, int size, String encryptText) {

@@ -1,13 +1,20 @@
 package com.bitshares.bitshareswallet.viewmodel;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
+import android.support.annotation.Nullable;
 
 import com.bitshares.bitshareswallet.BitsharesApplication;
+import com.bitshares.bitshareswallet.livedata.StatusChangeLiveData;
+import com.bitshares.bitshareswallet.repository.AvailableBalanceRepository;
 import com.bitshares.bitshareswallet.room.BitsharesAsset;
 import com.bitshares.bitshareswallet.room.BitsharesBalanceAsset;
 import com.bitshares.bitshareswallet.room.BitsharesDao;
+import com.bituniverse.network.Resource;
 
 import java.util.List;
 
@@ -16,8 +23,12 @@ import java.util.List;
  */
 
 public class SendViewModel extends ViewModel {
+    private MutableLiveData<String> currencyData = new MutableLiveData<>();
+    private StatusChangeLiveData statusChangeLiveData = new StatusChangeLiveData();
+
     private BitsharesDao bitsharesDao;
     private LiveData<List<BitsharesBalanceAsset>> balancesList;
+    private MediatorLiveData<Resource<BitsharesAsset>> mediatorLiveData = new MediatorLiveData<>();
 
     public SendViewModel() {
         bitsharesDao = BitsharesApplication.getInstance().getBitsharesDatabase().getBitsharesDao();
@@ -28,4 +39,28 @@ public class SendViewModel extends ViewModel {
         return balancesList;
     }
 
+    public void changeBalanceAsset(String currency) {
+        currencyData.setValue(currency);
+    }
+
+    public LiveData<Resource<BitsharesAsset>> getAvaliableBalance() {
+        mediatorLiveData.addSource(currencyData, s -> {
+            mediatorLiveData.addSource(getAvaliableBalanceInternal(), newData -> mediatorLiveData.setValue(newData));
+        });
+
+        return mediatorLiveData;
+    }
+
+    private LiveData<Resource<BitsharesAsset>> getAvaliableBalanceInternal() {
+        LiveData<Resource<BitsharesAsset>> balanceData = Transformations.switchMap(
+                Transformations.switchMap(currencyData, input -> {
+                    return statusChangeLiveData;
+                }),
+                statusChange -> {
+                    return new AvailableBalanceRepository().getTargetAvaliableBlance(currencyData.getValue());
+                });
+
+
+        return balanceData;
+    }
 }

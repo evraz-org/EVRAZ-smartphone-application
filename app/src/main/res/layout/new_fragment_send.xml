@@ -125,12 +125,39 @@
 
                 </RelativeLayout>
 
-                <TextView
-                    style="@style/EvrazTextHeaderViewStyle"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/count" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
+                    <TextView
+                        style="@style/EvrazTextHeaderViewStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/count" />
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        style="@style/EvrazTextHeaderViewStyle"
+                        android:textSize="10sp"
+                        android:layout_width="wrap_content"
+                        android:textAlignment="textEnd"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/label_balance" />
+
+                    <TextView
+                        android:id="@+id/editTextAvailable"
+                        android:layout_weight="0"
+                        style="@style/EvrazTextHeaderViewStyle"
+                        android:layout_width="wrap_content"
+                        android:textAlignment="textEnd"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginTop="8dp"
+                        android:text="1231" />
+
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -214,7 +241,7 @@
                         android:paddingBottom="10dp"
                         android:paddingLeft="10dp"
                         android:paddingTop="10dp"
-                        android:text=""
+                        android:text="0"
                         android:textColor="@color/beige_color"
                         android:textSize="@dimen/send_fragment_text_size" />
 
