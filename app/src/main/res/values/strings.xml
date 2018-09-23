@@ -145,7 +145,7 @@
     <string name="label_quantity">Quantity:</string>
     <string name="label_total">Total:</string>
     <string name="label_fee">Fee:</string>
-    <string name="label_balance">Balance:</string>
+    <string name="label_balance">Available:</string>
     <string name="label_lowest_ask">Lowest ask:</string>
     <string name="label_highest_bid">Highest bid:</string>
 
@@ -187,6 +187,7 @@
 
     <string name="label_bts_cny">bitCNY/BTS</string>
     <string name="label_bts">BTS</string>
+    <string name="label_evraz">EVRAZ</string>
     <string name="label_cny">bitCNY</string>
 
     <string name="create_account_activity_title">Sign Up</string>

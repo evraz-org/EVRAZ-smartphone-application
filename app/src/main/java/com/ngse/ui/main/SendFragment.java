@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
@@ -19,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -28,6 +31,7 @@ import android.widget.Toast;
 import com.bitshares.bitshareswallet.BaseFragment;
 import com.bitshares.bitshareswallet.BitsharesApplication;
 import com.bitshares.bitshareswallet.OnFragmentInteractionListener;
+import com.bitshares.bitshareswallet.room.BitsharesAsset;
 import com.bitshares.bitshareswallet.room.BitsharesAssetObject;
 import com.bitshares.bitshareswallet.room.BitsharesBalanceAsset;
 import com.bitshares.bitshareswallet.viewmodel.SendViewModel;
@@ -39,11 +43,18 @@ import com.bitshares.bitshareswallet.wallet.exception.ErrorCodeException;
 import com.bitshares.bitshareswallet.wallet.exception.NetworkStatusException;
 import com.bitshares.bitshareswallet.wallet.fc.crypto.sha256_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.signed_transaction;
+import com.bituniverse.network.Status;
 import com.bituniverse.utils.NumericUtil;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.evrazcoin.evrazwallet.R;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -54,6 +65,8 @@ import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.exceptions.Exceptions;
 import io.reactivex.schedulers.Schedulers;
+
+import static com.ngse.utility.Utils.*;
 
 
 /**
@@ -66,18 +79,21 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class SendFragment extends BaseFragment {
 
+    @BindView(R.id.editTextTo)
+    EditText mEditTextTo;
+    @BindView(R.id.textViewToId)
+    TextView mTextViewId;
+    @BindView(R.id.editTextQuantity)
+    EditText mEditTextQuantitiy;
+    @BindView(R.id.editTextAvailable)
+    TextView mEditTextAvailable;
+    @BindView(R.id.editTextFee)
+    TextView editTextFee;
+
     private KProgressHUD mProcessHud;
     private Spinner mSpinner;
-
-
-
+    private Spinner feeSpinner;
     private OnFragmentInteractionListener mListener;
-
-    @BindView(R.id.editTextTo) EditText mEditTextTo;
-    @BindView(R.id.textViewToId) TextView mTextViewId;
-
-    @BindView(R.id.editTextQuantity) EditText mEditTextQuantitiy;
-
     private View mView;
     private Handler mHandler = new Handler();
 
@@ -98,6 +114,22 @@ public class SendFragment extends BaseFragment {
         return new SendFragment();
     }
 
+    public static void hideSoftKeyboard(View view, Context context) {
+        if (view != null && context != null) {
+            InputMethodManager imm = (InputMethodManager) context
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    public static void showSoftKeyboard(View view, Context context) {
+        if (view != null && context != null) {
+            InputMethodManager imm = (InputMethodManager) context
+                    .getSystemService(Activity.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(view, 0);
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -105,7 +137,7 @@ public class SendFragment extends BaseFragment {
         mView = inflater.inflate(R.layout.new_fragment_send, container, false);
         ButterKnife.bind(this, mView);
 
-        EditText editTextFrom = (EditText)mView.findViewById(R.id.editTextFrom);
+        EditText editTextFrom = (EditText) mView.findViewById(R.id.editTextFrom);
 
         String strName = BitsharesWalletWraper.getInstance().get_account().name;
         editTextFrom.setText(strName);
@@ -113,10 +145,10 @@ public class SendFragment extends BaseFragment {
         sha256_object.encoder encoder = new sha256_object.encoder();
         encoder.write(strName.getBytes());
 
-        WebView webViewFrom = (WebView)mView.findViewById(R.id.webViewAvatarFrom);
+        WebView webViewFrom = (WebView) mView.findViewById(R.id.webViewAvatarFrom);
         loadWebView(webViewFrom, 40, encoder.result().toString());
 
-        TextView textView = (TextView)mView.findViewById(R.id.textViewFromId);
+        TextView textView = (TextView) mView.findViewById(R.id.textViewFromId);
         String strId = String.format(
                 Locale.ENGLISH, "#%d",
                 BitsharesWalletWraper.getInstance().get_account().id.get_instance()
@@ -147,7 +179,7 @@ public class SendFragment extends BaseFragment {
             }
         });
 
-        final WebView webViewTo = (WebView)mView.findViewById(R.id.webViewAvatarTo);
+        final WebView webViewTo = (WebView) mView.findViewById(R.id.webViewAvatarTo);
         mEditTextTo.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -164,6 +196,7 @@ public class SendFragment extends BaseFragment {
                 sha256_object.encoder encoder = new sha256_object.encoder();
                 encoder.write(s.toString().getBytes());
                 loadWebView(webViewTo, 40, encoder.result().toString());
+                processGetTransferToId(mEditTextTo.getText().toString(), mTextViewId);
             }
         });
 
@@ -191,26 +224,177 @@ public class SendFragment extends BaseFragment {
             }
         });
 
-        mSpinner = (Spinner) mView.findViewById(R.id.spinner_unit);
+        mSpinner = mView.findViewById(R.id.spinner_unit);
+        feeSpinner = mView.findViewById(R.id.spinner_fee_unit);
 
         SendViewModel viewModel = ViewModelProviders.of(this).get(SendViewModel.class);
         viewModel.getBalancesList().observe(this, bitsharesBalanceAssetList -> {
             List<String> symbolList = new ArrayList<>();
             for (BitsharesBalanceAsset bitsharesBalanceAsset : bitsharesBalanceAssetList) {
                 symbolList.add(bitsharesBalanceAsset.quote);
+            }
 
-                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                        getActivity(),
-                        R.layout.new_custom_spinner_item,
-                        symbolList
-                );
+            String selectedItem = (String) mSpinner.getSelectedItem();
+            selectedItem = selectedItem == null ? getString(R.string.label_evraz) : selectedItem;
 
-                arrayAdapter.setDropDownViewResource(R.layout.new_spinner_style);
-                mSpinner.setAdapter(arrayAdapter);
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                    getActivity(),
+                    R.layout.new_custom_spinner_item,
+                    symbolList
+            ) {
+                @NonNull
+                @Override
+                public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                    View view = super.getView(position, convertView, parent);
+                    view.findViewById(R.id.text1).setSelected(true);
+                    return view;
+                }
+            };
+
+            arrayAdapter.setDropDownViewResource(R.layout.new_spinner_style);
+            mSpinner.setAdapter(arrayAdapter);
+
+            int position = arrayAdapter.getPosition(selectedItem);
+            mSpinner.setSelection(position);
+
+            ArrayAdapter<String> feeAdapter = new ArrayAdapter<String>(
+                    getActivity(),
+                    R.layout.new_custom_spinner_item,
+                    symbolList
+            );
+
+            selectedItem = (String) feeSpinner.getSelectedItem();
+            selectedItem = selectedItem == null ? getString(R.string.label_evraz) : selectedItem;
+
+            feeAdapter.setDropDownViewResource(R.layout.new_spinner_style);
+            feeSpinner.setAdapter(feeAdapter);
+
+            position = feeAdapter.getPosition(selectedItem);
+            feeSpinner.setSelection(position);
+        });
+
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                processCalculateFee();
+                viewModel.changeBalanceAsset((String) mSpinner.getSelectedItem());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        feeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                processCalculateFee();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        viewModel.getAvaliableBalance().observe(this, bitsharesAssetResource -> {
+            String str = "";
+            if (bitsharesAssetResource.status == Status.SUCCESS) {
+                BitsharesAsset bitsharesAsset = bitsharesAssetResource.data;
+                if (bitsharesAsset != null) {
+                    str = decimalFormat.format((double) bitsharesAsset.amount / bitsharesAsset.precision);
+                } else {
+                    str = "0";
+                }
+            }
+
+            mEditTextAvailable.setText(str);
+        });
+
+        mEditTextAvailable.setOnClickListener(view -> {
+            if (mSpinner.getSelectedItem() == feeSpinner.getSelectedItem()) {
+                Double available = getAvailable();
+                Double fee = getFee();
+                double number = Math.max(available - fee, 0);
+                mEditTextQuantitiy.setText(decimalFormat.format(number));
+            } else {
+                mEditTextQuantitiy.setText(mEditTextAvailable.getText());
+            }
+        });
+
+        mEditTextQuantitiy.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                processLock();
+            }
+        });
+
+        editTextFee.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                processLock();
             }
         });
 
         return mView;
+    }
+
+    private void processLock() {
+        mView.findViewById(R.id.btn_send).setEnabled(getSendAvailable());
+
+        if (getSendAvailable()) {
+            mEditTextAvailable.setTextColor(getResources().getColor(R.color.beige_color));
+            mView.findViewById(R.id.btn_send).setBackground(getResources().getDrawable(R.drawable.btn_green_background));
+        } else {
+            mEditTextAvailable.setTextColor(getResources().getColor(R.color.label_red));
+            mView.findViewById(R.id.btn_send).setBackground(getResources().getDrawable(R.drawable.btn_red_background));
+        }
+    }
+
+    private boolean getSendAvailable() {
+        Double available = getAvailable();
+        Double amount = getAmount();
+        Double fee = getFee();
+        if (mSpinner.getSelectedItem() == feeSpinner.getSelectedItem()) {
+            double diff = available - sumDouble(amount, fee);
+            return diff >= 0.0d;
+        } else {
+            double diff = available - amount;
+            return diff >= 0.0d;
+        }
+    }
+
+    private Double getAvailable() {
+        return parseDouble(mEditTextAvailable.getText().toString());
+    }
+
+    private Double getFee() {
+        return parseDouble(editTextFee.getText().toString());
+    }
+
+    private Double getAmount() {
+        return parseDouble(mEditTextQuantitiy.getText().toString());
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -256,7 +440,7 @@ public class SendFragment extends BaseFragment {
                                  final String strTo,
                                  final String strQuantity,
                                  final String strSymbol,
-                                 final String strMemo) {
+                                 final String strMemo, String strFeeSymbol) {
         mProcessHud.show();
         Flowable.just(0)
                 .subscribeOn(Schedulers.io())
@@ -266,7 +450,8 @@ public class SendFragment extends BaseFragment {
                             strTo,
                             strQuantity,
                             strSymbol,
-                            strMemo
+                            strMemo,
+                            strFeeSymbol
                     );
                     return signedTransaction;
                 }).observeOn(AndroidSchedulers.mainThread())
@@ -326,9 +511,10 @@ public class SendFragment extends BaseFragment {
                         String strFrom = ((EditText) view.findViewById(R.id.editTextFrom)).getText().toString();
                         String strTo = ((EditText) view.findViewById(R.id.editTextTo)).getText().toString();
                         String strQuantity = ((EditText) view.findViewById(R.id.editTextQuantity)).getText().toString();
-                        String strSymbol = (String)mSpinner.getSelectedItem();
-                        String strMemo = ((EditText)view.findViewById(R.id.editTextMemo)).getText().toString();
-                        processTransfer(strFrom, strTo, strQuantity, strSymbol, strMemo);
+                        String strSymbol = (String) mSpinner.getSelectedItem();
+                        String strFeeSymbol = (String) feeSpinner.getSelectedItem();
+                        String strMemo = ((EditText) view.findViewById(R.id.editTextMemo)).getText().toString();
+                        processTransfer(strFrom, strTo, strQuantity, strSymbol, strMemo, strFeeSymbol);
                     } else {
                         viewGroup.findViewById(R.id.textViewPasswordInvalid).setVisibility(View.VISIBLE);
                     }
@@ -339,10 +525,11 @@ public class SendFragment extends BaseFragment {
             String strFrom = ((EditText) view.findViewById(R.id.editTextFrom)).getText().toString();
             String strTo = ((EditText) view.findViewById(R.id.editTextTo)).getText().toString();
             String strQuantity = ((EditText) view.findViewById(R.id.editTextQuantity)).getText().toString();
-            String strSymbol = (String)mSpinner.getSelectedItem();
-            String strMemo = ((EditText)view.findViewById(R.id.editTextMemo)).getText().toString();
+            String strSymbol = (String) mSpinner.getSelectedItem();
+            String strFeeSymbol = (String) feeSpinner.getSelectedItem();
+            String strMemo = ((EditText) view.findViewById(R.id.editTextMemo)).getText().toString();
 
-            processTransfer(strFrom, strTo, strQuantity, strSymbol, strMemo);
+            processTransfer(strFrom, strTo, strQuantity, strSymbol, strMemo, strFeeSymbol);
         }
     }
 
@@ -372,23 +559,6 @@ public class SendFragment extends BaseFragment {
                 });
     }
 
-
-
-    public static void hideSoftKeyboard(View view, Context context) {
-        if (view != null && context != null) {
-            InputMethodManager imm = (InputMethodManager) context
-                    .getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-    public static void showSoftKeyboard(View view, Context context) {
-        if (view != null && context != null) {
-            InputMethodManager imm = (InputMethodManager) context
-                    .getSystemService(Activity.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(view, 0);
-        }
-    }
-
     @Override
     public void notifyUpdate() {
 
@@ -397,6 +567,7 @@ public class SendFragment extends BaseFragment {
     private void processCalculateFee() {
         final String strQuantity = ((EditText) mView.findViewById(R.id.editTextQuantity)).getText().toString();
         final String strSymbol = (String) mSpinner.getSelectedItem();
+        final String strFeeSymbol = (String) feeSpinner.getSelectedItem();
         final String strMemo = ((EditText) mView.findViewById(R.id.editTextMemo)).getText().toString();
 
         // 用户没有任何货币，这个symbol会为空，则会出现崩溃，进行该处理进行规避
@@ -410,6 +581,7 @@ public class SendFragment extends BaseFragment {
                     asset fee = BitsharesWalletWraper.getInstance().transfer_calculate_fee(
                             strQuantity,
                             strSymbol,
+                            strFeeSymbol,
                             strMemo
                     );
 
@@ -424,78 +596,20 @@ public class SendFragment extends BaseFragment {
                 }, throwable -> {
                     if (throwable instanceof NetworkStatusException) {
                         if (getActivity() != null && getActivity().isFinishing() == false) {
-                            EditText editTextFee = (EditText) mView.findViewById(R.id.editTextFee);
                             editTextFee.setText("N/A");
                         }
                     } else {
                         throw Exceptions.propagate(throwable);
                     }
                 });
-
-        /*new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    asset fee = BitsharesWalletWraper.getInstance().transfer_calculate_fee(
-                            strQuantity,
-                            strSymbol,
-                            strMemo
-                    );
-
-                    BitsharesAssetObject assetObject = BitsharesApplication.getInstance()
-                            .getBitsharesDatabase().getBitsharesDao().queryAssetObjectById(fee.asset_id.toString());
-
-
-
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (getActivity() != null && getActivity().isFinishing() == false) {
-                                processDisplayFee(legibleObject);
-                            }
-                        }
-                    });
-                } catch (NetworkStatusException e) {
-                    e.printStackTrace();
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (getActivity() != null && getActivity().isFinishing() == false) {
-                                EditText editTextFee = (EditText) mView.findViewById(R.id.editTextFee);
-                                editTextFee.setText("N/A");
-                            }
-                        }
-                    });
-                }
-            }
-        }).start();*/
     }
 
+    DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
+    DecimalFormat decimalFormat = new DecimalFormat("#.#####", symbols);
+
     private void processDisplayFee(asset fee, BitsharesAssetObject assetObject) {
-        EditText editTextFee = (EditText) mView.findViewById(R.id.editTextFee);
-        String strResult = String.format(
-                Locale.ENGLISH,
-                "%f (%s)",
-                (double)fee.amount / assetObject.precision,
-                "Cannot be modified"
-        );
-        editTextFee.setText(strResult);
-
-        Spinner spinner = (Spinner) mView.findViewById(R.id.spinner_fee_unit);
-
-        List<String> listSymbols = new ArrayList<>();
-        listSymbols.add(assetObject.symbol);
-
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                getActivity(),
-                R.layout.new_custom_spinner_item,
-                listSymbols
-        );
-
-        if (mSpinner != null) {
-            arrayAdapter.setDropDownViewResource(R.layout.new_spinner_style);
-            spinner.setAdapter(arrayAdapter);
-        }
+        String str = decimalFormat.format((double) fee.amount / assetObject.precision);
+        editTextFee.setText(str);
     }
 
     private void loadWebView(WebView webView, int size, String encryptText) {

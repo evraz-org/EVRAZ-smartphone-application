@@ -267,7 +267,7 @@ public class OpenOrdersFragment extends BaseFragment
                 txtTargetCoin.setText(String.format("%.6f", sellAmount));*/
             }
             txtOperation.setText(txtOperation.getContext().getString(R.string.buy_string, operation, firstAmount, secondAmount));
-            txtPrice.setText(String.format(Locale.ENGLISH, "%.4f", order.price));
+            txtPrice.setText(String.format(Locale.ENGLISH, "%.5f", order.price));
 //            txtPriceUsd.setText();
            /* SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
             txtExpiration.setText(formatter.format(order.limitOrder.expiration));*/

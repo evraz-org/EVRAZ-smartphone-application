@@ -56,9 +56,9 @@ public interface BitsharesDao {
             "sum(balance.amount) as amount, sum(balance.amount * ticker.latest * BTS.precision / balance.precision) as total, balance.precision as quote_precision, " +
             "BTS.precision as base_precision, sum(balance.amount * ticker.latest / balance.precision * CURRENCY.precision * currency_ticker.latest) as balance, " +
             "CURRENCY.precision as currency_precision, currency_ticker.base as currency from balance " +
-            "inner join (select * from market_ticker) as ticker on balance.currency = ticker.quote and ticker.base = 'BTS'" +
-            "inner join (select * from asset_object where symbol = 'BTS') as BTS " +
-            "inner join (select * from market_ticker) as currency_ticker on currency_ticker.quote = 'BTS' and currency_ticker.base = :currency " +
+            "inner join (select * from market_ticker) as ticker on balance.currency = ticker.quote and ticker.base = 'EVRAZ'" +
+            "inner join (select * from asset_object where symbol = 'EVRAZ') as BTS " +
+            "inner join (select * from market_ticker) as currency_ticker on currency_ticker.quote = 'EVRAZ' and currency_ticker.base = :currency " +
             "inner join (select * from asset_object where symbol = :currency) as CURRENCY on currency_ticker.base = CURRENCY.symbol and type = 0 group by balance.currency ")
     LiveData<List<BitsharesBalanceAsset>> queryAvaliableBalances(String currency);
 

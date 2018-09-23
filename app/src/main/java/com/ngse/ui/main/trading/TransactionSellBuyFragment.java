@@ -11,30 +11,34 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.PreferenceManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bitshares.bitshareswallet.BaseFragment;
+import com.bitshares.bitshareswallet.BitsharesApplication;
 import com.bitshares.bitshareswallet.ConfirmOrderDialog;
-import com.bitshares.bitshareswallet.DensityUtil;
 import com.bitshares.bitshareswallet.TransactionSellBuyPasswordDialog;
-import com.bitshares.bitshareswallet.TransactionSellBuyRecyclerViewAdapter;
 import com.bitshares.bitshareswallet.market.MarketStat;
 import com.bitshares.bitshareswallet.room.BitsharesAsset;
+import com.bitshares.bitshareswallet.room.BitsharesAssetObject;
+import com.bitshares.bitshareswallet.room.BitsharesBalanceAsset;
 import com.bitshares.bitshareswallet.viewmodel.SellBuyViewModel;
 import com.bitshares.bitshareswallet.wallet.BitsharesWalletWraper;
 import com.bitshares.bitshareswallet.wallet.Broadcast;
 import com.bitshares.bitshareswallet.wallet.asset;
+import com.bitshares.bitshareswallet.wallet.exception.NetworkStatusException;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.asset_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.global_property_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
@@ -45,9 +49,21 @@ import com.kaopiz.kprogresshud.KProgressHUD;
 import org.evrazcoin.evrazwallet.R;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.exceptions.Exceptions;
+import io.reactivex.schedulers.Schedulers;
+
+import static com.ngse.utility.Utils.parseDouble;
+import static com.ngse.utility.Utils.sumDouble;
 
 
 public class TransactionSellBuyFragment extends BaseFragment
@@ -60,12 +76,6 @@ public class TransactionSellBuyFragment extends BaseFragment
     private static final String TRANSACTION_TYPE = "transaction_type";
 
     private static int buyTimeSec = 5 * 365 * 24 * 60 * 60;
-/*
-    private TransactionSellBuyRecyclerViewAdapter buyRecyclerViewAdapter;
-    private TransactionSellBuyRecyclerViewAdapter sellRecyclerViewAdapter;
-    private RecyclerView buyRecyclerView;
-    private RecyclerView sellRecyclerView;
-    private int maxOrderCount = 10;*/
 
     public static final int TRANSACTION_BUY = 1;
     public static final int TRANSACTION_SELL = 2;
@@ -101,6 +111,8 @@ public class TransactionSellBuyFragment extends BaseFragment
     private global_property_object globalPropertyObject;
     private boolean isAssetObjIsInit;
     private boolean isInitPriceValue;
+    private Spinner feeSpinner;
+    private Button okButton;
 
     public TransactionSellBuyFragment() {
         orderStat = new MarketStat();
@@ -153,7 +165,6 @@ public class TransactionSellBuyFragment extends BaseFragment
     }
 
     public void initPriceValue() {
-        DecimalFormat decimalFormat = new DecimalFormat("#.####");
         if (!isInitPriceValue) {
             isInitPriceValue = true;
             if (transactionType == TRANSACTION_BUY && lowestSellPrice != -1) {
@@ -209,13 +220,81 @@ public class TransactionSellBuyFragment extends BaseFragment
             if (bitsharesAssetResource.status == Status.SUCCESS) {
                 BitsharesAsset bitsharesAsset = bitsharesAssetResource.data;
                 if (bitsharesAsset != null) {
-                    DecimalFormat decimalFormat = new DecimalFormat("#.####");
                     balanceText.setText(decimalFormat.format((double) bitsharesAsset.amount / bitsharesAsset.precision));
                 } else {
                     balanceText.setText("0");
                 }
             }
         });
+
+        askText.setOnClickListener(view -> pEditText.setText(askText.getText()));
+
+        balanceText.setOnClickListener(view -> {
+            String pString = pEditText.getText().toString();
+
+            Double fee = getFee();
+            Double available = getAvailable();
+
+            Object selectedItem = feeSpinner.getSelectedItem();
+            String targetAsset = getTargetAsset();
+            if (isBuy()) {
+                if (selectedItem.equals(targetAsset)) {
+                    double number = Math.max(available - fee, 0);
+                    tEditText.setText(decimalFormat.format(number));
+                } else {
+                    tEditText.setText(balanceText.getText());
+                }
+
+                String tString = tEditText.getText().toString();
+
+                if (!TextUtils.isEmpty(pString)) {
+                    double total = NumericUtil.parseDouble(tString, -1.0D);
+                    double pValue = NumericUtil.parseDouble(pString, -1.0D);
+                    double qValue = total / pValue;
+                    qEditText.setText(decimalFormat.format(qValue));
+                }
+            } else {
+                if (selectedItem.equals(targetAsset)) {
+                    double number = Math.max(available - fee, 0);
+                    qEditText.setText(decimalFormat.format(number));
+                } else {
+                    qEditText.setText(balanceText.getText());
+                }
+
+                String qString = qEditText.getText().toString();
+
+                if (!TextUtils.isEmpty(pString)) {
+                    double pValue = NumericUtil.parseDouble(pString, -1.0D);
+                    double qValue = NumericUtil.parseDouble(qString, -1.0D);
+                    double total = qValue * pValue;
+                    tEditText.setText(decimalFormat.format(total));
+                }
+
+            }
+        });
+    }
+
+    DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
+    DecimalFormat decimalFormat = new DecimalFormat("#.########", symbols);
+
+    private String getTargetAsset() {
+        return isBuy() ? baseAsset : quoteAsset;
+    }
+
+    private Double getAvailable() {
+        return parseDouble(balanceText.getText().toString());
+    }
+
+    private Double getFee() {
+        return parseDouble(fEditText.getText().toString());
+    }
+
+    private Double getQuantity() {
+        return parseDouble(qEditText.getText().toString());
+    }
+
+    private Double getTotal() {
+        return parseDouble(tEditText.getText().toString());
     }
 
     @Override
@@ -230,7 +309,7 @@ public class TransactionSellBuyFragment extends BaseFragment
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.new_fragment_buy_sell, container, false);
 
-        Button okButton = (Button) view.findViewById(R.id.okButton);
+        okButton = (Button) view.findViewById(R.id.okButton);
         okButton.setOnClickListener(this);
         if (isBuy()) {
             okButton.setText(getResources().getString(R.string.title_buy));
@@ -265,20 +344,44 @@ public class TransactionSellBuyFragment extends BaseFragment
         balanceTextBase = (TextView) view.findViewById(R.id.balanceTextBase);
         askTextBase = (TextView) view.findViewById(R.id.askTextBase);
         askTextInfo = (TextView) view.findViewById(R.id.askTextInfo);
-/*
 
-        buyRecyclerView = (RecyclerView) view.findViewById(R.id.buy_recycler);
-        buyRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        buyRecyclerViewAdapter = new TransactionSellBuyRecyclerViewAdapter();
-        buyRecyclerView.setAdapter(buyRecyclerViewAdapter);
-        buyRecyclerView.setItemAnimator(null);
+        feeSpinner = (Spinner) view.findViewById(R.id.fTextLastView);
 
-        sellRecyclerView = (RecyclerView) view.findViewById(R.id.sell_recycler);
-        sellRecyclerViewAdapter = new TransactionSellBuyRecyclerViewAdapter();
-        sellRecyclerView.setAdapter(sellRecyclerViewAdapter);
-        sellRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        sellRecyclerView.setItemAnimator(null);
-*/
+        SellBuyViewModel viewModel = ViewModelProviders.of(this).get(SellBuyViewModel.class);
+
+        viewModel.getBalancesList().observe(this, bitsharesBalanceAssetList -> {
+            List<String> symbolList = new ArrayList<>();
+            for (BitsharesBalanceAsset bitsharesBalanceAsset : bitsharesBalanceAssetList) {
+                symbolList.add(bitsharesBalanceAsset.quote);
+            }
+
+            ArrayAdapter<String> feeAdapter = new ArrayAdapter<String>(
+                    getActivity(),
+                    R.layout.new_custom_spinner_item_fee,
+                    symbolList
+            );
+
+            String selectedItem = (String) feeSpinner.getSelectedItem();
+            selectedItem = selectedItem == null ? getString(R.string.label_evraz) : selectedItem;
+
+            feeAdapter.setDropDownViewResource(R.layout.new_spinner_style);
+            feeSpinner.setAdapter(feeAdapter);
+
+            int position = feeAdapter.getPosition((String) selectedItem);
+            feeSpinner.setSelection(position);
+
+        });
+        feeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                processCalculateFee();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         return view;
     }
@@ -337,7 +440,7 @@ public class TransactionSellBuyFragment extends BaseFragment
                 confirmOrderData.setPrice(pEditText.getText().toString());
                 confirmOrderData.setQuantity(qEditText.getText().toString());
                 confirmOrderData.setTotal(tEditText.getText().toString());
-                confirmOrderData.setFree(fEditText.getText().toString());
+                confirmOrderData.setFee(String.format("%s %s", fEditText.getText().toString(), feeSpinner.getSelectedItem()));
                 confirmOrderData.setQuantityType(utils.getAssetSymbolDisply(quoteAsset));
                 confirmOrderData.setTotalType(utils.getAssetSymbolDisply(baseAsset));
 
@@ -378,25 +481,49 @@ public class TransactionSellBuyFragment extends BaseFragment
 
     @Override
     public void afterTextChanged(Editable s) {
+        processCalculateFee();
+    }
+
+    private void processCalculateFee() {
         String qString = qEditText.getText().toString();
         String pString = pEditText.getText().toString();
-        if (TextUtils.isEmpty(qString) || TextUtils.isEmpty(pString)) {
-            return;
-        }
+
+        final String strFeeSymbol = (String) feeSpinner.getSelectedItem();
 
         double qValue = NumericUtil.parseDouble(qString, -1.0D);
         double pValue = NumericUtil.parseDouble(pString, -1.0D);
         double total = qValue * pValue;
 
-        DecimalFormat decimalFormat = new DecimalFormat("#.########");
-        tEditText.setText(decimalFormat.format(total));
+        if (!TextUtils.isEmpty(qString) && !TextUtils.isEmpty(pString)) {
+            tEditText.setText(decimalFormat.format(total));
+        }
 
-        if (isBuy()) {
-            double fee = calculateBuyFee(quoteAssetObj, baseAssetObj, pValue, qValue);
-            fEditText.setText(decimalFormat.format(fee));
+        calculateSellBuyFee(quoteAssetObj, baseAssetObj, pValue, qValue, strFeeSymbol);
+    }
+
+    private void processLock() {
+        if (getTransferAvailable()) {
+            balanceText.setTextColor(getResources().getColor(R.color.beige_color));
+            okButton.setBackground(getResources().getDrawable(R.drawable.btn_green_background));
         } else {
-            double fee = calculateSellFee(quoteAssetObj, baseAssetObj, pValue, qValue);
-            fEditText.setText(decimalFormat.format(fee));
+            balanceText.setTextColor(getResources().getColor(R.color.label_red));
+            okButton.setBackground(getResources().getDrawable(R.drawable.btn_red_background));
+        }
+    }
+
+    private boolean getTransferAvailable() {
+        Double available = getAvailable();
+        Double quantity = getQuantity();
+        Double total = getTotal();
+        Double fee = getFee();
+
+        Double val = isBuy() ? total : quantity;
+        if (feeSpinner.getSelectedItem().equals(getTargetAsset())) {
+            double diff = available - sumDouble(val, fee);
+            return diff >= 0.0d;
+        } else {
+            double diff = available - val;
+            return diff >= 0.0d;
         }
     }
 
@@ -488,7 +615,7 @@ public class TransactionSellBuyFragment extends BaseFragment
             @Override
             public void run() {
                 try {
-                    BitsharesWalletWraper.getInstance().buy(quoteAsset, baseAsset, rate, amount, timeSec);
+                    BitsharesWalletWraper.getInstance().buy(quoteAsset, baseAsset, rate, amount, timeSec, (String) feeSpinner.getSelectedItem());
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -514,7 +641,7 @@ public class TransactionSellBuyFragment extends BaseFragment
             @Override
             public void run() {
                 try {
-                    BitsharesWalletWraper.getInstance().sell(quoteAsset, baseAsset, rate, amount, timeSec);
+                    BitsharesWalletWraper.getInstance().sell(quoteAsset, baseAsset, rate, amount, timeSec, (String) feeSpinner.getSelectedItem());
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -553,7 +680,7 @@ public class TransactionSellBuyFragment extends BaseFragment
 
         String baseAssetDisplay = utils.getAssetSymbolDisply(baseAsset);
         String quoteAssetDisplay = utils.getAssetSymbolDisply(quoteAsset);
-        pTextLastView.setText(baseAssetDisplay + "/" + quoteAssetDisplay);
+        pTextLastView.setText(String.format("%s/%s", quoteAssetDisplay, baseAssetDisplay));
         qTextLastView.setText(quoteAssetDisplay);
         tTextLastView.setText(baseAssetDisplay);
         if (isBuy()) {
@@ -571,13 +698,69 @@ public class TransactionSellBuyFragment extends BaseFragment
         return transactionType == TRANSACTION_BUY;
     }
 
+
+    private void calculateSellBuyFee(asset_object symbolToSell, asset_object symbolToReceive, double rate,
+                                     double amount, String strFeeAssetSymbol) {
+        if (!isAssetObjIsInit) {
+            return;
+        }
+
+        Flowable.just(0)
+                .subscribeOn(Schedulers.io())
+                .map(integer -> {
+                    asset fee;
+                    if (isBuy()) {
+                        fee = BitsharesWalletWraper.getInstance().calculate_buy_fee(symbolToReceive, symbolToSell,
+                                rate, amount, globalPropertyObject, strFeeAssetSymbol);
+                    } else {
+                        fee = BitsharesWalletWraper.getInstance().calculate_sell_fee(symbolToReceive, symbolToSell,
+                                rate, amount, globalPropertyObject, strFeeAssetSymbol);
+                    }
+
+                    BitsharesAssetObject assetObject = BitsharesApplication.getInstance()
+                            .getBitsharesDatabase().getBitsharesDao().queryAssetObjectById(fee.asset_id.toString());
+                    return new Pair<>(fee, assetObject);
+                }).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(resultPair -> {
+                    if (getActivity() != null && getActivity().isFinishing() == false) {
+                        processDisplayFee(resultPair.first, resultPair.second);
+                    }
+                }, throwable -> {
+                    if (throwable instanceof NetworkStatusException) {
+                        if (getActivity() != null && getActivity().isFinishing() == false) {
+                            fEditText.setText("N/A");
+                        }
+                    } else {
+                        throw Exceptions.propagate(throwable);
+                    }
+                });
+    }
+
+    private void processDisplayFee(asset fee, BitsharesAssetObject assetObject) {
+//        double val;
+//        if (a.asset_id.equals(btsAssetObj.id)) {
+//            val = utils.get_asset_amount(a.amount, btsAssetObj);
+//        } else if (a.asset_id.equals(baseAssetObj.id)) {
+//            val = utils.get_asset_amount(a.amount, baseAssetObj);
+//        } else {
+//            val = utils.get_asset_amount(a.amount, quoteAssetObj);
+//        }
+        fEditText.setText(decimalFormat.format((double) fee.amount / assetObject.precision));
+        processLock();
+    }
+
     private double calculateSellFee(asset_object symbolToSell, asset_object symbolToReceive, double rate,
                                     double amount) {
         if (!isAssetObjIsInit) {
             return 0;
         }
-        asset a = BitsharesWalletWraper.getInstance().calculate_sell_fee(symbolToSell, symbolToReceive,
-                rate, amount, globalPropertyObject);
+        asset a = null;
+        try {
+            a = BitsharesWalletWraper.getInstance().calculate_sell_fee(symbolToSell, symbolToReceive,
+                    rate, amount, globalPropertyObject, "");
+        } catch (NetworkStatusException e) {
+            e.printStackTrace();
+        }
         if (a.asset_id.equals(btsAssetObj.id)) {
             return utils.get_asset_amount(a.amount, btsAssetObj);
         } else if (a.asset_id.equals(baseAssetObj.id)) {
@@ -592,8 +775,13 @@ public class TransactionSellBuyFragment extends BaseFragment
         if (!isAssetObjIsInit) {
             return 0;
         }
-        asset a = BitsharesWalletWraper.getInstance().calculate_buy_fee(symbolToReceive, symbolToSell,
-                rate, amount, globalPropertyObject);
+        asset a = null;
+        try {
+            a = BitsharesWalletWraper.getInstance().calculate_buy_fee(symbolToReceive, symbolToSell,
+                    rate, amount, globalPropertyObject, "");
+        } catch (NetworkStatusException e) {
+            e.printStackTrace();
+        }
         if (a.asset_id.equals(btsAssetObj.id)) {
             return utils.get_asset_amount(a.amount, btsAssetObj);
         } else if (a.asset_id.equals(baseAssetObj.id)) {

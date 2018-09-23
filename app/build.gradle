@@ -1,8 +1,8 @@
 // Manifest version information!
 def versionMajor = 0
 def versionMinor = 3
-def versionPatch = 3
-def versionBuild = 1
+def versionPatch = 5
+def versionBuild = 9
 
 buildscript {
     repositories {
@@ -47,7 +47,7 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file('/home/anton_kulykov/AndroidStudioProjects/evraz-wallet/evraz.jks')
+            storeFile file('../../evraz.jks')
             storePassword "pZzE8TYyZ1pi"
             keyAlias "evraz"
             keyPassword "6HU3FhLbniew"

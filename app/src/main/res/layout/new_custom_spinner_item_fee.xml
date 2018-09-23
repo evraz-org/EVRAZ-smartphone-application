@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/text1"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:textColor="@color/beige_color"
+    android:textAlignment="center"
+    android:textSize="15sp"
     android:layout_alignParentRight="true"
-    android:textAlignment="viewEnd"
     android:ellipsize="marquee"
     android:fadingEdge="horizontal"
     android:lines="1"
     android:marqueeRepeatLimit="marquee_forever"
     android:scrollHorizontally="true"
-    android:textSize="@dimen/send_fragment_text_size"
-    tools:text="BTSBGTSBTS" />
+    tools:text="BTS" />

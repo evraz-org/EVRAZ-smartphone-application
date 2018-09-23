@@ -309,7 +309,7 @@ public class TradingOrdersFragment extends BaseFragment
                 confirmOrderData.setPrice(pEditText.getText().toString());
                 confirmOrderData.setQuantity(qEditText.getText().toString());
                 confirmOrderData.setTotal(tEditText.getText().toString());
-                confirmOrderData.setFree(fEditText.getText().toString());
+                confirmOrderData.setFee(fEditText.getText().toString());
                 confirmOrderData.setQuantityType(utils.getAssetSymbolDisply(quoteAsset));
                 confirmOrderData.setTotalType(utils.getAssetSymbolDisply(baseAsset));
 

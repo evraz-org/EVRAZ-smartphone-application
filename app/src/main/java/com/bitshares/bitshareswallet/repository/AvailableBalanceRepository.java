@@ -62,7 +62,7 @@ public class AvailableBalanceRepository {
     }
 
     private boolean shouldFetch(BitsharesAsset bitsharesBalanceAsset) {
-        return true;
+        return false;
     }
 
     private void fetchFromNetwork(final LiveData<BitsharesAsset> dbSource) {

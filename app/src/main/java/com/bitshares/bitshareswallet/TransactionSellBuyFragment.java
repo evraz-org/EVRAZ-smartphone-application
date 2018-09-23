@@ -30,6 +30,7 @@ import com.bitshares.bitshareswallet.viewmodel.SellBuyViewModel;
 import com.bitshares.bitshareswallet.wallet.BitsharesWalletWraper;
 import com.bitshares.bitshareswallet.wallet.Broadcast;
 import com.bitshares.bitshareswallet.wallet.asset;
+import com.bitshares.bitshareswallet.wallet.exception.NetworkStatusException;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.asset_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.global_property_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
@@ -324,7 +325,7 @@ public class TransactionSellBuyFragment extends BaseFragment
                 confirmOrderData.setPrice(pEditText.getText().toString());
                 confirmOrderData.setQuantity(qEditText.getText().toString());
                 confirmOrderData.setTotal(tEditText.getText().toString());
-                confirmOrderData.setFree(fEditText.getText().toString());
+                confirmOrderData.setFee(fEditText.getText().toString());
                 confirmOrderData.setQuantityType(utils.getAssetSymbolDisply(quoteAsset));
                 confirmOrderData.setTotalType(utils.getAssetSymbolDisply(baseAsset));
 
@@ -377,13 +378,18 @@ public class TransactionSellBuyFragment extends BaseFragment
 
         DecimalFormat decimalFormat = new DecimalFormat("#.########");
         tEditText.setText(decimalFormat.format(total));
+        try {
+            if (isBuy()) {
+                double fee = 0;
+                fee = calculateBuyFee(quoteAssetObj, baseAssetObj, pValue, qValue);
 
-        if (isBuy()) {
-            double fee = calculateBuyFee(quoteAssetObj, baseAssetObj, pValue, qValue);
-            fEditText.setText(decimalFormat.format(fee));
-        } else {
-            double fee = calculateSellFee(quoteAssetObj, baseAssetObj, pValue, qValue);
-            fEditText.setText(decimalFormat.format(fee));
+                fEditText.setText(decimalFormat.format(fee));
+            } else {
+                double fee = calculateSellFee(quoteAssetObj, baseAssetObj, pValue, qValue);
+                fEditText.setText(decimalFormat.format(fee));
+            }
+        } catch (NetworkStatusException e) {
+            e.printStackTrace();
         }
     }
 
@@ -475,7 +481,7 @@ public class TransactionSellBuyFragment extends BaseFragment
             @Override
             public void run() {
                 try {
-                    BitsharesWalletWraper.getInstance().buy(quoteAsset, baseAsset, rate, amount, timeSec);
+                    BitsharesWalletWraper.getInstance().buy(quoteAsset, baseAsset, rate, amount, timeSec,"");
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -501,7 +507,7 @@ public class TransactionSellBuyFragment extends BaseFragment
             @Override
             public void run() {
                 try {
-                    BitsharesWalletWraper.getInstance().sell(quoteAsset, baseAsset, rate, amount, timeSec);
+                    BitsharesWalletWraper.getInstance().sell(quoteAsset, baseAsset, rate, amount, timeSec,"");
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -559,12 +565,12 @@ public class TransactionSellBuyFragment extends BaseFragment
     }
 
     private double calculateSellFee(asset_object symbolToSell, asset_object symbolToReceive, double rate,
-                                    double amount) {
+                                    double amount) throws NetworkStatusException {
         if (!isAssetObjIsInit) {
             return 0;
         }
         asset a = BitsharesWalletWraper.getInstance().calculate_sell_fee(symbolToSell, symbolToReceive,
-                rate, amount, globalPropertyObject);
+                rate, amount, globalPropertyObject, "");
         if (a.asset_id.equals(btsAssetObj.id)) {
             return utils.get_asset_amount(a.amount, btsAssetObj);
         } else if (a.asset_id.equals(baseAssetObj.id)) {
@@ -575,12 +581,12 @@ public class TransactionSellBuyFragment extends BaseFragment
     }
 
     private double calculateBuyFee(asset_object symbolToReceive, asset_object symbolToSell, double rate,
-                                   double amount) {
+                                   double amount) throws NetworkStatusException {
         if (!isAssetObjIsInit) {
             return 0;
         }
         asset a = BitsharesWalletWraper.getInstance().calculate_buy_fee(symbolToReceive, symbolToSell,
-                rate, amount, globalPropertyObject);
+                rate, amount, globalPropertyObject, "");
         if (a.asset_id.equals(btsAssetObj.id)) {
             return utils.get_asset_amount(a.amount, btsAssetObj);
         } else if (a.asset_id.equals(baseAssetObj.id)) {
