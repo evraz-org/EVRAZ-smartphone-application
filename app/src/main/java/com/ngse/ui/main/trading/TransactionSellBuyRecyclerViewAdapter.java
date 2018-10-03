@@ -15,17 +15,18 @@ import java.util.List;
 public class TransactionSellBuyRecyclerViewAdapter extends RecyclerView.Adapter<TransactionSellBuyRecyclerViewAdapter.ViewHolder> {
     public static final int ORDERITEMHEIGHTDP = 18;
     private List<Order> list;
+    private boolean reversePosition = false;
 
     public TransactionSellBuyRecyclerViewAdapter() {
 
     }
 
-    public void setList(List<Order> list){
-        if(getItemCount()>0){
-            notifyItemRangeRemoved(0,getItemCount());
+    public void setList(List<Order> list) {
+        if (getItemCount() > 0) {
+            notifyItemRangeRemoved(0, getItemCount());
         }
         this.list = list;
-        notifyItemRangeInserted(0,getItemCount());
+        notifyItemRangeInserted(0, getItemCount());
     }
 
     @Override
@@ -42,7 +43,7 @@ public class TransactionSellBuyRecyclerViewAdapter extends RecyclerView.Adapter<
 
     @Override
     public int getItemCount() {
-        return list==null ? 0: list.size();
+        return list == null ? 0 : list.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -58,9 +59,13 @@ public class TransactionSellBuyRecyclerViewAdapter extends RecyclerView.Adapter<
             btsTextView = (TextView) view.findViewById(R.id.bts_text);
         }
 
-        public void update(Order order){
-            priceTextView.setText(String .format("%.5f",order.price));
-            btsTextView.setText(String .format("%.5f",order.quote));
+        public void update(Order order) {
+            priceTextView.setText(!reversePosition ? String.format("%.5f", order.price) : String.format("%.5f", order.quote));
+            btsTextView.setText(!reversePosition ? String.format("%.5f", order.quote) : String.format("%.5f", order.price));
         }
+    }
+
+    public void setReversePosition(boolean reversePosition) {
+        this.reversePosition = reversePosition;
     }
 }

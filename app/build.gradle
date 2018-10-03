@@ -1,7 +1,7 @@
 // Manifest version information!
 def versionMajor = 0
 def versionMinor = 3
-def versionPatch = 5
+def versionPatch = 6
 def versionBuild = 9
 
 buildscript {
@@ -143,6 +143,8 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.1.5'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation project(':graphenej:graphenej')
+
+    implementation 'com.github.franmontiel:LocaleChanger:0.9.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

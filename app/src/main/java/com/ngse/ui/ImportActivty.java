@@ -1,5 +1,6 @@
 package com.ngse.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import com.bitshares.bitshareswallet.wallet.BitsharesWalletWraper;
 import com.bitshares.bitshareswallet.wallet.common.ConvertUriToFilePath;
 import com.bitshares.bitshareswallet.wallet.common.ErrorCode;
+import com.franmontiel.localechanger.LocaleChanger;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.evrazcoin.evrazwallet.R;
@@ -42,7 +44,7 @@ public class ImportActivty extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_PERMISSION_READ_EXTERNAL_STORAGE ) {
+        if (requestCode == REQUEST_PERMISSION_READ_EXTERNAL_STORAGE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("*/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
@@ -80,9 +82,9 @@ public class ImportActivty extends AppCompatActivity {
                 // 将按钮转换成为进度条
                 mProcessHud.show();
 
-                String strAccount = ((EditText)findViewById(R.id.editTextAccountName)).getText().toString();
-                String strPassword = ((EditText)findViewById(R.id.editTextPassword)).getText().toString();
-                String strPrivateKey = ((EditText)findViewById(R.id.editTextPrivateKey)).getText().toString();
+                String strAccount = ((EditText) findViewById(R.id.editTextAccountName)).getText().toString();
+                String strPassword = ((EditText) findViewById(R.id.editTextPassword)).getText().toString();
+                String strPrivateKey = ((EditText) findViewById(R.id.editTextPrivateKey)).getText().toString();
 
                 if (mnModel == ACCOUNT_MODEL) {
                     processImport(strAccount, strPassword, null);
@@ -94,7 +96,7 @@ public class ImportActivty extends AppCompatActivity {
                         return;
                     }
 
-                    String strFilePath = ((EditText)findViewById(R.id.editTextFilePath)).getText().toString();
+                    String strFilePath = ((EditText) findViewById(R.id.editTextFilePath)).getText().toString();
                     processImport(strAccount, strPassword, strFilePath);
                 } else if (mnModel == WALLET_MODEL_BRAIN_KEY) {
                     processImport(strAccount, strPassword, strPrivateKey);
@@ -148,6 +150,12 @@ public class ImportActivty extends AppCompatActivity {
     }
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        newBase = LocaleChanger.configureBaseContext(newBase);
+        super.attachBaseContext(newBase);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SELECT_FILE_CODE) {
@@ -172,7 +180,7 @@ public class ImportActivty extends AppCompatActivity {
                     }
                 }
 
-                EditText editTextFilePath = (EditText)findViewById(R.id.editTextFilePath);
+                EditText editTextFilePath = (EditText) findViewById(R.id.editTextFilePath);
                 editTextFilePath.setText(strFilePath);
             }
         }
@@ -203,7 +211,7 @@ public class ImportActivty extends AppCompatActivity {
                             strPassword,
                             strVariant
                     );
-                } else if (mnModel == ACCOUNT_MODEL){
+                } else if (mnModel == ACCOUNT_MODEL) {
                     nRet = BitsharesWalletWraper.getInstance().import_account_password(
                             strAccount,
                             strPassword

@@ -228,4 +228,11 @@
     <string name="loading_history_failed">Failed to load data. Please try again later</string>
     <string name="loading_history_data">Loading transaction data</string>
 
+    <string name="menu_lang_en">Eng</string>
+    <string name="menu_lang_ru">Rus</string>
+    <string name="menu_lang_es">Spa</string>
+    <string name="menu_lang_nl">Nld</string>
+    <string name="menu_lang_zh">Chi</string>
+
+    <string name="exchange_rate">Rate: %.4f %s/%s</string>
 </resources>

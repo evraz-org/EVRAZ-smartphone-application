@@ -36,14 +36,20 @@
             android:textColor="#f6efcc"
             android:textSize="15sp"
             tools:text="(123456,000 USD)" />
+        <TextView
+            android:id="@+id/textViewConvertBalance"
+            android:layout_marginTop="8dp"
+            android:textColor="#f6efcc"
+            style="@style/EvrazTitle"
+            tools:text="123456,000 USD" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/buttonsContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="40dp"
         android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -61,8 +67,8 @@
             android:id="@+id/openOrders"
             style="@style/EvrazTextViewButton"
             android:layout_marginBottom="16dp"
-            android:visibility="gone"
-            android:text="@string/open_orders" />
+            android:text="@string/open_orders"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/positionProvision"
@@ -77,4 +83,50 @@
             android:text="@string/transactions" />
 
     </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/langSwitcher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <RadioButton
+            android:id="@+id/ruSwitch"
+            style="@style/WalletLangSwitchStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/menu_lang_ru" />
+
+        <RadioButton
+            android:id="@+id/enSwitch"
+            style="@style/WalletLangSwitchStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/menu_lang_en" />
+
+        <RadioButton
+            android:id="@+id/esSwitch"
+            style="@style/WalletLangSwitchStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/menu_lang_es" />
+
+        <RadioButton
+            android:id="@+id/nlSwitch"
+            style="@style/WalletLangSwitchStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/menu_lang_nl" />
+
+        <RadioButton
+            android:id="@+id/zhSwitch"
+            style="@style/WalletLangSwitchStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/menu_lang_zh" />
+
+    </RadioGroup>
 </android.support.constraint.ConstraintLayout>

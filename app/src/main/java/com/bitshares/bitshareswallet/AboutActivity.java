@@ -2,6 +2,7 @@ package com.bitshares.bitshareswallet;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bitshares.bitshareswallet.wallet.fc.crypto.sha256_object;
+import com.franmontiel.localechanger.LocaleChanger;
 import com.ngse.ui.NewMainActivity;
 
 import org.evrazcoin.evrazwallet.R;
@@ -41,14 +43,14 @@ public class AboutActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        TextView textViewAccountName = (TextView)findViewById(R.id.textViewAccountName);
+        TextView textViewAccountName = (TextView) findViewById(R.id.textViewAccountName);
         final String strName = "evraz";
         textViewAccountName.setText(strName);
 
         sha256_object.encoder encoder = new sha256_object.encoder();
         encoder.write(strName.getBytes());
 
-        WebView webView = (WebView)findViewById(R.id.webViewAvatar);
+        WebView webView = (WebView) findViewById(R.id.webViewAvatar);
         loadWebView(webView, 70, encoder.result().toString());
 
         findViewById(R.id.textViewCopyAccount).setOnClickListener(new View.OnClickListener() {
@@ -75,11 +77,11 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        TextView textViewVersion = (TextView)findViewById(R.id.textViewVersion);
+        TextView textViewVersion = (TextView) findViewById(R.id.textViewVersion);
         PackageManager packageManager = getPackageManager();
         // getPackageName()是你当前类的包名，0代表是获取版本信息
         try {
-            PackageInfo packInfo = packageManager.getPackageInfo(getPackageName(),0);
+            PackageInfo packInfo = packageManager.getPackageInfo(getPackageName(), 0);
             String strVersion = getString(R.string.about_activity_version);
             textViewVersion.setText(strVersion + " " + packInfo.versionName);
         } catch (PackageManager.NameNotFoundException e) {
@@ -92,5 +94,11 @@ public class AboutActivity extends AppCompatActivity {
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webView.loadData(htmlShareAccountName, "text/html", "UTF-8");
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        newBase = LocaleChanger.configureBaseContext(newBase);
+        super.attachBaseContext(newBase);
     }
 }
