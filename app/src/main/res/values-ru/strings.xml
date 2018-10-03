@@ -220,4 +220,11 @@
 
     <string name="trade_fragment_quantity">Количество</string>
 
+    <string name="menu_lang_en">Eng</string>
+    <string name="menu_lang_ru">Рус</string>
+    <string name="menu_lang_es">Spa</string>
+    <string name="menu_lang_nl">Nld</string>
+    <string name="menu_lang_zh">Chi</string>
+
+    <string name="exchange_rate">Курс: %.4f %s/%s</string>
 </resources>

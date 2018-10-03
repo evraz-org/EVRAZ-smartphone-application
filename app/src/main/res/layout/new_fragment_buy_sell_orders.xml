@@ -22,9 +22,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginBottom="6dp"
             android:text="@string/orders_to_buy"
             android:textAllCaps="true"
-            android:layout_marginBottom="6dp"
             android:textColor="@color/beige_color"
             android:textSize="15sp"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -43,7 +43,7 @@
             <TextView
                 style="@style/EvrazTextHeaderTableStyle"
                 android:layout_weight="1"
-                android:text="@string/price" />
+                android:text="@string/short_count" />
 
             <View
                 android:layout_width="1dp"
@@ -53,7 +53,8 @@
             <TextView
                 style="@style/EvrazTextHeaderTableStyle"
                 android:layout_weight="1"
-                android:text="@string/short_count" />
+                android:text="@string/price" />
+
 
             <!--   <TextView
                    android:layout_width="wrap_content"
@@ -107,11 +108,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginBottom="6dp"
             android:text="@string/orders_to_sell"
             android:textAllCaps="true"
             android:textColor="@color/beige_color"
             android:textSize="15sp"
-            android:layout_marginBottom="6dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
@@ -138,6 +139,7 @@
                 style="@style/EvrazTextHeaderTableStyle"
                 android:layout_weight="1"
                 android:text="@string/short_count" />
+
 
             <!-- <TextView
                  android:layout_width="wrap_content"

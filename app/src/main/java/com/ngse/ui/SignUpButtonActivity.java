@@ -1,10 +1,12 @@
 package com.ngse.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 
+import com.franmontiel.localechanger.LocaleChanger;
 
 import org.evrazcoin.evrazwallet.R;
 
@@ -30,5 +32,11 @@ public class SignUpButtonActivity extends AppCompatActivity {
      /*       Intent intent = new Intent(SignUpButtonActivity.this, ModelSelectActivity.class);
             startActivity(intent);*/
         });
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        newBase = LocaleChanger.configureBaseContext(newBase);
+        super.attachBaseContext(newBase);
     }
 }

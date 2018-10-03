@@ -3,17 +3,24 @@ package com.ngse.ui.main;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.bitshares.bitshareswallet.BaseFragment;
+import com.bitshares.bitshareswallet.ImportActivty;
+import com.bitshares.bitshareswallet.ModelSelectActivity;
 import com.bitshares.bitshareswallet.room.BitsharesBalanceAsset;
 import com.bitshares.bitshareswallet.viewmodel.WalletViewModel;
+import com.franmontiel.localechanger.LocaleChanger;
+import com.franmontiel.localechanger.utils.ActivityRecreationHelper;
 import com.ngse.ui.NewMainActivity;
 
 import org.evrazcoin.evrazwallet.R;
@@ -23,7 +30,14 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+
+import static com.bitshares.bitshareswallet.BitsharesApplication.LOCALE_EN;
+import static com.bitshares.bitshareswallet.BitsharesApplication.LOCALE_ES;
+import static com.bitshares.bitshareswallet.BitsharesApplication.LOCALE_NL;
+import static com.bitshares.bitshareswallet.BitsharesApplication.LOCALE_RU;
+import static com.bitshares.bitshareswallet.BitsharesApplication.LOCALE_ZH;
 
 
 public class BalanceFragment extends BaseFragment {
@@ -36,7 +50,10 @@ public class BalanceFragment extends BaseFragment {
     TextView textViewBalances;
     @BindView(R.id.textViewCurrency)
     TextView textViewCurency;
-
+    @BindView(R.id.langSwitcher)
+    RadioGroup langSwitcher;
+    @BindView(R.id.textViewConvertBalance)
+    TextView textViewConvertBalance;
 
     public static BalanceFragment newInstance() {
         return new BalanceFragment();
@@ -64,6 +81,17 @@ public class BalanceFragment extends BaseFragment {
                             break;
                     }
                 });
+        if (LocaleChanger.getLocale().equals(LOCALE_RU))
+            langSwitcher.check(R.id.ruSwitch);
+        else if (LocaleChanger.getLocale().equals(LOCALE_EN))
+            langSwitcher.check(R.id.enSwitch);
+        else if (LocaleChanger.getLocale().equals(LOCALE_ES))
+            langSwitcher.check(R.id.esSwitch);
+        else if (LocaleChanger.getLocale().equals(LOCALE_NL))
+            langSwitcher.check(R.id.nlSwitch);
+        else if (LocaleChanger.getLocale().equals(LOCALE_ZH))
+            langSwitcher.check(R.id.zhSwitch);
+
     }
 
     @Override
@@ -90,17 +118,19 @@ public class BalanceFragment extends BaseFragment {
             totalBTS /= bitsharesBalanceAssetList.get(0).base_precision;
             totalBalance /= bitsharesBalanceAssetList.get(0).currency_precision;
 
-            String strTotalCurrency = String.format(
-                    Locale.ENGLISH,
-                    "= %d %s (%.4f %s/%s)",
-                    totalBalance,
-                    bitsharesBalanceAsset.currency,
-                    exchangeRate,
+
+            String strTotalCurrency = getString(R.string.exchange_rate,  exchangeRate,
                     "EVRAZ",
+                    bitsharesBalanceAsset.currency);
+            String strConvertBalance = String.format(
+                    Locale.ENGLISH,
+                    "%d %s",
+                    totalBalance,
                     bitsharesBalanceAsset.currency
             );
 
             textViewCurency.setText(strTotalCurrency);
+            textViewConvertBalance.setText(strConvertBalance);
         }
 
         String strTotalBalance = String.format(Locale.ENGLISH, "%d %s", totalBTS, "EVRAZ");
@@ -110,12 +140,9 @@ public class BalanceFragment extends BaseFragment {
 
     void processError() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.CustomDialogTheme);
-        builder.setPositiveButton(R.string.connect_fail_dialog_retry, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                WalletViewModel walletViewModel = ViewModelProviders.of(getActivity()).get(WalletViewModel.class);
-                walletViewModel.retry();
-            }
+        builder.setPositiveButton(R.string.connect_fail_dialog_retry, (dialog, which) -> {
+            WalletViewModel walletViewModel = ViewModelProviders.of(getActivity()).get(WalletViewModel.class);
+            walletViewModel.retry();
         });
         builder.setMessage(R.string.connect_fail_message);
         builder.show();
@@ -144,6 +171,30 @@ public class BalanceFragment extends BaseFragment {
         ((NewMainActivity) getActivity()).showTransactionsFragment();
     }
 
+    @OnClick({R.id.ruSwitch, R.id.enSwitch, R.id.esSwitch, R.id.nlSwitch, R.id.zhSwitch})
+    void clickRadioButton(View view) {
+        switch (view.getId()) {
+            case R.id.ruSwitch:
+                LocaleChanger.setLocale(LOCALE_RU);
+                break;
+            case R.id.enSwitch:
+                LocaleChanger.setLocale(LOCALE_EN);
+                break;
+            case R.id.esSwitch:
+                LocaleChanger.setLocale(LOCALE_ES);
+                break;
+            case R.id.nlSwitch:
+                LocaleChanger.setLocale(LOCALE_NL);
+                break;
+            case R.id.zhSwitch:
+                LocaleChanger.setLocale(LOCALE_ZH);
+                break;
+        }
+        Intent intent = new Intent(getContext(), NewMainActivity.class);
+        getActivity().finish();
+        startActivity(intent);
+//        ActivityRecreationHelper.recreate(getActivity(), true);
+    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

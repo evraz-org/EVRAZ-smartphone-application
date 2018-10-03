@@ -1,5 +1,6 @@
 package com.ngse.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -20,6 +21,7 @@ import com.bitshares.bitshareswallet.wallet.common.ErrorCode;
 import com.bitshares.bitshareswallet.wallet.exception.ErrorCodeException;
 import com.bitshares.bitshareswallet.wallet.exception.NetworkStatusException;
 import com.bitshares.bitshareswallet.wallet.faucet.CreateAccountException;
+import com.franmontiel.localechanger.LocaleChanger;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.evrazcoin.evrazwallet.R;
@@ -364,5 +366,11 @@ public class CreateAccountActivity extends AppCompatActivity {
                 }
             }
         }).start();
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        newBase = LocaleChanger.configureBaseContext(newBase);
+        super.attachBaseContext(newBase);
     }
 }

@@ -50,6 +50,7 @@ import com.bitshares.bitshareswallet.wallet.account_object;
 import com.bitshares.bitshareswallet.wallet.fc.crypto.sha256_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.signed_transaction;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
+import com.franmontiel.localechanger.LocaleChanger;
 import com.ngse.ui.main.MainWalletFragment;
 import com.ngse.ui.main.trading.TradingScheduleFragment;
 import com.ngse.ui.main.balanceitems.OpenOrdersFragment;
@@ -98,6 +99,12 @@ public class NewMainActivity extends AppCompatActivity
                 walletViewModel.changeCurrency(strCurrency);
             }
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        newBase = LocaleChanger.configureBaseContext(newBase);
+        super.attachBaseContext(newBase);
     }
 
     private void onCurrencyUpdate() {

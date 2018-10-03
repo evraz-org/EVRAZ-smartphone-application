@@ -117,7 +117,7 @@ public class TradingOrdersFragment extends BaseFragment
         if (stat.orderBook.asks != null && !stat.orderBook.asks.isEmpty()) {
             int maxCount = Math.min(stat.orderBook.asks.size(), maxOrderCount);
             sellRecyclerViewAdapter.setList(stat.orderBook.asks.subList(0, maxCount));
-
+            sellRecyclerViewAdapter.setReversePosition(true);
 //            lowestSellPrice = stat.orderBook.asks.get(0).price;
         } else {
 //            lowestSellPrice = -1;
