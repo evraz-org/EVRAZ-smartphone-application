@@ -7,9 +7,13 @@
   * Configure
         App name: Evraz wallet
         Android package name: com.bitshares.bitshareswallet
-  3.3* Select analytics tab and select default or new project
-  3.4 Download file and put in app/
+  * Select analytics tab and select default or new project
+  * Download file and put in app/
 4. Build and run
 
 
 * For use google signIn in prod, we create another google-services.json file in owner account with actual Android Signing Certificate SHA-1# evraz-wallet
+
+## License
+
+The package is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
