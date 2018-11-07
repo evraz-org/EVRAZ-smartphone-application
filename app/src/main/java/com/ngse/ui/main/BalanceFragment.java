@@ -2,7 +2,6 @@ package com.ngse.ui.main;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,17 +9,16 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bitshares.bitshareswallet.BaseFragment;
-import com.bitshares.bitshareswallet.ImportActivty;
-import com.bitshares.bitshareswallet.ModelSelectActivity;
 import com.bitshares.bitshareswallet.room.BitsharesBalanceAsset;
 import com.bitshares.bitshareswallet.viewmodel.WalletViewModel;
 import com.franmontiel.localechanger.LocaleChanger;
-import com.franmontiel.localechanger.utils.ActivityRecreationHelper;
 import com.ngse.ui.NewMainActivity;
 
 import org.evrazcoin.evrazwallet.R;
@@ -30,7 +28,6 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
 import static com.bitshares.bitshareswallet.BitsharesApplication.LOCALE_EN;
@@ -45,6 +42,7 @@ public class BalanceFragment extends BaseFragment {
 
     private OnFragmentInteractionListener mListener;
 
+    String[] currencyData = {"USD", "CNY", "EUR", "RUBLE"};
 
     @BindView(R.id.textTotalBalance)
     TextView textViewBalances;
@@ -54,6 +52,9 @@ public class BalanceFragment extends BaseFragment {
     RadioGroup langSwitcher;
     @BindView(R.id.textViewConvertBalance)
     TextView textViewConvertBalance;
+    @BindView(R.id.spinnerConvertBalanceSign)
+    Spinner spinnerConvertBalanceSign;
+
 
     public static BalanceFragment newInstance() {
         return new BalanceFragment();
@@ -63,6 +64,26 @@ public class BalanceFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        ArrayAdapter<String> adapterCurrencySign;
+        adapterCurrencySign = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, currencyData);
+        adapterCurrencySign.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinnerConvertBalanceSign.setAdapter(adapterCurrencySign);
+        spinnerConvertBalanceSign.setPrompt("Choose currency");
+        spinnerConvertBalanceSign.setSelection(0);
+        spinnerConvertBalanceSign.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                WalletViewModel walletViewModel = ViewModelProviders.of(getActivity()).get(WalletViewModel.class);
+                walletViewModel.changeCurrency(spinnerConvertBalanceSign.getSelectedItem().toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         WalletViewModel walletViewModel = ViewModelProviders.of(getActivity()).get(WalletViewModel.class);
         walletViewModel.getBalanceData().observe(
@@ -124,10 +145,10 @@ public class BalanceFragment extends BaseFragment {
                     bitsharesBalanceAsset.currency);
             String strConvertBalance = String.format(
                     Locale.ENGLISH,
-                    "%d %s",
-                    totalBalance,
-                    bitsharesBalanceAsset.currency
-            );
+                    "%d", // %s",
+                    totalBalance//,
+                    //bitsharesBalanceAsset.currency
+                    );
 
             textViewCurency.setText(strTotalCurrency);
             textViewConvertBalance.setText(strConvertBalance);
