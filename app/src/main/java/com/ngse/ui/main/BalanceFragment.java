@@ -42,8 +42,6 @@ public class BalanceFragment extends BaseFragment {
 
     private OnFragmentInteractionListener mListener;
 
-    String[] currencyData = {"USD", "CNY", "EUR", "RUBLE"};
-
     @BindView(R.id.textTotalBalance)
     TextView textViewBalances;
     @BindView(R.id.textViewCurrency)
@@ -65,8 +63,10 @@ public class BalanceFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
 
-        ArrayAdapter<String> adapterCurrencySign;
-        adapterCurrencySign = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, currencyData);
+        ArrayAdapter<CharSequence> adapterCurrencySign =
+                ArrayAdapter.createFromResource(getActivity(),
+                        R.array.bts_currency_unit_values,
+                        android.R.layout.simple_spinner_item);
         adapterCurrencySign.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinnerConvertBalanceSign.setAdapter(adapterCurrencySign);
