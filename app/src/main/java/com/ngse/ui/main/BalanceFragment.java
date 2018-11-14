@@ -63,28 +63,6 @@ public class BalanceFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
 
-        ArrayAdapter<CharSequence> adapterCurrencySign =
-                ArrayAdapter.createFromResource(getActivity(),
-                        R.array.bts_currency_unit_values,
-                        android.R.layout.simple_spinner_item);
-        adapterCurrencySign.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        spinnerConvertBalanceSign.setAdapter(adapterCurrencySign);
-        spinnerConvertBalanceSign.setPrompt("Choose currency");
-        spinnerConvertBalanceSign.setSelection(0);
-        spinnerConvertBalanceSign.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                WalletViewModel walletViewModel = ViewModelProviders.of(getActivity()).get(WalletViewModel.class);
-                walletViewModel.changeCurrency(spinnerConvertBalanceSign.getSelectedItem().toString());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
         WalletViewModel walletViewModel = ViewModelProviders.of(getActivity()).get(WalletViewModel.class);
         walletViewModel.getBalanceData().observe(
                 this, resourceBalanceList -> {
@@ -174,6 +152,30 @@ public class BalanceFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.new_fragment_balance, container, false);
         ButterKnife.bind(this, view);
+
+        ArrayAdapter<CharSequence> adapterCurrencySign =
+                ArrayAdapter.createFromResource(view.getContext(),
+                        R.array.bts_currency_unit_values,
+                        android.R.layout.simple_spinner_item);
+        adapterCurrencySign.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinnerConvertBalanceSign.setAdapter(adapterCurrencySign);
+        spinnerConvertBalanceSign.setPrompt("Choose currency");
+        spinnerConvertBalanceSign.setSelection(0);
+        spinnerConvertBalanceSign.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                WalletViewModel walletViewModel = ViewModelProviders.of(getActivity()).get(WalletViewModel.class);
+                walletViewModel.changeCurrency(spinnerConvertBalanceSign.getSelectedItem().toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
         return view;
     }
 
