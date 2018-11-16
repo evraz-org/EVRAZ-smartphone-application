@@ -45,7 +45,7 @@ public class BalanceFragment extends BaseFragment {
     @BindView(R.id.textTotalBalance)
     TextView textViewBalances;
     @BindView(R.id.textViewCurrency)
-    TextView textViewCurency;
+    TextView textViewCurrency;
     @BindView(R.id.langSwitcher)
     RadioGroup langSwitcher;
     @BindView(R.id.textViewConvertBalance)
@@ -123,18 +123,17 @@ public class BalanceFragment extends BaseFragment {
                     bitsharesBalanceAsset.currency);
             String strConvertBalance = String.format(
                     Locale.ENGLISH,
-                    "%d", // %s",
-                    totalBalance//,
-                    //bitsharesBalanceAsset.currency
+                    "%d",
+                    totalBalance
                     );
 
-            textViewCurency.setText(strTotalCurrency);
+            textViewCurrency.setText(strTotalCurrency);
             textViewConvertBalance.setText(strConvertBalance);
         }
 
         String strTotalBalance = String.format(Locale.ENGLISH, "%d %s", totalBTS, "EVRAZ");
         textViewBalances.setText(strTotalBalance);
-        textViewCurency.setVisibility(View.VISIBLE);
+        textViewCurrency.setVisibility(View.VISIBLE);
     }
 
     void processError() {
@@ -160,13 +159,15 @@ public class BalanceFragment extends BaseFragment {
         adapterCurrencySign.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinnerConvertBalanceSign.setAdapter(adapterCurrencySign);
-        spinnerConvertBalanceSign.setPrompt("Choose currency");
-        spinnerConvertBalanceSign.setSelection(0);
         spinnerConvertBalanceSign.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                ((TextView) adapterView.getChildAt(0)).setTextColor(-593972);
+                ((TextView) adapterView.getChildAt(0)).setTextSize(30);
+
                 WalletViewModel walletViewModel = ViewModelProviders.of(getActivity()).get(WalletViewModel.class);
                 walletViewModel.changeCurrency(spinnerConvertBalanceSign.getSelectedItem().toString());
+                onResume();
             }
 
             @Override
