@@ -235,7 +235,7 @@
     <string name="menu_lang_nl">Nld</string>
     <string name="menu_lang_zh">Chi</string>
 
-    <string name="exchange_rate">Rate: %.4f %s/%s</string>
+    <string name="exchange_rate">Rate: %.7f %s/%s</string>
     <string name="no_req_token">You do not have the requested token!</string>
 
     <string name="first_asset">Base asset</string>
@@ -268,5 +268,4 @@
     <string name="Public_key">Public key</string>
     <string name="Private_key">Private key</string>
     <string name="show_keys">Keys</string>
-
 </resources>

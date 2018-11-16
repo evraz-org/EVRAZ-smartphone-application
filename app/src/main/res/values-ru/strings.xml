@@ -227,7 +227,7 @@
     <string name="menu_lang_nl">Nld</string>
     <string name="menu_lang_zh">Chi</string>
 
-    <string name="exchange_rate">Курс: %.4f %s/%s</string>
+    <string name="exchange_rate">Курс: %.7f %s/%s</string>
 
     <string name="first_asset">Base актив</string>
     <string name="second_asset">Quote актив</string>
