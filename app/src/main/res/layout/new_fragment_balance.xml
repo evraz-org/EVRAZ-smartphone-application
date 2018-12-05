@@ -52,6 +52,8 @@
                 <TextView
                     android:id="@+id/textViewConvertBalance"
                     style="@style/EvrazTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     tools:text="123456,000" />
 
                 <Spinner
