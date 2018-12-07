@@ -74,9 +74,10 @@ public class BalanceFragment extends BaseFragment {
                             processShowdata(resourceBalanceList.data);
                             break;
                         case LOADING:
-                            if (resourceBalanceList.data != null && resourceBalanceList.data.size() != 0) {
-                                processShowdata(resourceBalanceList.data);
-                            }
+                            //TODO: maybe useless call
+//                            if (resourceBalanceList.data != null && resourceBalanceList.data.size() != 0) {
+//                                processShowdata(resourceBalanceList.data);
+//                            }
                             break;
                     }
                 });
