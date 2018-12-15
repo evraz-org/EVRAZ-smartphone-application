@@ -3,9 +3,11 @@ package com.ngse.ui.main;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bitshares.bitshareswallet.BaseFragment;
+import com.bitshares.bitshareswallet.BitsharesApplication;
 import com.bitshares.bitshareswallet.room.BitsharesBalanceAsset;
 import com.bitshares.bitshareswallet.viewmodel.WalletViewModel;
 import com.franmontiel.localechanger.LocaleChanger;
@@ -160,6 +163,11 @@ public class BalanceFragment extends BaseFragment {
         adapterCurrencySign.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinnerConvertBalanceSign.setAdapter(adapterCurrencySign);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
+        String strCurrency = prefs.getString("currency_setting", "USD");
+        spinnerConvertBalanceSign.setSelection(adapterCurrencySign.getPosition(strCurrency));
+
         spinnerConvertBalanceSign.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -167,8 +175,10 @@ public class BalanceFragment extends BaseFragment {
                 ((TextView) adapterView.getChildAt(0)).setTextSize(30);
 
                 WalletViewModel walletViewModel = ViewModelProviders.of(getActivity()).get(WalletViewModel.class);
-                walletViewModel.changeCurrency(spinnerConvertBalanceSign.getSelectedItem().toString());
+                String selectedCurrency = spinnerConvertBalanceSign.getSelectedItem().toString();
+                walletViewModel.changeCurrency(selectedCurrency);
                 onResume();
+                prefs.edit().putString("currency_setting", selectedCurrency).apply();
             }
 
             @Override
