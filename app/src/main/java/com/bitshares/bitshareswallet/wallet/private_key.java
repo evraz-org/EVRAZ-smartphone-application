@@ -111,28 +111,15 @@ public class private_key {
     public compact_signature sign_compact(sha256_object digest, boolean require_canonical ) {
         compact_signature signature = null;
 
-        SecureRandom secureRandom = new SecureRandom();
-        RandomSource randomSource = new RandomSource() {
-            @Override
-            public void nextBytes(byte[] bytes) {
-                secureRandom.nextBytes(bytes);
-            }
-        };
+        InMemoryPrivateKey inMemoryPrivateKey = new InMemoryPrivateKey(key_data);
+        SignedMessage signedMessage = inMemoryPrivateKey.signHash(new Sha256Hash(digest.hash));
+        byte[] byteCompact = signedMessage.bitcoinEncodingOfSignature();
+        signature = new compact_signature(byteCompact);
 
-        while (true) {
-            InMemoryPrivateKey inMemoryPrivateKey = new InMemoryPrivateKey(key_data);
-            SignedMessage signedMessage = inMemoryPrivateKey.signHash(new Sha256Hash(digest.hash), randomSource);
-            byte[] byteCompact = signedMessage.bitcoinEncodingOfSignature();
-            signature = new compact_signature(byteCompact);
+        if(!require_canonical || public_key.is_canonical(signature))
+            return signature;
 
-            boolean bResult = public_key.is_canonical(signature);
-            if (bResult == true) {
-                break;
-            }
-        }
-
-
-        return signature;
+        return null;
     }
 
     public static private_key from_seed(String strSeed) {

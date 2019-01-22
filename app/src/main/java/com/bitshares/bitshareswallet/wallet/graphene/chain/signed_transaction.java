@@ -13,6 +13,13 @@ public class signed_transaction extends transaction {
 
     public void sign(types.private_key_type privateKeyType, sha256_object chain_id) {
         sha256_object digest = sig_digest(chain_id);
-        signatures.add(privateKeyType.getPrivateKey().sign_compact(digest, true));
+        while(true) {
+            compact_signature sig = privateKeyType.getPrivateKey().sign_compact(digest, true);
+            if(sig != null) {
+                signatures.add(sig);
+                break;
+            }
+            expiration.setTime(expiration.getTime()+1);
+        }
     }
 }
