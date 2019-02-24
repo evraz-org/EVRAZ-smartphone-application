@@ -5,7 +5,7 @@ import android.support.v7.preference.PreferenceManager;
 import android.util.Pair;
 
 import com.bitshares.bitshareswallet.BitsharesApplication;
-import com.bitshares.bitshareswallet.R;
+import org.evrazcoin.evrazwallet.R;
 import com.bitshares.bitshareswallet.market.MarketTicker;
 import com.bitshares.bitshareswallet.market.MarketTrade;
 import com.bitshares.bitshareswallet.wallet.common.ErrorCode;

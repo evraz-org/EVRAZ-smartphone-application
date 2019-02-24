@@ -21,6 +21,8 @@ import com.bitshares.bitshareswallet.wallet.graphene.chain.config;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.memo_data;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.operations;
 
+import org.evrazcoin.evrazwallet.R;
+
 import java.util.Locale;
 
 /**
@@ -151,7 +153,7 @@ class TranactionsAdapter extends RecyclerView.Adapter<TranactionsAdapter.Transac
         operations.account_create_operation operation = (operations.account_create_operation) operationType.operationContent;
         String strRegistarName = operationHistoryWrapper.mapId2AccountObject.get(operation.registrar).name;
 
-        String strTransferFormat = "<font color=\'#2d95ff\'>%s</font> registered the account <font color=\'#2d95ff\'>%s</font>";
+        String strTransferFormat = "<font color=\'#FFAB40\'>%s</font> registered the account <font color=\'#FFAB40\'>%s</font>";
         String strResult = String.format(
                 Locale.ENGLISH,
                 strTransferFormat,
@@ -173,7 +175,7 @@ class TranactionsAdapter extends RecyclerView.Adapter<TranactionsAdapter.Transac
         String strTo = operationHistoryWrapper.mapId2AccountObject.get(operation.to).name;
         BitsharesAssetObject bitsharesAssetObject = operationHistoryWrapper.mapId2AssetObject.get(operation.amount.asset_id);
 
-        String strTransferFormat = "<font color=\'#2d95ff\'>%s</font> sent <font color=\'#000000\'>%s %s</font> to <font color=\'#2d95ff\'>%s</font>";
+        String strTransferFormat = "<font color=\'#FFAB40\'>%s</font> sent <font color=\'#000000\'>%s %s</font> to <font color=\'#FFAB40\'>%s</font>";
 
         String strResult = String.format(
                 Locale.ENGLISH, strTransferFormat,

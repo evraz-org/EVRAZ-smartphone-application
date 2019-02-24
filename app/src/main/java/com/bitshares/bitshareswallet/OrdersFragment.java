@@ -28,6 +28,8 @@ import com.bitshares.bitshareswallet.wallet.exception.NetworkStatusException;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import org.evrazcoin.evrazwallet.R;
+
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;

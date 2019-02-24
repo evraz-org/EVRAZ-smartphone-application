@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.evrazcoin.evrazwallet.R;
+
 public class TransactionSellBuyPasswordDialog {
     private Activity mActivity;
     private AlertDialog.Builder mDialogBuilder;

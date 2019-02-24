@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import com.bitshares.bitshareswallet.market.Order;
 
+import org.evrazcoin.evrazwallet.R;
+
 import java.text.DecimalFormat;
 import java.util.List;
 

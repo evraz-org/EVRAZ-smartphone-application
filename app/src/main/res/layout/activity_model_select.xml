@@ -43,6 +43,7 @@
 
             <TextView
                 android:id="@+id/textViewWalletModelBin"
+                android:visibility="gone"
                 android:drawableLeft="@mipmap/wallet_model"
                 android:paddingLeft="15dp"
                 android:layout_width="250dp"

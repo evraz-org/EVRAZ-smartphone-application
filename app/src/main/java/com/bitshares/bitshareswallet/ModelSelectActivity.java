@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import org.evrazcoin.evrazwallet.R;
+
 public class ModelSelectActivity extends AppCompatActivity {
     private Toolbar mToolbar;
 

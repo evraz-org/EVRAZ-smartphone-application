@@ -5,6 +5,8 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.TextView;
 
+import org.evrazcoin.evrazwallet.R;
+
 public class ConfirmOrderDialog {
     private Activity mActivity;
     private AlertDialog.Builder mDialogBuilder;

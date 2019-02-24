@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.bitshares.bitshareswallet.wallet.fc.crypto.sha256_object;
 
+import org.evrazcoin.evrazwallet.R;
+
 import java.util.Locale;
 
 
@@ -39,7 +41,7 @@ public class AboutActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         TextView textViewAccountName = (TextView)findViewById(R.id.textViewAccountName);
-        final String strName = "bituniverse2017";
+        final String strName = "evraz";
         textViewAccountName.setText(strName);
 
         sha256_object.encoder encoder = new sha256_object.encoder();

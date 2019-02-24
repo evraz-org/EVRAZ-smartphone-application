@@ -39,6 +39,8 @@ import com.bitshares.bitshareswallet.wallet.graphene.chain.signed_transaction;
 import com.bituniverse.utils.NumericUtil;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import org.evrazcoin.evrazwallet.R;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;

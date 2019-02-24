@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name_full">Bitshares Кошелек</string>
-    <string name="app_name">BTS Кошелек</string>
+    <string name="app_name_full">Evraz Кошелек</string>
+    <string name="app_name">Evraz Кошелек</string>
 
     <!--侧边栏-->
     <string name="navigation_drawer_open">Открыть панель навигации</string>
@@ -11,7 +11,7 @@
 
     <string name="title_activity_sign_up_button">Кнопка регистрации</string>
     <string name="sign_up_button">Зарегистрироваться</string>
-    <string name="dummy_content">BitShares Кошелек</string>
+    <string name="dummy_content">Evraz Кошелек</string>
 
     <string name="splash_page_message">Безопасный способ хранения и торговли</string>
 
@@ -69,7 +69,7 @@
     <string name="import_activity_account_model">Модель Аккаунта</string>
     <string name="title_activity_settings">Настройки</string>
 
-    <string name="about_activity_text">Если вам понравилась наше приложение, мы будем рады получить пожертвование.</string>
+    <string name="about_activity_text">EVRAZ Wallet является мобильным приложением для Android и предназначен для использования на криптовалютной платформе Bitshares.</string>
     <string name="about_activity_version">Версия</string>
     <string name="about_activity_button">ПОЖЕРТВОВАТЬ</string>
 

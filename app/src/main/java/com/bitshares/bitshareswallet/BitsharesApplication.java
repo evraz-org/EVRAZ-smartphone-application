@@ -5,7 +5,9 @@ import android.support.multidex.MultiDexApplication;
 
 import com.bitshares.bitshareswallet.room.BitsharesDatabase;
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 
+import org.evrazcoin.evrazwallet.BuildConfig;
 import org.spongycastle.jce.provider.BouncyCastleProvider;
 
 import java.security.Security;
@@ -34,13 +36,16 @@ public class BitsharesApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        Fabric.with(this, new Crashlytics());
+        Crashlytics crashlyticsKit = new Crashlytics.Builder()
+                .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
+                .build();
+        Fabric.with(this, crashlyticsKit);
         Security.insertProviderAt(new BouncyCastleProvider(), 1);
 
         bitsharesDatabase = Room.databaseBuilder(
                 this,
                 BitsharesDatabase.class,
-                "bitshares.db"
+                "evrazwallet.db"
         ).build();
 
         // 注册回调，保证数据更新

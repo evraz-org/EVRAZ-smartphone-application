@@ -9,6 +9,8 @@ import android.widget.TextView;
 import com.bitshares.bitshareswallet.market.OpenOrder;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
 
+import org.evrazcoin.evrazwallet.R;
+
 import java.text.SimpleDateFormat;
 
 

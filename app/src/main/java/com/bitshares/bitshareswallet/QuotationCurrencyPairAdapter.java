@@ -14,6 +14,8 @@ import com.bitshares.bitshareswallet.market.MarketTicker;
 import com.bitshares.bitshareswallet.room.BitsharesMarketTicker;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
 
+import org.evrazcoin.evrazwallet.R;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,6 +70,7 @@ public class QuotationCurrencyPairAdapter extends RecyclerView.Adapter<Quotation
         marrValues = context.getResources().getStringArray(R.array.quotation_currency_pair_values);
         currecnyPairSet.addAll(Arrays.asList(marrValues));
 
+        mapSymbol2Id.put("EVRAZ", R.mipmap.evraz);
         mapSymbol2Id.put("BTS", R.mipmap.bts);
         mapSymbol2Id.put("BTC", R.mipmap.btc);
         mapSymbol2Id.put("ETH", R.mipmap.eth);

@@ -37,6 +37,8 @@ import com.bituniverse.network.Status;
 import com.bituniverse.utils.NumericUtil;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import org.evrazcoin.evrazwallet.R;
+
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

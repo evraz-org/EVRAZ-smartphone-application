@@ -1,3 +1,9 @@
+// Manifest version information!
+def versionMajor = 0
+def versionMinor = 3
+def versionPatch = 0
+def versionBuild = 1
+
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -9,6 +15,9 @@ buildscript {
 }
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+if (file('signing.gradle').exists()) {
+    apply from: 'signing.gradle'
+}
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -20,15 +29,15 @@ android {
     compileSdkVersion 26
     buildToolsVersion '26.0.2'
     defaultConfig {
-        applicationId "com.bitshares.bitshareswallet"
+        applicationId "org.evrazcoin.evrazwallet"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 10201001
-        versionName "1.2.1.1"
+        versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+        setProperty("archivesBaseName", "evrazwallet-"  + versionName)
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
-
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ["room.schemaLocation":
@@ -36,8 +45,17 @@ android {
             }
         }
     }
+    signingConfigs {
+        release {
+            storeFile file(project.signing.storeFilePath)
+            storePassword project.signing.storePassword
+            keyAlias project.signing.keyAlias
+            keyPassword project.signing.keyPassword
+        }
+    }
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled true
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             proguardFiles 'proguard-rules.pro'
@@ -45,6 +63,7 @@ android {
         debug {
             applicationIdSuffix ".debug"
             versionNameSuffix '-DEBUG'
+            ext.enableCrashlytics = false
         }
     }
 
@@ -84,6 +103,9 @@ android {
         javaMaxHeapSize "6144m"
     }
 
+    productFlavors {
+
+    }
 }
 
 dependencies {

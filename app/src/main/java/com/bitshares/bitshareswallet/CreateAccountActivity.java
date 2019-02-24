@@ -22,6 +22,8 @@ import com.bitshares.bitshareswallet.wallet.exception.NetworkStatusException;
 import com.bitshares.bitshareswallet.wallet.faucet.CreateAccountException;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import org.evrazcoin.evrazwallet.R;
+
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;

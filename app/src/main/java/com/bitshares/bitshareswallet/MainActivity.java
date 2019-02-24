@@ -49,6 +49,9 @@ import com.bitshares.bitshareswallet.wallet.account_object;
 import com.bitshares.bitshareswallet.wallet.fc.crypto.sha256_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.signed_transaction;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
+
+import org.evrazcoin.evrazwallet.R;
+
 import java.util.List;
 
 import io.reactivex.Flowable;

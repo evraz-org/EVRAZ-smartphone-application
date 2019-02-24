@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.bitshares.bitshareswallet">
+    package="org.evrazcoin.evrazwallet">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".BitsharesApplication"
+        android:name="com.bitshares.bitshareswallet.BitsharesApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/logo"
+        android:icon="@mipmap/ic_evraz"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.bitshares.bitshareswallet.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan">
@@ -25,21 +25,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SignUpButtonActivity"
+            android:name="com.bitshares.bitshareswallet.SignUpButtonActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_sign_up_button"
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme" />
         <activity
-            android:name=".SignUpActivity"
+            android:name="com.bitshares.bitshareswallet.SignUpActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme" />
         <activity
-            android:name=".ImportActivty"
+            android:name="com.bitshares.bitshareswallet.ImportActivty"
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme" />
         <activity
-            android:name=".ModelSelectActivity"
+            android:name="com.bitshares.bitshareswallet.ModelSelectActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme" />
 
@@ -48,13 +48,13 @@
             android:value="1516f2abc1f71a4a06a0b84c26caaa01398302fb" />
 
         <activity
-            android:name=".SettingsActivity"
+            android:name="com.bitshares.bitshareswallet.SettingsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".AboutActivity"
+            android:name="com.bitshares.bitshareswallet.AboutActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme" />
-        <activity android:name=".CreateAccountActivity"
+        <activity android:name="com.bitshares.bitshareswallet.CreateAccountActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme" />
     </application>

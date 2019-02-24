@@ -25,7 +25,7 @@
                 android:layout_gravity="bottom|center_horizontal"
                 android:gravity="center"
                 android:text="@string/main_activity_loading"
-                android:textColor="#FFCC00"
+                android:textColor="@color/colorAccentLight"
                 android:textSize="40sp" />
 
             <TextView

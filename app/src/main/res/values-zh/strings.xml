@@ -69,7 +69,7 @@
     <string name="import_activity_account_model">账号模式</string>
     <string name="title_activity_settings">设置</string>
 
-    <string name="about_activity_text">如果你喜欢我们的App，可以给我们打赏一点哦</string>
+    <string name="about_activity_text"></string>
     <string name="about_activity_version">版本</string>
     <string name="about_activity_button">打赏</string>
 

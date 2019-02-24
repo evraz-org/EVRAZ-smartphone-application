@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.bitshares.bitshareswallet.viewmodel.TransactionViewModel;
 
+import org.evrazcoin.evrazwallet.R;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

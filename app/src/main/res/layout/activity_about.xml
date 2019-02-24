@@ -32,7 +32,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/about_logo"
+                android:src="@drawable/about_logo"
                 android:layout_gravity="center_horizontal"/>
             <TextView
                 android:layout_width="match_parent"
@@ -65,6 +65,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <TextView
+            tools:text="EVRAZ Wallet является мобильным приложением для Android и предназначен для использования на криптовалютной платформе Bitshares"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_width="match_parent"
@@ -95,7 +96,7 @@
                 android:layout_marginStart="19dp"
                 android:layout_toEndOf="@+id/webViewAvatar"
                 android:layout_toRightOf="@+id/webViewAvatar"
-                android:text="bituniverse2017" />
+                android:text="evraz" />
 
             <TextView
                 android:id="@+id/textViewAccountId"
@@ -106,7 +107,7 @@
                 android:layout_alignStart="@+id/textViewAccountName"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="4dp"
-                android:text="#399288"
+                android:text="#479866"
                 android:layout_below="@+id/textViewAccountName" />
 
             <TextView

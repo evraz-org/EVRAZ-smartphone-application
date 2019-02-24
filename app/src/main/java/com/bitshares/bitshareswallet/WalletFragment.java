@@ -21,6 +21,8 @@ import android.widget.TextView;
 import com.bitshares.bitshareswallet.room.BitsharesBalanceAsset;
 import com.bitshares.bitshareswallet.viewmodel.WalletViewModel;
 
+import org.evrazcoin.evrazwallet.R;
+
 import java.util.List;
 import java.util.Locale;
 

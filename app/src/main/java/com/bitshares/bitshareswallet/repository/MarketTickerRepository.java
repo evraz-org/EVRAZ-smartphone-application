@@ -5,7 +5,7 @@ import android.arch.lifecycle.MediatorLiveData;
 import android.util.Pair;
 
 import com.bitshares.bitshareswallet.BitsharesApplication;
-import com.bitshares.bitshareswallet.R;
+import org.evrazcoin.evrazwallet.R;
 import com.bitshares.bitshareswallet.market.MarketTicker;
 import com.bitshares.bitshareswallet.room.BitsharesAssetObject;
 import com.bitshares.bitshareswallet.room.BitsharesBalanceAsset;
