@@ -1056,7 +1056,7 @@ public class wallet_api {
                 "https://openledger.io/api/v1/accounts",
                 "https://openledger.hk/api/v1/accounts"
         };*/
-        String[] strAddress = {"https://openledger.io/api/v1/accounts"};
+        String[] strAddress = {"https://faucet.evrazcoin.org/api/v1/accounts"};
 
         int nRet = -1;
         for (int i = 0; i < strAddress.length; ++i) {
