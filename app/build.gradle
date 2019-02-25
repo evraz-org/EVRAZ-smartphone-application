@@ -15,9 +15,6 @@ buildscript {
 }
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
-if (file('signing.gradle').exists()) {
-    apply from: 'signing.gradle'
-}
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -47,10 +44,7 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file(project.signing.storeFilePath)
-            storePassword project.signing.storePassword
-            keyAlias project.signing.keyAlias
-            keyPassword project.signing.keyPassword
+
         }
     }
     buildTypes {
@@ -64,6 +58,22 @@ android {
             applicationIdSuffix ".debug"
             versionNameSuffix '-DEBUG'
             ext.enableCrashlytics = false
+        }
+    }
+
+    if ( project.hasProperty("RELEASE_KEY_ALIAS") ) {
+        signingConfigs {
+            release {
+                storeFile file(RELEASE_STORE_FILE)
+                storePassword RELEASE_STORE_PASSWORD
+                keyAlias RELEASE_KEY_ALIAS
+                keyPassword RELEASE_KEY_PASSWORD
+            }
+        }
+        buildTypes {
+            release {
+                signingConfig signingConfigs.release
+            }
         }
     }
 
