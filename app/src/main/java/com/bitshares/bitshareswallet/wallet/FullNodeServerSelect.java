@@ -53,7 +53,7 @@ public class FullNodeServerSelect {
         final List<String> listSelectedServer = new ArrayList<>();
         for (final String strServer : mListNode) {
             Request request = new Request.Builder().url(strServer).build();
-            OkHttpClient okHttpClient =  websocket_api.provideOkHttpBuilder().build();//new OkHttpClient();
+            OkHttpClient okHttpClient =  new OkHttpClient();
             WebSocket webSocket = okHttpClient.newWebSocket(request, new WebSocketListener() {
                 @Override
                 public void onFailure(WebSocket webSocket, Throwable t, Response response) {
