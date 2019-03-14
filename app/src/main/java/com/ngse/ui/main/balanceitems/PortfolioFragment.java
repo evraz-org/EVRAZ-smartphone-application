@@ -23,7 +23,6 @@ import org.evrazcoin.evrazwallet.R;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
@@ -34,14 +33,6 @@ public class PortfolioFragment extends BaseFragment {
 
     private OnFragmentInteractionListener mListener;
     private MenuItem backMenuItem;
-
-    @BindView(R.id.textUSDBalance)
-    TextView textUSDBalance;
-    @BindView(R.id.usdRateTitle)
-    TextView usdRateTitle;
-    @BindView(R.id.usdCostTitle)
-    TextView usdCostTitle;
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -110,22 +101,6 @@ public class PortfolioFragment extends BaseFragment {
 //            totalBTS += bitsharesBalanceAsset.total;
             totalBalance += bitsharesBalanceAsset.balance;
         }
-
-        if (!bitsharesBalanceAssetList.isEmpty()) {
-            BitsharesBalanceAsset bitsharesBalanceAsset = bitsharesBalanceAssetList.get(0);
-           /* double exchangeRate = (double) totalBalance / bitsharesBalanceAsset.currency_precision / totalBTS * bitsharesBalanceAsset.base_precision;
-            totalBTS /= bitsharesBalanceAssetList.get(0).base_precision;*/
-            totalBalance /= bitsharesBalanceAssetList.get(0).currency_precision;
-
-            String strTotalCurrency = getString(R.string.total_usd, totalBalance,
-                    bitsharesBalanceAsset.currency);
-
-
-            textUSDBalance.setText(strTotalCurrency);
-            usdRateTitle.setText(getString(R.string.usd_rate, bitsharesBalanceAsset.currency));
-            usdCostTitle.setText(getString(R.string.usd_cost, bitsharesBalanceAsset.currency));
-        }
-
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -174,20 +149,19 @@ public class PortfolioFragment extends BaseFragment {
 
     class BalanceItemViewHolder extends RecyclerView.ViewHolder {
         public View view;
-        public TextView viewNumber;
         public TextView viewUnit;
-        //        public TextView viewEqual;
-        public TextView viewUSBBalance;
-        public TextView viewExchangeRate;
+        public TextView viewAmount;
+        public TextView viewOrders;
+        public TextView viewAvailable;
 
         public BalanceItemViewHolder(View itemView) {
             super(itemView);
             view = itemView;
-            viewNumber = (TextView) itemView.findViewById(R.id.textViewNumber);
+            viewAmount = (TextView) itemView.findViewById(R.id.textViewNumber);
             viewUnit = (TextView) itemView.findViewById(R.id.textViewUnit);
 //            viewEqual = (TextView) itemView.findViewById(R.id.textViewEqual);
-            viewUSBBalance = (TextView) itemView.findViewById(R.id.textUSDBalance);
-            viewExchangeRate = (TextView) itemView.findViewById(R.id.textExchangeRate);
+            viewOrders = (TextView) itemView.findViewById(R.id.textExchangeRate);
+            viewAvailable = (TextView) itemView.findViewById(R.id.textUSDBalance);
         }
     }
 
@@ -204,18 +178,17 @@ public class PortfolioFragment extends BaseFragment {
         public void onBindViewHolder(BalanceItemViewHolder holder, int position) {
             BitsharesBalanceAsset bitsharesBalanceAsset = bitsharesBalanceAssetList.get(position);
             float balance = (float) bitsharesBalanceAsset.amount / bitsharesBalanceAsset.quote_precision;
-            float usdBalance = (float) bitsharesBalanceAsset.balance / bitsharesBalanceAsset.currency_precision;
-            float usdExchangeRate = usdBalance / balance;
+            float orders = (float) bitsharesBalanceAsset.orders / bitsharesBalanceAsset.quote_precision;
+            float available = balance  -  orders;
+
             String strBalances = String.format(Locale.ENGLISH, "%.2f", balance);
-            String strUsdBalance = String.format(Locale.ENGLISH, "%.4f", usdBalance);
-            String strUsdExchangeRate = String.format(Locale.ENGLISH, "%.4f", usdExchangeRate);
-            holder.viewNumber.setText(strBalances);
+            String strOrders = String.format(Locale.ENGLISH, "%.2f", orders);
+            String strAvailable = String.format(Locale.ENGLISH, "%.2f", available);
 
             holder.viewUnit.setText(bitsharesBalanceAsset.quote);
-
-            holder.viewExchangeRate.setText(strUsdExchangeRate);
-            holder.viewUSBBalance.setText(strUsdBalance);
-
+            holder.viewAmount.setText(strBalances);
+            holder.viewOrders.setText(strOrders);
+            holder.viewAvailable.setText(strAvailable);
         }
 
         @Override

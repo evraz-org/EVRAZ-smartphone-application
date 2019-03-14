@@ -13,7 +13,7 @@ import com.bitshares.bitshareswallet.wallet.graphene.chain.object_id;
  * Created by lorne on 31/10/2017.
  */
 
-@Entity(tableName = "balance", indices = {@Index(value = {"asset_id", "type"}, unique = true)})
+@Entity(tableName = "balance")
 public class BitsharesAsset {
     public static final int TYPE_AVALIABLE = 0;
     public static final int TYPE_SELL_ORDER = 1;

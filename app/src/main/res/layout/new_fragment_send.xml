@@ -155,7 +155,7 @@
                         android:textAlignment="textEnd"
                         android:layout_marginBottom="8dp"
                         android:layout_marginTop="8dp"
-                        android:text="1231" />
+                        android:text="0" />
 
                 </LinearLayout>
                 <LinearLayout
@@ -174,10 +174,10 @@
                         android:layout_weight="1"
                         android:background="@null"
                         android:inputType="numberDecimal"
-                        android:paddingBottom="10dp"
                         android:paddingLeft="10dp"
                         android:paddingTop="10dp"
-                        android:text="1"
+                        android:paddingBottom="10dp"
+                        android:text="0"
                         android:textColor="@color/beige_color"
                         android:textSize="@dimen/send_fragment_text_size" />
 

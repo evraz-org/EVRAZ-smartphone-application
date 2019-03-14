@@ -148,6 +148,7 @@
     <string name="label_balance">Available:</string>
     <string name="label_lowest_ask">Lowest ask:</string>
     <string name="label_highest_bid">Highest bid:</string>
+    <string name="label_available">Available</string>
 
     <string name="label_reset">RESET</string>
     <string name="label_buy">BUY</string>

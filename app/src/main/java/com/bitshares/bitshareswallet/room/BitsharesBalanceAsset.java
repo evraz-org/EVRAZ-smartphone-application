@@ -14,6 +14,7 @@ public class BitsharesBalanceAsset {
     public long quote_precision;
     public String currency;
     public long balance;
+    public long orders;
     public long currency_precision;
 
     @Override
@@ -27,6 +28,7 @@ public class BitsharesBalanceAsset {
                 "quote_precision =" + quote_precision + "\n" +
                 "currency =" + currency + "\n" +
                 "balance =" + balance + "\n" +
+                "orders =" + orders + "\n" +
                 "currency_precision =" + currency_precision + "\n";
     }
 }

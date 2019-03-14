@@ -15,6 +15,8 @@ import java.util.List;
 
 @Dao
 public interface BitsharesDao {
+    String ASSET = "'EVRAZ'";
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertBlance(List<BitsharesAsset> bitsharesAssetList);
 
@@ -43,23 +45,23 @@ public interface BitsharesDao {
     void deleteOperationHistory(List<BitsharesOperationHistory> bitsharesOperationHistoryList);
 
     @Query("select balance.id as id, balance.currency as quote, ticker.base as base, " +
-            "sum(balance.amount) as amount, sum(balance.amount * ticker.latest * BTS.precision / balance.precision) as total, balance.precision as quote_precision, " +
+            "sum(CASE WHEN type = 1 THEN balance.amount ELSE 0 END) as orders, sum(balance.amount) as amount, sum(balance.amount * ticker.latest * BTS.precision / balance.precision) as total, balance.precision as quote_precision, " +
             "BTS.precision as base_precision, sum(balance.amount * ticker.latest / balance.precision * CURRENCY.precision * currency_ticker.latest) as balance, " +
             "CURRENCY.precision as currency_precision, currency_ticker.base as currency from balance " +
-            "inner join (select * from market_ticker) as ticker on balance.currency = ticker.quote and ticker.base = 'EVRAZ'" +
-            "inner join (select * from asset_object where symbol = 'EVRAZ') as BTS " +
-            "inner join (select * from market_ticker) as currency_ticker on currency_ticker.quote = 'EVRAZ' and currency_ticker.base = :currency " +
+            "inner join (select * from market_ticker) as ticker on balance.currency = ticker.quote and ticker.base = " + ASSET +
+            "inner join (select * from asset_object where symbol = " + ASSET + ") as BTS " +
+            "inner join (select * from market_ticker) as currency_ticker on currency_ticker.quote = " + ASSET + " and currency_ticker.base = :currency " +
             "inner join (select * from asset_object where symbol = :currency) as CURRENCY on currency_ticker.base = CURRENCY.symbol group by balance.currency ")
     LiveData<List<BitsharesBalanceAsset>> queryBalance(String currency);
 
     @Query("select balance.id as id, balance.currency as quote, ticker.base as base, " +
-            "sum(balance.amount) as amount, sum(balance.amount * ticker.latest * BTS.precision / balance.precision) as total, balance.precision as quote_precision, " +
+            "sum(CASE WHEN type = 1 THEN balance.amount ELSE 0 END) as orders, sum(CASE WHEN type = 0 THEN balance.amount ELSE 0 END) as amount, sum(balance.amount * ticker.latest * BTS.precision / balance.precision) as total, balance.precision as quote_precision, " +
             "BTS.precision as base_precision, sum(balance.amount * ticker.latest / balance.precision * CURRENCY.precision * currency_ticker.latest) as balance, " +
             "CURRENCY.precision as currency_precision, currency_ticker.base as currency from balance " +
-            "inner join (select * from market_ticker) as ticker on balance.currency = ticker.quote and ticker.base = 'EVRAZ'" +
-            "inner join (select * from asset_object where symbol = 'EVRAZ') as BTS " +
-            "inner join (select * from market_ticker) as currency_ticker on currency_ticker.quote = 'EVRAZ' and currency_ticker.base = :currency " +
-            "inner join (select * from asset_object where symbol = :currency) as CURRENCY on currency_ticker.base = CURRENCY.symbol and type = 0 group by balance.currency ")
+            "inner join (select * from market_ticker) as ticker on balance.currency = ticker.quote and ticker.base = " + ASSET +
+            "inner join (select * from asset_object where symbol = " + ASSET + ") as BTS " +
+            "inner join (select * from market_ticker) as currency_ticker on currency_ticker.quote = " + ASSET + " and currency_ticker.base = :currency " +
+            "inner join (select * from asset_object where symbol = :currency) as CURRENCY on currency_ticker.base = CURRENCY.symbol group by balance.currency ")
     LiveData<List<BitsharesBalanceAsset>> queryAvaliableBalances(String currency);
 
     @Query("select * from operation_history order by timestamp desc")

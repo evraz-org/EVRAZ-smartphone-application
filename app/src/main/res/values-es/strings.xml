@@ -97,6 +97,7 @@
     <string name="label_balance">Balance:</string>
     <string name="label_lowest_ask">Compra mas baja:</string>
     <string name="label_highest_bid">Venta mas alta:</string>
+    <string name="label_available">Balance</string>
 
     <string name="label_reset">RESETEAR</string>
     <string name="label_buy">COMPRAR</string>
