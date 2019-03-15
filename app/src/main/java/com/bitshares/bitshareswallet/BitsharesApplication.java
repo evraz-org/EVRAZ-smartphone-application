@@ -59,7 +59,9 @@ public class BitsharesApplication extends MultiDexApplication {
                 this,
                 BitsharesDatabase.class,
                 "evrazwallet.db"
-        ).build();
+        )
+                .fallbackToDestructiveMigration()
+                .build();
 
         LocaleChanger.initialize(this, SUPPORTED_LOCALES);
         // 注册回调，保证数据更新

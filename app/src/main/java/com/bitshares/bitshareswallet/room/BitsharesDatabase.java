@@ -14,7 +14,7 @@ import android.arch.persistence.room.TypeConverters;
         BitsharesAssetObject.class,
         BitsharesOperationHistory.class,
         BitsharesAccountObject.class
-        }, version = 1)
+        }, version = 2)
 @TypeConverters({RoomConverters.class})
 public abstract class BitsharesDatabase extends RoomDatabase {
     public abstract BitsharesDao getBitsharesDao();
