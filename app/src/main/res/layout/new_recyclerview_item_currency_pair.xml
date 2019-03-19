@@ -31,7 +31,6 @@
         android:text="BTC : USD"
         android:textAllCaps="true"
         android:textColor="@color/beige_color"
-        android:textSize="21sp"
         android:textStyle="bold" />
 
     <TextView
@@ -44,8 +43,7 @@
 
         android:gravity="center_vertical|right"
         android:text="N/A"
-        android:textColor="@color/beige_color"
-        android:textSize="21sp" />
+        android:textColor="@color/beige_color" />
 
     <TextView
         android:id="@+id/textView24h"

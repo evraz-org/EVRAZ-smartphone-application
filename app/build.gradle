@@ -2,7 +2,7 @@
 def versionMajor = 0
 def versionMinor = 3
 def versionPatch = 7
-def versionBuild = 1
+def versionBuild = 5
 
 buildscript {
     repositories {

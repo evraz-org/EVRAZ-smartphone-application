@@ -17,11 +17,11 @@ import android.widget.TextView;
 import com.bitshares.bitshareswallet.BaseFragment;
 import com.bitshares.bitshareswallet.room.BitsharesBalanceAsset;
 import com.bitshares.bitshareswallet.viewmodel.WalletViewModel;
+import com.ngse.utility.Utils;
 
 import org.evrazcoin.evrazwallet.R;
 
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.ButterKnife;
 
@@ -181,14 +181,10 @@ public class PortfolioFragment extends BaseFragment {
             float orders = (float) bitsharesBalanceAsset.orders / bitsharesBalanceAsset.quote_precision;
             float available = balance  -  orders;
 
-            String strBalances = String.format(Locale.ENGLISH, "%.2f", balance);
-            String strOrders = String.format(Locale.ENGLISH, "%.2f", orders);
-            String strAvailable = String.format(Locale.ENGLISH, "%.2f", available);
-
             holder.viewUnit.setText(bitsharesBalanceAsset.quote);
-            holder.viewAmount.setText(strBalances);
-            holder.viewOrders.setText(strOrders);
-            holder.viewAvailable.setText(strAvailable);
+            holder.viewAmount.setText(Utils.formatDecimal(balance));
+            holder.viewOrders.setText(Utils.formatDecimal(orders));
+            holder.viewAvailable.setText(Utils.formatDecimal(available));
         }
 
         @Override

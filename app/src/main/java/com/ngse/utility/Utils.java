@@ -1,11 +1,18 @@
 package com.ngse.utility;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.Locale;
 
 public class Utils {
+    static DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
+    static DecimalFormat decimalFormat3 = new DecimalFormat("#.###", symbols);
+    static DecimalFormat decimalFormat5 = new DecimalFormat("#.#####", symbols);
+    static DecimalFormat decimalFormat8 = new DecimalFormat("#.########", symbols);
+
     public static double sumDouble(double value1, double value2) {
         double sum = 0.0;
         String value1Str = Double.toString(value1);
@@ -49,5 +56,15 @@ public class Utils {
         }
 
         return number.doubleValue();
+    }
+
+    public static String formatDecimal(double num) {
+        if (Double.compare(.00001, num) >   0) {
+            return decimalFormat8.format(num);
+        } else if (Double.compare(.001, num) > 0) {
+            return decimalFormat5.format(num);
+        } else {
+            return decimalFormat3.format(num);
+        }
     }
 }

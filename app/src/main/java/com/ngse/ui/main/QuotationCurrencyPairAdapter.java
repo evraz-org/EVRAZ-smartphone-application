@@ -15,10 +15,10 @@ import com.bitshares.bitshareswallet.market.MarketTicker;
 import com.bitshares.bitshareswallet.room.BitsharesMarketTicker;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
 import com.ngse.ui.NewMainActivity;
+import com.ngse.utility.Utils;
 
 import org.evrazcoin.evrazwallet.R;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -112,8 +112,7 @@ public class QuotationCurrencyPairAdapter extends RecyclerView.Adapter<Quotation
         holder.mCurrencyIconView.setImageResource(nId);
 
 
-        DecimalFormat decimalFormat = new DecimalFormat("#.#####");
-        holder.mViewPrice.setText(decimalFormat.format(marketTicker.latest));
+        holder.mViewPrice.setText(Utils.formatDecimal(marketTicker.latest));
 
         double percent_change = 0.f;
         try {
