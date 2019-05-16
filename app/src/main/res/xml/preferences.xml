@@ -14,7 +14,7 @@
         android:key="full_node_api_server"
         android:title="@string/title_full_node_api_server_select"
         android:dialogTitle="@string/title_select_api_server"
-        android:entries="@array/full_node_api_server_options"
+        android:entries="@array/full_node_api_server_values"
         android:entryValues="@array/full_node_api_server_values"
         android:defaultValue="autoselect"/>
 

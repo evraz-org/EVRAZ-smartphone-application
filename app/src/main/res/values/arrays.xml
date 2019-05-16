@@ -56,34 +56,17 @@
         <item>OPEN.DASH:BTS</item>
     </string-array>
 
-    <string-array name="full_node_api_server_options">
-        <item>Autoselect</item>
-        <item>Openledger (Nuremberg, Germany)</item>
-        <item>Openledger (Berlin, Germany)</item>
-        <item>Btsabc (Hong Kong)</item>
-        <item>Transwiser (Hangzhou, China)</item>
-        <item>Dacplay (Hangzhou, China)</item>
-        <item>Wancloud (China)</item>
-        <item>Openledger (Hong Kong)</item>
-        <item>Freedomledger (Toronto, Canada)</item>
-        <item>Dexnode (Dallas, USA)</item>
-        <item>Altcap (Paris, France)</item>
-        <item>Crypto.Fans (Munich, Germany)</item>
-    </string-array>
-
     <string-array name="full_node_api_server_values">
         <item>autoselect</item>
+        <item>ws://116.203.115.183:8090</item>
+        <item>wss://eu.nodes.bitshares.ws</item>
         <item>wss://bitshares.openledger.info/ws</item>
-        <item>wss://eu.openledger.info/ws</item>
-        <item>wss://bit.btsabc.org/ws</item>
-        <item>wss://bts.transwiser.com/ws</item>
-        <item>wss://bitshares.dacplay.org/ws</item>
-        <item>wss://bitshares-api.wancloud.io/ws</item>
-        <item>wss://openledger.hk/ws</item>
-        <item>wss://secure.freedomledger.com/ws</item>
-        <item>wss://dexnode.net/ws</item>
-        <item>wss://altcap.io/ws</item>
-        <item>wss://bitshares.crypto.fans/ws</item>
+        <item>wss://bitshares.nu/ws</item>
+        <item>wss://dallas.bitshares.apasia.tech/ws</item>
+        <item>wss://atlanta.bitshares.apasia.tech/ws</item>
+        <item>wss://dex.rnglab.org</item>
+        <item>wss://citadel.li/node</item>
+
     </string-array>
 
 </resources>
