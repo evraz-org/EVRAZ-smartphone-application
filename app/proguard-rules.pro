@@ -148,12 +148,12 @@
     void set*(%, %, %, %);
     void set*(%[]);
     void set*(**[]);
-    void set*(!**Listener);
+#    void set*(!**Listener);
 
     % get*();
     %[] get*();
     **[] get*();
-    !**Listener get*();
+#    !**Listener get*();
 }
 
 # We want to keep methods in Activity that could be used in the XML attribute onClick.
