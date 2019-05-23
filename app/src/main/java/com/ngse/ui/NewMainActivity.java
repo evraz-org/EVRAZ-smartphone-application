@@ -59,7 +59,11 @@ import com.ngse.ui.main.balanceitems.TransactionsFragment;
 
 import org.evrazcoin.evrazwallet.R;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
@@ -149,6 +153,16 @@ public class NewMainActivity extends AppCompatActivity
         updateTitle();
         setTitleVisible(false);
 
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
+        List<String> arrValues = new ArrayList<>(prefs.getStringSet("pairs", new HashSet<>()));
+        if(arrValues.size() == 0) {
+            String[] fromRes = getResources().getStringArray(R.array.quotation_currency_pair_values);
+            Set<String> pairsSet = new HashSet<>();
+            Collections.addAll(pairsSet, fromRes);
+            Collections.addAll(arrValues, fromRes);
+            prefs.edit().putStringSet("pairs", pairsSet).apply();
+        }
+
         mLayoutTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -193,7 +207,6 @@ public class NewMainActivity extends AppCompatActivity
         });
 
         WalletViewModel walletViewModel = ViewModelProviders.of(this).get(WalletViewModel.class);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
         String strCurrency = prefs.getString("currency_setting", "USD");
         walletViewModel.changeCurrency(strCurrency);
 
@@ -326,24 +339,34 @@ public class NewMainActivity extends AppCompatActivity
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(NewMainActivity.this, R.style.CustomDialogTheme);
         dialogBuilder.setTitle(R.string.title_select_currency);
         Resources res = getResources();
-        final String[] arrValues = res.getStringArray(R.array.quotation_currency_pair_values);
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
-        String strCurrencySetting = prefs.getString("quotation_currency_pair", "BTS:USD");
-        int currSelectIndex = 0;
-        for (int i = 0; i < arrValues.length; i++) {
-            if (arrValues[i].equals(strCurrencySetting)) {
-                currSelectIndex = i;
-                break;
-            }
+
+        List<String> arrValues = new ArrayList<>(prefs.getStringSet("pairs", new HashSet<>()));
+        if(arrValues.size() == 0) {
+            String[] fromRes = getResources().getStringArray(R.array.quotation_currency_pair_values);
+            Set<String> pairsSet = new HashSet<>();
+            Collections.addAll(pairsSet, fromRes);
+            Collections.addAll(arrValues, fromRes);
+            prefs.edit().putStringSet("pairs", pairsSet).apply();
         }
-        dialogBuilder.setSingleChoiceItems(R.array.quotation_currency_pair_options, currSelectIndex, new DialogInterface.OnClickListener() {
+
+        String strCurrencySetting = prefs.getString("quotation_currency_pair", "BTS:USD");
+        int currSelectIndex = arrValues.indexOf(strCurrencySetting);
+
+
+        CharSequence[] dataForDialog = new CharSequence[arrValues.size()];
+        for(int i = 0; i < dataForDialog.length; i++) {
+            dataForDialog[i] = arrValues.get(i);
+        }
+
+        dialogBuilder.setSingleChoiceItems(dataForDialog, currSelectIndex, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 prefs.edit().
-                        putString("quotation_currency_pair", arrValues[which])
+                        putString("quotation_currency_pair", arrValues.get(which))
                         .apply();
-                String strAsset[] = arrValues[which].split(":");
+                String strAsset[] = arrValues.get(which).split(":");
                 QuotationViewModel viewModel = ViewModelProviders.of(NewMainActivity.this).get(QuotationViewModel.class);
                 viewModel.selectedMarketTicker(new Pair(strAsset[1], strAsset[0]));
 

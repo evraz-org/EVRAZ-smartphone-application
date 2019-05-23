@@ -2,6 +2,8 @@ package com.bitshares.bitshareswallet.repository;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Pair;
 
 import com.bitshares.bitshareswallet.BitsharesApplication;
@@ -20,6 +22,7 @@ import com.bituniverse.network.Resource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -90,8 +93,10 @@ public class MarketTickerRepository {
 
         bitsharesAssetObjectList.clear();
         List<BitsharesMarketTicker> bitsharesMarketTickerList = new ArrayList<>();
-        String[] strArrayValue = BitsharesApplication.getInstance().getResources().getStringArray(R.array.quotation_currency_pair_values);
-        for (String strValue : strArrayValue) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
+        ArrayList<String> pairs = new ArrayList<>(preferences.getStringSet("pairs", new HashSet<>()));
+
+        for (String strValue : pairs) {
             String[] strAssetArray = strValue.split(":");
             BitsharesAssetObject assetObjectBase;
             if (mapSymbol2Object.containsKey(strAssetArray[0])) {

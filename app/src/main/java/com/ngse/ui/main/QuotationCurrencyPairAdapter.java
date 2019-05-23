@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.bitshares.bitshareswallet.BitsharesApplication;
 import com.bitshares.bitshareswallet.market.MarketTicker;
 import com.bitshares.bitshareswallet.room.BitsharesMarketTicker;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
@@ -60,14 +61,13 @@ public class QuotationCurrencyPairAdapter extends RecyclerView.Adapter<Quotation
     private OnItemClickListner monItemClickListner;
     private Map<String, Integer> mapSymbol2Id = new HashMap<>();
     private List<BitsharesMarketTicker> bitsharesMarketTickerList;
-    private Set<String> currecnyPairSet = new HashSet<>();
+//    private Set<String> currecnyPairSet = new HashSet<>();
     private int selected = 0;
 
     public QuotationCurrencyPairAdapter(Context context) {
         mContext = context;
         marrOptions = context.getResources().getStringArray(R.array.quotation_currency_pair_options);
         marrValues = context.getResources().getStringArray(R.array.quotation_currency_pair_values);
-        currecnyPairSet.addAll(Arrays.asList(marrValues));
 
         mapSymbol2Id.put("EVRAZ", R.mipmap.evraz);
         mapSymbol2Id.put("BTS", R.mipmap.bts);
@@ -174,6 +174,9 @@ public class QuotationCurrencyPairAdapter extends RecyclerView.Adapter<Quotation
     }
 
     public void notifyDataUpdated(List<BitsharesMarketTicker> marketTickerList) {
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
+        List<String> currecnyPairSet = new ArrayList<>(prefs.getStringSet("pairs", new HashSet<>()));
+//        currecnyPairSet.addAll(arrValues);
         bitsharesMarketTickerList = new ArrayList<>();
         for (BitsharesMarketTicker bitsharesMarketTicker : marketTickerList) {
             if (currecnyPairSet.contains(bitsharesMarketTicker.marketTicker.quote + ":" + bitsharesMarketTicker.marketTicker.base)) {
@@ -186,7 +189,6 @@ public class QuotationCurrencyPairAdapter extends RecyclerView.Adapter<Quotation
                 (o1, o2) -> o1.marketTicker.quote.compareTo(o2.marketTicker.quote)
         );
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         String strAssetPairConfig = prefs.getString("quotation_currency_pair", "BTS:USD");
         for (int i = 0; i < bitsharesMarketTickerList.size(); ++i) {
             MarketTicker marketTicker = bitsharesMarketTickerList.get(i).marketTicker;
