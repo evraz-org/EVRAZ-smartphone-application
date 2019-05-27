@@ -257,4 +257,5 @@
     <string name="Active_permission">Действующие права доступа</string>
     <string name="Public_key">Публичный ключ</string>
     <string name="Private_key">Приватный ключ</string>
+    <string name="show_keys">Ключи</string>
 </resources>

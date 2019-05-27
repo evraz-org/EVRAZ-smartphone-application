@@ -13,7 +13,7 @@
         <item
             android:id="@+id/keys"
             android:icon="@drawable/ic_key_change"
-            android:title="Show keys" />
+            android:title="@string/show_keys" />
         <item
             android:id="@+id/about"
             android:icon="@mipmap/about"

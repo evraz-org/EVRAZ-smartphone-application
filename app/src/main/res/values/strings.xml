@@ -267,5 +267,6 @@
     <string name="Active_permission">Active permission</string>
     <string name="Public_key">Public key</string>
     <string name="Private_key">Private key</string>
+    <string name="show_keys">Keys</string>
 
 </resources>
