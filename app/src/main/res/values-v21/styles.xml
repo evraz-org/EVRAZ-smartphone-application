@@ -12,6 +12,10 @@
         <item name="preferenceTheme">@style/myPreferenceTheme</item>
         <item name="android:statusBarColor">@color/background_color</item>
 
+        <item name="android:dialogTheme">@style/CustomDialogTheme</item>
+        <item name="android:alertDialogTheme">@style/CustomDialogTheme</item>
+        <item name="dialogTheme">@style/CustomDialogTheme</item>
+        <item name="alertDialogTheme">@style/CustomDialogTheme</item>
         <!--<item name="android:alertDialogStyle">@style/MyOpaqueAlertDialog</item>-->
     </style>
 

@@ -316,7 +316,7 @@ public class NewMainActivity extends AppCompatActivity
                 }
                 showKeys(keyPairs);
             } else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.CustomDialogTheme);
                 final View viewGroup = getLayoutInflater().inflate(R.layout.dialog_password_confirm, null);
                 builder.setPositiveButton(
                         R.string.password_confirm_button_confirm,

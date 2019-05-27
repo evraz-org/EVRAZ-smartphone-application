@@ -13,13 +13,18 @@
         <item name="windowNoTitle">true</item>
         <item name="preferenceTheme">@style/myPreferenceTheme</item>
 
-
+        <item name="android:dialogTheme">@style/CustomDialogTheme</item>
+        <item name="android:alertDialogTheme">@style/CustomDialogTheme</item>
+        <item name="dialogTheme">@style/CustomDialogTheme</item>
+        <item name="alertDialogTheme">@style/CustomDialogTheme</item>
     </style>
     <style name="CustomDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <!--buttons color-->
         <item name="colorAccent">@color/colorAccent</item>
         <!--title and message color-->
-        <item name="android:textColorPrimary">@color/table_gray_color</item>
+        <item name="textColorAlertDialogListItem">@color/table_gray_color</item><!--special for ListPreference-->
+        <item name="android:textColorPrimary">@color/table_gray_color</item><!--special for ListPreference-->
+        <item name="android:textColorSecondary">@color/table_gray_color</item><!--special for ListPreference-->
         <!--dialog background-->
         <item name="android:windowBackground">@color/gray_color</item>
 
