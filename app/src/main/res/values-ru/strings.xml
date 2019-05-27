@@ -237,4 +237,14 @@
     <string name="cannot_delete_selected_pair">Нельзя удалить выбранную торговую пару!</string>
     <string name="add">Добавить</string>
 
+    <string name="server_name">Имя сервера</string>
+    <string name="server_address">Адрес сервера</string>
+    <string name="add_server">Добавить сервер</string>
+    <string name="checking">Проверка...</string>
+    <string name="error">Ошибка</string>
+    <string name="restart_now">Перезапуск</string>
+    <string name="app_will_restart">Приложение перезапуститься, чтобы применить изменения</string>
+    <string name="servers">Сервера (ноды)</string>
+    <string name="cant_delete">Нельзя удалить текущий сервер!</string>
+    <string name="cant_delete_last">Нельзя удалить последний сервер!</string>
 </resources>

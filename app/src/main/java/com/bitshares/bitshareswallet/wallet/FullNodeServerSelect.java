@@ -1,11 +1,14 @@
 package com.bitshares.bitshareswallet.wallet;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.bitshares.bitshareswallet.BitsharesApplication;
-
-import org.evrazcoin.evrazwallet.R;
+import com.good.code.starts.here.servers.Server;
+import com.good.code.starts.here.servers.ServersRepository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,27 +25,34 @@ import okhttp3.WebSocketListener;
  */
 
 public class FullNodeServerSelect {
-    private String[] stringArray = BitsharesApplication.getInstance().getResources().getStringArray(R.array.full_node_api_server_values);
-
-    private List<String> mListNode = Arrays.asList(Arrays.copyOfRange(stringArray, 1, stringArray.length));
 
     public String getServer() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
         String strServer = sharedPreferences.getString("full_node_api_server", "autoselect");
-        if (strServer.equals("autoselect")) {
-            return getAutoSelectServer();
-        } else {
-            return strServer;
+        switch (strServer) {
+            case "autoselect":
+                String server = getAutoSelectServer();
+                sharedPreferences.edit().putString("full_node_api_server", server).apply();
+                Log.w("FULL NODE", server);
+                return server;
+            default:
+                Log.w("FULL NODE", "?>" + strServer);
+                return strServer;
         }
     }
 
-    private String getAutoSelectServer() {
+    public String getAutoSelectServer() {
         List<WebSocket> listWebsocket = new ArrayList<>();
         final Object objectSync = new Object();
 
-        final int nTotalCount = mListNode.size();
+        List<String> serverList = new ArrayList<>();
+        for(Server s: ServersRepository.INSTANCE.get().getValue()) {
+            serverList.add(s.getAddress());
+        }
+
+        final int nTotalCount = serverList.size();
         final List<String> listSelectedServer = new ArrayList<>();
-        for (final String strServer : mListNode) {
+        for (final String strServer : serverList) {
             Request request = new Request.Builder().url(strServer).build();
             OkHttpClient okHttpClient = new OkHttpClient();
             WebSocket webSocket = okHttpClient.newWebSocket(request, new WebSocketListener() {
@@ -53,8 +63,7 @@ public class FullNodeServerSelect {
                         listSelectedServer.add(""); // 失败，则填空
 
                         if (listSelectedServer.size() == nTotalCount) {
-                            objectSync.notify();
-                            ;
+                            objectSync.notify();;
                         }
                     }
                 }
@@ -73,7 +82,7 @@ public class FullNodeServerSelect {
 
         String strResultServer = "";
         synchronized (objectSync) {
-            if (listSelectedServer.isEmpty() == false && listSelectedServer.size() < nTotalCount) {
+            if (listSelectedServer.isEmpty() == false && listSelectedServer.size() < nTotalCount ) {
                 for (String strServer : listSelectedServer) {
                     if (strServer.isEmpty() == false) {
                         strResultServer = strServer;
@@ -89,7 +98,7 @@ public class FullNodeServerSelect {
                     e.printStackTrace();
                 }
 
-                if (listSelectedServer.isEmpty() == false && listSelectedServer.size() < nTotalCount) {
+                if (listSelectedServer.isEmpty() == false && listSelectedServer.size() < nTotalCount ) {
                     for (String strServer : listSelectedServer) {
                         if (strServer.isEmpty() == false) {
                             strResultServer = strServer;

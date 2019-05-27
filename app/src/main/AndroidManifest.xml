@@ -96,6 +96,7 @@
         <activity android:name="com.ngse.ui.CreateAccountActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme" />
+        <activity android:name="com.jakewharton.processphoenix.ProcessPhoenix" />
 
     </application>
 

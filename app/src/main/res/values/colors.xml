@@ -37,4 +37,8 @@
     <color name="dark_gray_color">#2e2e2e</color>
     <color name="light_green_color">#7fe478</color>
     <color name="light_red_color">#f07777</color>
+
+    <color name="ping_check">#1565c0</color>
+    <color name="ping_result">#2e7d32</color>
+    <color name="ping_fail">#c62828</color>
 </resources>

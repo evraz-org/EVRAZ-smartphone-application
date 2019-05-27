@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import com.bitshares.bitshareswallet.viewmodel.QuotationViewModel;
 import com.good.code.starts.here.pairs.PairsFragment;
 
+import com.good.code.starts.here.servers.ServersFragment;
+
 import org.evrazcoin.evrazwallet.R;
 
 
@@ -38,6 +40,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Preference pairSelectPreference = findPreference("quotation_currency_pair");
         pairSelectPreference.setOnPreferenceClickListener(p -> {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, PairsFragment.newInstance()).addToBackStack(null).commit();
+            return true;
+        });
+
+        Preference serverSelectPreference = findPreference("full_node_api_server");
+        serverSelectPreference.setOnPreferenceClickListener(p -> {
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ServersFragment.newInstance()).addToBackStack(null).commit();
             return true;
         });
     }
