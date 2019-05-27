@@ -72,7 +72,7 @@ public class ServersRecyclerAdapter extends RecyclerView.Adapter<ServersRecycler
         } else {
             Server server = servers.get(position);
 
-            holder.name.setText(server.getName() + " (" + server.getAddress() + ")");
+            holder.name.setText(server.getName() + " \n(" + server.getAddress() + ")");
             if (server.getAddress().equals(current)) {
                 holder.name.setTypeface(null, Typeface.BOLD);
             }
