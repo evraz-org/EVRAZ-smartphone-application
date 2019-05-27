@@ -1,10 +1,35 @@
 package com.ngse.utility;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.v7.app.AlertDialog;
+import android.widget.ImageView;
+
+import com.bitshares.bitshareswallet.ColorUtils;
+import com.bitshares.bitshareswallet.wallet.BitsharesWalletWraper;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.kaopiz.kprogresshud.KProgressHUD;
+
+import org.evrazcoin.evrazwallet.R;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 public class Utils {
@@ -66,5 +91,72 @@ public class Utils {
         } else {
             return decimalFormat3.format(num);
         }
+    }
+
+    public static  void generateQR(KProgressHUD progressHUD, Activity activity) {
+        progressHUD.show();
+        new Thread(() -> {
+            String data = "btswallet" + BitsharesWalletWraper.getInstance().get_account().name + "'0' ";
+            QRCodeWriter writer = new QRCodeWriter();
+            try {
+                BitMatrix bitMatrix = writer.encode(data, BarcodeFormat.QR_CODE, 1000, 1000);
+                int width = bitMatrix.getWidth();
+                int height = bitMatrix.getHeight();
+                Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+                for (int x = 0; x < width; x++) {
+                    for (int y = 0; y < height; y++) {
+                        bmp.setPixel(x, y, bitMatrix.get(x, y) ? ColorUtils.getMainColor(activity) : Color.WHITE);
+                    }
+                }
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    ImageView imageView = new ImageView(activity);
+                    imageView.setImageBitmap(bmp);
+
+                    AlertDialog dialog = new AlertDialog.Builder(activity   )
+                            .setView(imageView)
+                            .setTitle("")
+                            .setNeutralButton(R.string.label_ok,null)
+                            .setPositiveButton(R.string.share, (dialogInterface, i) -> {
+                                shareImage(activity, bmp);
+                            })
+                            .create();
+
+                    dialog.show();
+                    progressHUD.dismiss();
+                });
+            } catch (WriterException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public static void shareImage(Context context,Bitmap bitmap){
+        String file_path = DebugUtility.getTempPath(context,"bitshare_qrcode");
+        File dir = new File(file_path);
+        if(!dir.exists())
+            dir.mkdirs();
+
+        String format = new SimpleDateFormat("yyyyMMddHHmmss",
+                java.util.Locale.getDefault()).format(new Date());
+
+        File file = new File(dir, format + ".png");
+        FileOutputStream fOut;
+        try {
+            fOut = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 85, fOut);
+            fOut.flush();
+            fOut.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Uri uri = Uri.fromFile(file);
+        Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+        intent.setType("image/*");
+        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "");
+        intent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+
+        context.startActivity(Intent.createChooser(intent,"Sharing something"));
     }
 }

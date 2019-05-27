@@ -236,6 +236,7 @@
     <string name="menu_lang_zh">Chi</string>
 
     <string name="exchange_rate">Rate: %.4f %s/%s</string>
+    <string name="no_req_token">You do not have the requested token!</string>
 
     <string name="first_asset">Base asset</string>
     <string name="second_asset">Quote asset</string>
@@ -244,5 +245,6 @@
     <string name="add_pair_exist">This pair already exist!</string>
     <string name="cannot_delete_selected_pair">Can not delete selected pair!</string>
     <string name="add">Add</string>
+    <string name="share">Share</string>
 
 </resources>

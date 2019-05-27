@@ -12,7 +12,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
+import android.os.Message;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -27,6 +27,7 @@ import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Pair;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
@@ -51,11 +52,13 @@ import com.bitshares.bitshareswallet.wallet.fc.crypto.sha256_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.signed_transaction;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
 import com.franmontiel.localechanger.LocaleChanger;
+import com.kaopiz.kprogresshud.KProgressHUD;
 import com.ngse.ui.main.MainWalletFragment;
 import com.ngse.ui.main.trading.TradingScheduleFragment;
 import com.ngse.ui.main.balanceitems.OpenOrdersFragment;
 import com.ngse.ui.main.balanceitems.PortfolioFragment;
 import com.ngse.ui.main.balanceitems.TransactionsFragment;
+import com.ngse.utility.Utils;
 
 import org.evrazcoin.evrazwallet.R;
 
@@ -70,7 +73,7 @@ import io.reactivex.schedulers.Schedulers;
 
 
 public class NewMainActivity extends AppCompatActivity
-        implements OnFragmentInteractionListener {
+        implements OnFragmentInteractionListener,View.OnTouchListener,Handler.Callback {
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -88,7 +91,11 @@ public class NewMainActivity extends AppCompatActivity
 
 
     private static final int REQUEST_CODE_SETTINGS = 1;
+    private static final int CLICK_ON_WEBVIEW = 1;
+    private static final int CLICK_ON_URL = 2;
 
+    private KProgressHUD mProcessHud;
+    private final Handler handler = new Handler(this);
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -140,6 +147,13 @@ public class NewMainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mProcessHud = KProgressHUD.create(this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setLabel("Please Wait")
+                .setCancellable(false)
+                .setAnimationSpeed(2)
+                .setDimAmount(0.5f);
 
         rasingColorRevers = getResources().getConfiguration().locale.getCountry().equals("CN");
         setContentView(R.layout.new_activity_main);
@@ -228,6 +242,7 @@ public class NewMainActivity extends AppCompatActivity
 
                 WebView webView = (WebView) view.findViewById(R.id.webViewAvatar);
                 loadWebView(webView, 70, encoder.result().toString());
+                webView.setOnTouchListener(this);
 
                 TextView textViewAccountId = (TextView) view.findViewById(R.id.textViewAccountId);
                 textViewAccountId.setText("#" + accountObject.id.get_instance());
@@ -258,6 +273,26 @@ public class NewMainActivity extends AppCompatActivity
         showWalletFragment();
     }
 
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        if (view.getId() == R.id.webViewAvatar && motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+            handler.sendEmptyMessageDelayed(CLICK_ON_WEBVIEW, 500);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean handleMessage(Message msg) {
+        if (msg.what == CLICK_ON_URL){
+            handler.removeMessages(CLICK_ON_WEBVIEW);
+            return true;
+        }
+        if (msg.what == CLICK_ON_WEBVIEW){
+            Utils.generateQR(mProcessHud, this);
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public void onFragmentInteraction(Uri uri) {

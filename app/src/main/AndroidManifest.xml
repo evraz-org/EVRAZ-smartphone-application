@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="org.evrazcoin.evrazwallet">
 
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -32,7 +33,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN" />d
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -75,13 +76,14 @@
             android:theme="@style/ActivityTheme" />-->
 
 
-
+`
         <activity
             android:name="com.ngse.ui.SignUpButtonActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_sign_up_button"
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme" />
+        <activity android:name="com.bitshares.bitshareswallet.ScannerActivity" />
 
         <activity
             android:name="com.ngse.ui.SignUpInfoActivity"

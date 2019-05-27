@@ -50,7 +50,7 @@
                         android:id="@+id/editTextFrom"
                         android:layout_width="match_parent"
                         android:layout_height="44dp"
-                        android:layout_marginLeft="12dp"
+                        android:layout_marginLeft="8dp"
                         android:layout_toRightOf="@id/webViewAvatarFrom"
                         android:background="@drawable/btn_default_background"
                         android:focusable="false"
@@ -73,7 +73,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginBottom="12dp"
                         android:layout_marginRight="8dp"
-                        android:text="#22222"
+                        tools:text="#22222"
                         android:textColor="@color/beige_color"
                         android:textSize="@dimen/send_fragment_text_size" />
 
@@ -99,29 +99,46 @@
                         android:id="@+id/editTextTo"
                         android:layout_width="match_parent"
                         android:layout_height="44dp"
-                        android:layout_marginLeft="12dp"
-                        android:layout_toRightOf="@+id/webViewAvatarTo"
                         android:background="@drawable/btn_default_background"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_toRightOf="@+id/webViewAvatarTo"
+                        android:layout_toEndOf="@+id/webViewAvatarTo"
+                        android:layout_toLeftOf="@id/qrScan"
+                        android:layout_toStartOf="@id/qrScan"
                         android:inputType="text"
-                        android:paddingBottom="10dp"
                         android:paddingLeft="10dp"
                         android:paddingRight="80dp"
-                        android:paddingTop="10dp"
                         android:textColor="@color/beige_color"
                         android:textSize="@dimen/send_fragment_text_size"
+                        tools:text="test1241"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/textViewToId"
+                        android:layout_marginEnd="8dp"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_alignBottom="@+id/editTextTo"
-                        android:layout_alignParentRight="true"
                         android:layout_marginBottom="12dp"
                         android:layout_marginRight="8dp"
-                        android:text="#"
+                        tools:text="#10714822222"
+                        android:lines="1"
                         android:textColor="@color/beige_color"
+                        android:layout_toLeftOf="@+id/qrScan"
+                        android:layout_toStartOf="@+id/qrScan"
                         android:textSize="@dimen/send_fragment_text_size" />
+
+                    <ImageView
+                        android:id="@+id/qrScan"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        tools:text="#22222"
+                        android:layout_marginBottom="12dp"
+                        app:srcCompat="@drawable/qrcode_scan" />
 
                 </RelativeLayout>
 
