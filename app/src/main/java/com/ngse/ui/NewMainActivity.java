@@ -24,6 +24,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.preference.PreferenceManager;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Pair;
 import android.view.MenuItem;
@@ -32,6 +35,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,8 +54,10 @@ import com.bitshares.bitshareswallet.wallet.Broadcast;
 import com.bitshares.bitshareswallet.wallet.account_object;
 import com.bitshares.bitshareswallet.wallet.fc.crypto.sha256_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.signed_transaction;
+import com.bitshares.bitshareswallet.wallet.graphene.chain.types;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
 import com.franmontiel.localechanger.LocaleChanger;
+import com.ngse.ui.main.KeysAdapter;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.ngse.ui.main.MainWalletFragment;
 import com.ngse.ui.main.trading.TradingScheduleFragment;
@@ -65,6 +71,8 @@ import org.evrazcoin.evrazwallet.R;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -210,6 +218,9 @@ public class NewMainActivity extends AppCompatActivity
                     //startActivity(intent);
                     startActivityForResult(intentSettings, REQUEST_CODE_SETTINGS);
                     break;
+                case R.id.keys:
+                    importKeys();
+                    break;
                 case R.id.about:
                     Intent intentAbout = new Intent(NewMainActivity.this, AboutActivity.class);
                     startActivity(intentAbout);
@@ -293,6 +304,79 @@ public class NewMainActivity extends AppCompatActivity
         }
         return false;
     }
+    private void importKeys() {
+        BitsharesWalletWraper wallet = BitsharesWalletWraper.getInstance();
+        if(wallet.is_locked()) {
+            SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
+            if(p.contains("pass")) {
+                wallet.unlock(p.getString("pass", ""));
+                List<Pair<String, String>> keyPairs = new ArrayList<>();
+                for(HashMap.Entry<types.public_key_type, types.private_key_type> keys : wallet.getKeys().entrySet()) {
+                    keyPairs.add(new Pair<>(keys.getKey().toString(), keys.getValue().toString()));
+                }
+                showKeys(keyPairs);
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                final View viewGroup = getLayoutInflater().inflate(R.layout.dialog_password_confirm, null);
+                builder.setPositiveButton(
+                        R.string.password_confirm_button_confirm,
+                        null);
+
+                builder.setNegativeButton(
+                        R.string.password_confirm_button_cancel, null);
+                builder.setView(viewGroup);
+                final AlertDialog dialog = builder.create();
+                dialog.show();
+
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                    EditText editText = viewGroup.findViewById(R.id.editTextPassword);
+                    String strPassword = editText.getText().toString();
+                                /*if(strPassword.isEmpty()) {
+                                    dialog.dismiss();
+
+                                    List<Pair<String, String>> keyPairs = new ArrayList<>();
+                                    for (types.public_key_type key : wallet.getPublicKeys()) {
+                                        keyPairs.add(new Pair<>(key.toString(), getString(R.string.enter_pass_private_key)));
+                                    }
+                                    showKeys(keyPairs);
+
+                                } else {*/
+                    int nRet = wallet.unlock(strPassword);
+                    if (nRet == 0) {
+                        dialog.dismiss();
+                        List<Pair<String, String>> keyPairs = new ArrayList<>();
+                        for (HashMap.Entry<types.public_key_type, types.private_key_type> keys : wallet.getKeys().entrySet()) {
+                            keyPairs.add(new Pair<>(keys.getKey().toString(), keys.getValue().toString()));
+                        }
+                        showKeys(keyPairs);
+                    } else {
+                        viewGroup.findViewById(R.id.textViewPasswordInvalid).setVisibility(View.VISIBLE);
+                    }
+                    //}
+                });
+            }
+        } else {
+            List<Pair<String, String>> keyPairs = new ArrayList<>();
+            for(HashMap.Entry<types.public_key_type, types.private_key_type> keys : wallet.getKeys().entrySet()) {
+                keyPairs.add(new Pair<>(keys.getKey().toString(), keys.getValue().toString()));
+            }
+            showKeys(keyPairs);
+        }
+    }
+
+    private void showKeys(List<Pair<String, String>> keyPairs) {
+        RecyclerView recyclerView = new RecyclerView(this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new KeysAdapter(this, keyPairs));
+        AlertDialog dialog = new AlertDialog.Builder(this,R.style.CustomDialogTheme)
+                .setTitle(R.string.keys)
+                .setView(recyclerView)
+                .setPositiveButton(R.string.OK, null)
+                .create();
+
+        dialog.show();
+    }
+
 
     @Override
     public void onFragmentInteraction(Uri uri) {
