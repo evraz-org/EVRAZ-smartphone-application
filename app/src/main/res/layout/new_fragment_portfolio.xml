@@ -12,8 +12,7 @@
         style="@style/EvrazTitle"
         android:layout_width="match_parent"
         android:background="@android:color/black"
-        android:paddingBottom="24dp"
-        android:paddingTop="24dp"
+        android:paddingBottom="16dp"
         android:text="@string/portfolio"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

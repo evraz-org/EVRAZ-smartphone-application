@@ -40,12 +40,12 @@
         android:background="@color/beige_color" />
 
     <ImageView
+        android:layout_gravity="center_vertical"
         android:id="@+id/voi_cacel"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="32dp"
         android:layout_weight="40"
         android:padding="8dp"
-        android:scaleType="fitCenter"
         app:srcCompat="@drawable/ic_krestik"
         tools:text="@string/short_count" />
 

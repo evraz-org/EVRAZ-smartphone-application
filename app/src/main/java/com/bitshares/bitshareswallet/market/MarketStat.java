@@ -7,12 +7,14 @@ import android.text.format.DateUtils;
 
 import com.bitshares.bitshareswallet.data.HistoryPrice;
 import com.bitshares.bitshareswallet.wallet.BitsharesWalletWraper;
+import com.bitshares.bitshareswallet.wallet.account_balance_object;
 import com.bitshares.bitshareswallet.wallet.account_object;
 import com.bitshares.bitshareswallet.wallet.asset;
 import com.bitshares.bitshareswallet.wallet.full_account_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.asset_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.bucket_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.limit_order_object;
+import com.bitshares.bitshareswallet.wallet.graphene.chain.object_id;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.price;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
 
@@ -21,23 +23,24 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class MarketStat {
-    private static final String TAG = "MarketStat";
-    private static final long DEFAULT_BUCKET_SECS = TimeUnit.HOURS.toSeconds(1);
-
     public static final int STAT_MARKET_HISTORY = 0x01;
     public static final int STAT_MARKET_TICKER = 0x02;
     public static final int STAT_MARKET_ORDER_BOOK = 0x04;
     public static final int STAT_MARKET_OPEN_ORDER = 0x08;
     public static final int STAT_MARKET_ALL = 0xffff;
-
-    private HashMap<String, Subscription> subscriptionHashMap = new HashMap<>();
+    private static final String TAG = "MarketStat";
+    private static final long DEFAULT_BUCKET_SECS = TimeUnit.HOURS.toSeconds(1);
     private static boolean isDeserializerRegistered = false;
+    private HashMap<String, Subscription> subscriptionHashMap = new HashMap<>();
 
     public MarketStat() {
         /*if (!isDeserializerRegistered) {
@@ -45,6 +48,30 @@ public class MarketStat {
             global_config_object.getInstance().getGsonBuilder().registerTypeAdapter(
                     full_account_object.class, new full_account_object.deserializer());
         }*/
+    }
+
+    private static String makeMarketName(String base, String quote) {
+        return String.format("%s_%s", base.toLowerCase(), quote.toLowerCase());
+    }
+
+    private static double findMax(double a, double b) {
+        if (a != Double.POSITIVE_INFINITY && b != Double.POSITIVE_INFINITY) {
+            return Math.max(a, b);
+        } else if (a == Double.POSITIVE_INFINITY) {
+            return b;
+        } else {
+            return a;
+        }
+    }
+
+    private static double findMin(double a, double b) {
+        if (a != 0 && b != 0) {
+            return Math.min(a, b);
+        } else if (a == 0) {
+            return b;
+        } else {
+            return a;
+        }
     }
 
     public void subscribe(String base, String quote, int stats, long intervalMillis,
@@ -77,8 +104,8 @@ public class MarketStat {
         }
     }
 
-    private static String makeMarketName(String base, String quote) {
-        return String.format("%s_%s", base.toLowerCase(), quote.toLowerCase());
+    public interface OnMarketStatUpdateListener {
+        void onMarketStatUpdate(Stat stat);
     }
 
     public static class Stat {
@@ -87,10 +114,7 @@ public class MarketStat {
         public Date latestTradeDate;
         public OrderBook orderBook;
         public List<OpenOrder> openOrders;
-    }
-
-    public interface OnMarketStatUpdateListener {
-        void onMarketStatUpdate(Stat stat);
+        public List<OpenOrder> allOrders;
     }
 
     private class Subscription implements Runnable {
@@ -110,7 +134,7 @@ public class MarketStat {
         private AtomicBoolean isCancelled = new AtomicBoolean(false);
 
         private Subscription(String base, String quote, long bucketSecs, int stats,
-                            long intervalMillis, OnMarketStatUpdateListener l) {
+                             long intervalMillis, OnMarketStatUpdateListener l) {
             this.base = base;
             this.quote = quote;
             this.bucketSecs = bucketSecs;
@@ -162,7 +186,8 @@ public class MarketStat {
                     marketStat.orderBook = getOrderBook();
                 }
                 if ((stats & STAT_MARKET_OPEN_ORDER) != 0) {
-                    marketStat.openOrders = getOpenOrders();
+                    marketStat.allOrders = getOpenOrders(true);
+                    marketStat.openOrders = getOpenOrders(false);
                 }
                 if (isCancelled.get()) {
                     return;
@@ -303,8 +328,8 @@ public class MarketStat {
                         if (o.sell_price.base.asset_id.equals(baseAsset.id)) {
                             Order ord = new Order();
                             ord.price = priceToReal(o.sell_price);
-                            ord.quote = ((double)o.for_sale * (double)o.sell_price.quote.amount)
-                                    / (double)o.sell_price.base.amount
+                            ord.quote = ((double) o.for_sale * (double) o.sell_price.quote.amount)
+                                    / (double) o.sell_price.base.amount
                                     / Math.pow(10, quoteAsset.precision);
                             ord.base = o.for_sale / Math.pow(10, baseAsset.precision);
                             orderBook.bids.add(ord);
@@ -312,7 +337,7 @@ public class MarketStat {
                             Order ord = new Order();
                             ord.price = priceToReal(o.sell_price);
                             ord.quote = o.for_sale / Math.pow(10, quoteAsset.precision);
-                            ord.base = (double)o.for_sale * (double)o.sell_price.quote.amount
+                            ord.base = (double) o.for_sale * (double) o.sell_price.quote.amount
                                     / o.sell_price.base.amount
                                     / Math.pow(10, baseAsset.precision);
                             orderBook.asks.add(ord);
@@ -338,7 +363,7 @@ public class MarketStat {
             return null;
         }
 
-        private List<OpenOrder> getOpenOrders() {
+        private List<OpenOrder> getOpenOrders(boolean all) {
             try {
                 List<account_object> accounts = wraper.list_my_accounts();
                 if (accounts == null || accounts.isEmpty()) {
@@ -357,23 +382,33 @@ public class MarketStat {
                 } catch (Exception e) {
                     return null;
                 }
+
                 List<OpenOrder> openOrders = new ArrayList<>();
                 for (int i = 0; i < fullAccounts.size(); i++) {
                     full_account_object a = fullAccounts.get(i);
+                    Set<object_id<asset_object>> objectIdSet = new HashSet<>();
+                    for (account_balance_object object : a.balances) {
+                        objectIdSet.add(object.asset_type);
+                    }
+                    List<object_id<asset_object>> objectIdList = new ArrayList<>(objectIdSet);
+                    Map<object_id<asset_object>, asset_object> mapId2Object = wraper.get_assets(objectIdList);
                     for (int j = 0; j < a.limit_orders.size(); j++) {
                         limit_order_object o = a.limit_orders.get(j);
-                        if (!o.sell_price.base.asset_id.equals(baseAsset.id) &&
-                                !o.sell_price.base.asset_id.equals(quoteAsset.id)) {
-                            continue;
-                        }
-                        if (!o.sell_price.quote.asset_id.equals(baseAsset.id) &&
-                                !o.sell_price.quote.asset_id.equals(quoteAsset.id)) {
-                            continue;
+
+                        if (!all) {
+                            if (!o.sell_price.base.asset_id.equals(baseAsset.id) &&
+                                    !o.sell_price.base.asset_id.equals(quoteAsset.id)) {
+                                continue;
+                            }
+                            if (!o.sell_price.quote.asset_id.equals(baseAsset.id) &&
+                                    !o.sell_price.quote.asset_id.equals(quoteAsset.id)) {
+                                continue;
+                            }
                         }
                         OpenOrder order = new OpenOrder();
                         order.limitOrder = o;
-                        order.base = baseAsset;
-                        order.quote = quoteAsset;
+                        order.base = mapId2Object.get(o.sell_price.base.asset_id);
+                        order.quote = mapId2Object.get(o.sell_price.quote.asset_id);
                         order.price = priceToReal(o.sell_price);
                         openOrders.add(order);
                     }
@@ -386,7 +421,7 @@ public class MarketStat {
         }
 
         private double assetToReal(asset a, long p) {
-            return (double)a.amount / Math.pow(10, p);
+            return (double) a.amount / Math.pow(10, p);
         }
 
         private double priceToReal(price p) {
@@ -394,29 +429,9 @@ public class MarketStat {
                 return assetToReal(p.base, baseAsset.precision)
                         / assetToReal(p.quote, quoteAsset.precision);
             } else {
-                return assetToReal(p.quote, baseAsset.precision )
+                return assetToReal(p.quote, baseAsset.precision)
                         / assetToReal(p.base, quoteAsset.precision);
             }
-        }
-    }
-
-    private static double findMax(double a, double b) {
-        if (a != Double.POSITIVE_INFINITY && b != Double.POSITIVE_INFINITY) {
-            return Math.max(a, b);
-        } else if (a == Double.POSITIVE_INFINITY) {
-            return b;
-        } else {
-            return a;
-        }
-    }
-
-    private static double findMin(double a, double b) {
-        if (a != 0 && b != 0) {
-            return Math.min(a, b);
-        } else if (a == 0) {
-            return b;
-        } else {
-            return a;
         }
     }
 }

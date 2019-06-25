@@ -8,10 +8,10 @@
 
     <TextView
         style="@style/EvrazTitle"
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:background="@android:color/black"
-        android:paddingBottom="24dp"
-        android:paddingTop="24dp"
+        android:paddingBottom="16dp"
         android:text="@string/open_orders"
         android:visibility="gone" />
 

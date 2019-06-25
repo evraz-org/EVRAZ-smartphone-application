@@ -159,7 +159,7 @@ public class TradingScheduleFragment extends BaseFragment {
         mExchangeFragmentPageAdapter.addFragment(TransactionSellBuyFragment.newInstance(TransactionSellBuyFragment.TRANSACTION_BUY), "");
         mExchangeFragmentPageAdapter.addFragment(TransactionSellBuyFragment.newInstance(TransactionSellBuyFragment.TRANSACTION_SELL), "");
         mExchangeFragmentPageAdapter.addFragment(TradingOrdersFragment.newInstance(),"");
-        mExchangeFragmentPageAdapter.addFragment(OpenOrdersFragment.newInstance(), "");
+        mExchangeFragmentPageAdapter.addFragment(OpenOrdersFragment.newInstance(false), "");
 //        mWalletFragmentPageAdapter.addFragment(TransactionsFragment.newInstance("", ""), res.getString(R.string.tab_transactions));
 
 

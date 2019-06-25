@@ -523,7 +523,7 @@ public class NewMainActivity extends AppCompatActivity
     public void showOpenOrdersFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.replace(R.id.fragmentFrameLayout, OpenOrdersFragment.newInstance(), OpenOrdersFragment.TAG);
+        ft.replace(R.id.fragmentFrameLayout, OpenOrdersFragment.newInstance(true), OpenOrdersFragment.TAG);
         ft.addToBackStack(OpenOrdersFragment.TAG);
         ft.commitAllowingStateLoss();
     }

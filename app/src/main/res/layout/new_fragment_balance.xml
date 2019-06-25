@@ -64,13 +64,6 @@
             android:text="@string/portfolio" />
 
         <TextView
-            android:id="@+id/openOrders"
-            style="@style/EvrazTextViewButton"
-            android:layout_marginBottom="16dp"
-            android:text="@string/open_orders"
-            android:visibility="gone" />
-
-        <TextView
             android:id="@+id/positionProvision"
             style="@style/EvrazTextViewButton"
             android:layout_marginBottom="16dp"
@@ -79,8 +72,16 @@
 
         <TextView
             android:id="@+id/transactions"
+            android:layout_marginBottom="16dp"
             style="@style/EvrazTextViewButton"
             android:text="@string/transactions" />
+
+
+        <TextView
+            android:id="@+id/openOrders"
+            style="@style/EvrazTextViewButton"
+            android:layout_marginBottom="16dp"
+            android:text="@string/open_orders" />
 
     </LinearLayout>
 

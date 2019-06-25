@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.PreferenceManager;
@@ -37,7 +36,6 @@ import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.evrazcoin.evrazwallet.R;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -48,6 +46,7 @@ public class OpenOrdersFragment extends BaseFragment
 
     public static final String TAG = OpenOrdersFragment.class.getName();
     private static final long MARKET_STAT_INTERVAL_MILLIS = TimeUnit.SECONDS.toMillis(10);
+    private static final String ALL_MODE = "ALL_MODE";
 
     private RecyclerView listOrders;
     private OrderListAdapter adapterOrders;
@@ -57,7 +56,8 @@ public class OpenOrdersFragment extends BaseFragment
     private String baseAsset;
     private String quoteAsset;
     private KProgressHUD mProcessHud;
-//    private MenuItem backMenuItem;
+    private MenuItem backMenuItem;
+    private boolean allMode;
 
     private BroadcastReceiver currencyUpdateReceiver = new BroadcastReceiver() {
         @Override
@@ -69,20 +69,30 @@ public class OpenOrdersFragment extends BaseFragment
         }
     };
 
-    private void refresh() {
-        marketStat.updateImmediately(baseAsset, quoteAsset);
-    }
-
     public OpenOrdersFragment() {
         marketStat = new MarketStat();
     }
 
-  /*  @Override
+    public static OpenOrdersFragment newInstance(boolean allMode) {
+        OpenOrdersFragment fragment = new OpenOrdersFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(ALL_MODE, allMode);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    private void refresh() {
+        marketStat.updateImmediately(baseAsset, quoteAsset);
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        backMenuItem = menu.add(R.string.back)
-                .setIcon(R.drawable.abc_ic_ab_back_material)
-                .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        if (allMode) {
+            backMenuItem = menu.add(R.string.back)
+                    .setIcon(R.drawable.abc_ic_ab_back_material)
+                    .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        }
     }
 
     @Override
@@ -90,16 +100,14 @@ public class OpenOrdersFragment extends BaseFragment
         if (item == backMenuItem)
             getActivity().onBackPressed();
         return super.onOptionsItemSelected(item);
-    }*/
-
-    public static OpenOrdersFragment newInstance() {
-        OpenOrdersFragment fragment = new OpenOrdersFragment();
-        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            allMode = getArguments().getBoolean(ALL_MODE);
+        }
     }
 
     @Override
@@ -107,7 +115,7 @@ public class OpenOrdersFragment extends BaseFragment
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.new_fragment_orders, container, false);
-
+        view.findViewById(R.id.title).setVisibility(allMode ? View.VISIBLE : View.GONE);
         adapterOrders = new OrderListAdapter();
 
         listOrders = (RecyclerView) view.findViewById(R.id.fo_list);
@@ -164,8 +172,8 @@ public class OpenOrdersFragment extends BaseFragment
 
     @Override
     public void onMarketStatUpdate(MarketStat.Stat stat) {
-        if (stat.openOrders != null) {
-            List<OpenOrder> orderList = stat.openOrders;
+        List<OpenOrder> orderList = allMode ? stat.allOrders : stat.openOrders;
+        if (orderList != null) {
             if (orderList.size() == 0) {
                 txtNone.setVisibility(View.VISIBLE);
             } else {
@@ -222,6 +230,17 @@ public class OpenOrdersFragment extends BaseFragment
 //        TextView txtPriceUsd;
 
         OpenOrder order;
+        private View.OnClickListener onCancelClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (BitsharesWalletWraper.getInstance().is_locked()) {
+                    showPasswordDialog();
+                } else {
+                    showConfirmDialog();
+                }
+
+            }
+        };
 
         public OrderViewHolder(View itemView) {
             super(itemView);
@@ -272,18 +291,6 @@ public class OpenOrdersFragment extends BaseFragment
            /* SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
             txtExpiration.setText(formatter.format(order.limitOrder.expiration));*/
         }
-
-        private View.OnClickListener onCancelClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (BitsharesWalletWraper.getInstance().is_locked()) {
-                    showPasswordDialog();
-                } else {
-                    showConfirmDialog();
-                }
-
-            }
-        };
 
         private void showConfirmDialog() {
             CancelOrderDialog dialog = new CancelOrderDialog(getActivity(), order);
