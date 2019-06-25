@@ -1,7 +1,6 @@
 ﻿<resources>
     <string name="app_name_full">Cartera de Evraz</string>
     <string name="app_name">Evraz Wallet</string>
-    <string name="auth_title" translatable="false">Bitshares blockhain</string>
 
     <string name="back">Atrás</string>
     <string name="registration">Regístrate</string>

@@ -24,7 +24,7 @@
 
         <TextView
             android:id="@+id/textTotalBalance"
-            style="@style/EvrazTitle"
+            style="@style/EvrazSubtitile"
             android:layout_marginTop="8dp"
             android:text="@string/main_activity_loading" />
 
@@ -36,12 +36,37 @@
             android:textColor="#f6efcc"
             android:textSize="15sp"
             tools:text="(123456,000 USD)" />
-        <TextView
-            android:id="@+id/textViewConvertBalance"
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginTop="8dp"
-            android:textColor="#f6efcc"
-            style="@style/EvrazTitle"
-            tools:text="123456,000 USD" />
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="56dp"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/textViewConvertBalance"
+                    style="@style/EvrazSubtitile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="123456,000" />
+
+                <Spinner
+                    android:backgroundTint="@color/beige_color"
+                    android:id="@+id/spinnerConvertBalanceSign"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    tools:text="USD"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout

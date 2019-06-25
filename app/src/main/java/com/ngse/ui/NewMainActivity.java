@@ -169,7 +169,7 @@ public class NewMainActivity extends AppCompatActivity
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         mToolbar.setTitle("");
-        // Toolbar的标题文本不支持居中，故创建了新文本
+        // Toolbar: The title text does not support centering, so new text is created
         mLayoutTitle = (LinearLayout) mToolbar.findViewById(R.id.lay_title);
         mTxtTitle = (TextView) mToolbar.findViewById(R.id.txt_bar_title);
         updateTitle();
@@ -386,7 +386,7 @@ public class NewMainActivity extends AppCompatActivity
 
     @Override
     public void notifyTransferComplete(signed_transaction signedTransaction) {
-        // 沿用该线程，阻塞住了系统来进行数据更新
+        // Use this thread to block the system for data updates
         //mWalletFragment.notifyTransferComplete(signedTransaction);
     }
 

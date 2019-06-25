@@ -18,17 +18,22 @@
         <item name="dialogTheme">@style/CustomDialogTheme</item>
         <item name="alertDialogTheme">@style/CustomDialogTheme</item>
     </style>
+
     <style name="CustomDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <!--buttons color-->
         <item name="colorAccent">@color/colorAccent</item>
         <!--title and message color-->
-        <item name="textColorAlertDialogListItem">@color/table_gray_color</item><!--special for ListPreference-->
-        <item name="android:textColorPrimary">@color/table_gray_color</item><!--special for ListPreference-->
-        <item name="android:textColorSecondary">@color/table_gray_color</item><!--special for ListPreference-->
+        <item name="textColorAlertDialogListItem">@color/table_gray_color
+        </item><!--special for ListPreference-->
+        <item name="android:textColorPrimary">@color/table_gray_color
+        </item><!--special for ListPreference-->
+        <item name="android:textColorSecondary">@color/table_gray_color
+        </item><!--special for ListPreference-->
         <!--dialog background-->
         <item name="android:windowBackground">@color/gray_color</item>
 
     </style>
+
     <style name="WalletLangSwitchStyle">
         <item name="android:gravity">center</item>
         <item name="android:maxLines">1</item>
@@ -44,29 +49,26 @@
         <item name="android:background">@drawable/language_switch_item_background</item>
     </style>
 
-
-
     <style name="ActivityTheme" parent="AppTheme">
         <item name="android:dialogTheme">@style/CustomDialogTheme</item>
         <item name="android:alertDialogTheme">@style/CustomDialogTheme</item>
-        <item name="android:textColorAlertDialogListItem">@color/table_gray_color</item><!--special for ListPreference-->
-        <item name="android:textColorPrimary">@color/table_gray_color</item><!--special for ListPreference-->
-        <item name="android:textColorSecondary">@color/table_gray_color</item><!--special for ListPreference-->
+        <item name="android:textColorAlertDialogListItem">@color/table_gray_color
+        </item><!--special for ListPreference-->
+        <item name="android:textColorPrimary">@color/table_gray_color
+        </item><!--special for ListPreference-->
+        <item name="android:textColorSecondary">@color/table_gray_color
+        </item><!--special for ListPreference-->
         <item name="android:windowBackground">@color/background_color</item>
     </style>
 
     <style name="SettingsActivityTheme" parent="ActivityTheme">
-
-
         <item name="android:background">@color/gray_color</item><!--special for ListPreference-->
         <!--  <item name="android:dialogPreferenceStyle">@style/CustomDialogTheme</item>
           <item name="android:preferenceStyle">@style/CustomDialogTheme</item>
           <item name="android:tabWidgetStyle"> @style/CustomDialogTheme</item>-->
-
-
     </style>
-  <!--  <item name="android:textColorAlertDialogListItem">@color/table_gray_color</item>
-    <item name="colorControlActivated">@color/table_gray_color</item>-->
+    <!--  <item name="android:textColorAlertDialogListItem">@color/table_gray_color</item>
+      <item name="colorControlActivated">@color/table_gray_color</item>-->
     <style name="myPreferenceTheme" parent="@style/PreferenceThemeOverlay.v14.Material">
 
     </style>
@@ -148,6 +150,10 @@
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/beige_color</item>
         <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="EvrazSubtitile" parent="EvrazTitle">
+        <item name="android:textSize">30sp</item>
     </style>
 
     <style name="EvrazTextViewButton">
