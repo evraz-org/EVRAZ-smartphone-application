@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.RemoteException;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -24,12 +25,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.preference.PreferenceManager;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.Pair;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -40,6 +40,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.installreferrer.api.InstallReferrerClient;
+import com.android.installreferrer.api.InstallReferrerStateListener;
+import com.android.installreferrer.api.ReferrerDetails;
 import com.bitshares.bitshareswallet.AboutActivity;
 import com.bitshares.bitshareswallet.BitsharesApplication;
 import com.bitshares.bitshareswallet.OnFragmentInteractionListener;
@@ -57,22 +60,21 @@ import com.bitshares.bitshareswallet.wallet.graphene.chain.signed_transaction;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.types;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
 import com.franmontiel.localechanger.LocaleChanger;
-import com.ngse.ui.main.KeysAdapter;
 import com.kaopiz.kprogresshud.KProgressHUD;
+import com.ngse.ui.main.KeysAdapter;
 import com.ngse.ui.main.MainWalletFragment;
-import com.ngse.ui.main.trading.TradingScheduleFragment;
 import com.ngse.ui.main.balanceitems.OpenOrdersFragment;
 import com.ngse.ui.main.balanceitems.PortfolioFragment;
 import com.ngse.ui.main.balanceitems.TransactionsFragment;
+import com.ngse.ui.main.trading.TradingScheduleFragment;
 import com.ngse.utility.Utils;
 
 import org.evrazcoin.evrazwallet.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -81,7 +83,12 @@ import io.reactivex.schedulers.Schedulers;
 
 
 public class NewMainActivity extends AppCompatActivity
-        implements OnFragmentInteractionListener,View.OnTouchListener,Handler.Callback {
+        implements OnFragmentInteractionListener,
+        View.OnTouchListener,
+        Handler.Callback,
+        InstallReferrerStateListener {
+
+    private static final String TAG = NewMainActivity.class.getName();
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -104,6 +111,9 @@ public class NewMainActivity extends AppCompatActivity
 
     private KProgressHUD mProcessHud;
     private final Handler handler = new Handler(this);
+    private InstallReferrerClient mReferrerClient;
+
+    final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -155,6 +165,12 @@ public class NewMainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
+        boolean isReferrerConnectedOnce = prefs.getBoolean("is_referrer_connected_once", false);
+        if (!isReferrerConnectedOnce) {
+            mReferrerClient = InstallReferrerClient.newBuilder(this).build();
+            mReferrerClient.startConnection(this);
+        }
 
         mProcessHud = KProgressHUD.create(this)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
@@ -175,7 +191,6 @@ public class NewMainActivity extends AppCompatActivity
         updateTitle();
         setTitleVisible(false);
 
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
         List<String> arrValues = new ArrayList<>(prefs.getStringSet("pairs", new HashSet<>()));
         if(arrValues.size() == 0) {
             String[] fromRes = getResources().getStringArray(R.array.quotation_currency_pair_values);
@@ -537,4 +552,40 @@ public class NewMainActivity extends AppCompatActivity
     }
 
 
+    @Override
+    public void onInstallReferrerSetupFinished(int responseCode) {
+        switch (responseCode) {
+            case InstallReferrerClient.InstallReferrerResponse.OK:
+                try {
+                    Log.v(TAG, "InstallReferrer conneceted");
+                    ReferrerDetails response = mReferrerClient.getInstallReferrer();
+                    String referrerUrl = response.getInstallReferrer();
+                    long referrerClickTime = response.getReferrerClickTimestampSeconds();
+                    long appInstallTime = response.getInstallBeginTimestampSeconds();
+                    boolean instantExperienceLaunched = response.getGooglePlayInstantParam();
+                    Log.d(TAG, "referrerUrl = " + referrerUrl);
+                    Log.d(TAG, "referrerClickTime = " + referrerClickTime);
+                    Log.d(TAG, "appInstallTime = " + appInstallTime);
+                    Log.d(TAG, "instantExperienceLaunched = " + instantExperienceLaunched);
+                    mReferrerClient.endConnection();
+                    prefs.edit().putBoolean("is_referrer_connected_once", true).apply();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case InstallReferrerClient.InstallReferrerResponse.FEATURE_NOT_SUPPORTED:
+                Log.w(TAG, "InstallReferrer not supported");
+                break;
+            case InstallReferrerClient.InstallReferrerResponse.SERVICE_UNAVAILABLE:
+                Log.w(TAG, "Unable to connect to the service");
+                break;
+            default:
+                Log.w(TAG, "responseCode not found.");
+        }
+    }
+
+    @Override
+    public void onInstallReferrerServiceDisconnected() {
+        mReferrerClient.startConnection(this);
+    }
 }

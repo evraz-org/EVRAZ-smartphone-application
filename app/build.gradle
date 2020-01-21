@@ -1,8 +1,8 @@
 // Manifest version information!
 def versionMajor = 0
 def versionMinor = 5
-def versionPatch = 0
-def versionBuild = 3
+def versionPatch = 1
+def versionBuild = 1
 
 buildscript {
     repositories {
@@ -164,6 +164,7 @@ dependencies {
     implementation 'com.dlazaro66.qrcodereaderview:qrcodereaderview:2.0.3'
     implementation 'me.dm7.barcodescanner:zxing:1.9.8'
 
+    implementation 'com.android.installreferrer:installreferrer:1.1.1'
 }
 
 apply plugin: 'com.google.gms.google-services'
