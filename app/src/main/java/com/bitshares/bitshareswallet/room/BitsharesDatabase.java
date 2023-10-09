@@ -1,8 +1,8 @@
 package com.bitshares.bitshareswallet.room;
 
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.RoomDatabase;
-import android.arch.persistence.room.TypeConverters;
+import androidx.room.Database;
+import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 
 /**
  * Created by lorne on 31/10/2017.

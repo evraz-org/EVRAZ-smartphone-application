@@ -1,6 +1,6 @@
-﻿﻿<resources>
+﻿<resources>
     <string name="app_name_full">Evraz Portemonnee</string>
-    <string name="app_name">Evraz Portemonnee</string>
+    <string name="app_name">EVRAZ</string>
 
     <!--ä¾§è¾¹æ -->
     <string name="navigation_drawer_open">Open navigatie menu</string>

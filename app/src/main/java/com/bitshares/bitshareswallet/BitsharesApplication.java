@@ -1,10 +1,11 @@
 package com.bitshares.bitshareswallet;
 
-import android.arch.persistence.room.Room;
+import androidx.room.Room;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.preference.PreferenceManager;
-import android.support.multidex.MultiDexApplication;
+import androidx.multidex.MultiDexApplication;
+import android.util.Log;
 
 import com.bitshares.bitshareswallet.room.BitsharesDatabase;
 import com.crashlytics.android.Crashlytics;
@@ -60,7 +61,7 @@ public class BitsharesApplication extends MultiDexApplication {
         Crashlytics crashlyticsKit = new Crashlytics.Builder()
                 .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
                 .build();
-        Fabric.with(this, crashlyticsKit);
+        //Fabric.with(this, crashlyticsKit);
         Security.insertProviderAt(new BouncyCastleProvider(), 1);
 
         initServers();
@@ -86,12 +87,15 @@ public class BitsharesApplication extends MultiDexApplication {
             Set<String> serversSet = new HashSet<>();
             List<Server> serverList = new ArrayList<>();
             for (int i = 0; i < serversNames.length; i++) {
+                Log.w("levendeev3",serversNames[i] + " " + serversAddresses[i]);
                 serversSet.add(serversNames[i] + " " + serversAddresses[i]);
                 serverList.add(new Server(serversNames[i], serversAddresses[i]));
             }
             preferences.edit().putStringSet("servers", serversSet).apply();
             ServersRepository.INSTANCE.addServers(serverList);
         } else {
+
+            Log.w("levendeev4","/" + serversStrSet);
             List<Server> serverList = new ArrayList<>();
 
             for (String serverStr : serversStrSet) {

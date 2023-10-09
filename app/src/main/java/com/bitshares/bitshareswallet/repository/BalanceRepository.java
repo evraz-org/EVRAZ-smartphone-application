@@ -1,8 +1,8 @@
 package com.bitshares.bitshareswallet.repository;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MediatorLiveData;
-import android.arch.lifecycle.MutableLiveData;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.bitshares.bitshareswallet.BitsharesApplication;
 import com.bitshares.bitshareswallet.market.MarketTicker;
@@ -14,7 +14,6 @@ import com.bitshares.bitshareswallet.room.BitsharesMarketTicker;
 import com.bitshares.bitshareswallet.wallet.BitsharesWalletWraper;
 import com.bitshares.bitshareswallet.wallet.account_balance_object;
 import com.bitshares.bitshareswallet.wallet.account_object;
-import com.bitshares.bitshareswallet.wallet.asset;
 import com.bitshares.bitshareswallet.wallet.exception.NetworkStatusException;
 import com.bitshares.bitshareswallet.wallet.full_account_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.asset_object;
@@ -24,14 +23,12 @@ import com.bituniverse.network.Resource;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import io.reactivex.Flowable;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 

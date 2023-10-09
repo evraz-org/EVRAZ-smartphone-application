@@ -1,14 +1,10 @@
 package com.bitshares.bitshareswallet.livedata;
 
-import android.arch.lifecycle.LiveData;
-import android.util.Pair;
+import androidx.lifecycle.LiveData;
 
 import com.bitshares.bitshareswallet.wallet.BitsharesWalletWraper;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.asset_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.object_id;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by lorne on 03/11/2017.

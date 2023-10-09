@@ -1,6 +1,6 @@
 package com.bitshares.bitshareswallet;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +10,6 @@ import com.bitshares.bitshareswallet.market.Order;
 
 import org.evrazcoin.evrazwallet.R;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 public class TransactionSellBuyRecyclerViewAdapter extends RecyclerView.Adapter<TransactionSellBuyRecyclerViewAdapter.ViewHolder> {

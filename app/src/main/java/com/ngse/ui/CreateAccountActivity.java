@@ -3,12 +3,10 @@ package com.ngse.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
-import android.text.InputFilter;
-import android.text.Spanned;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.CheckBox;
@@ -219,7 +217,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                     findViewById(R.id.imageViewPasswordConfirmCheck).setVisibility(View.VISIBLE);
                     textViewErrorInfo.setText("");
                 } else {
-                    findViewById(R.id.imageViewPasswordConfirmCheck).setVisibility(View.INVISIBLE);
+                    findViewById(R.id.imageViewPasswordConfirmCheck).setVisibility(View.GONE);
                     textViewErrorInfo.setText(R.string.create_account_password_confirm_error);
                 }
             }

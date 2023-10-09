@@ -1,6 +1,6 @@
 package com.bitshares.bitshareswallet.livedata;
 
-import android.arch.lifecycle.LiveData;
+import androidx.lifecycle.LiveData;
 import android.util.Pair;
 
 import com.bitshares.bitshareswallet.wallet.BitsharesWalletWraper;

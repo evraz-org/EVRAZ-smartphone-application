@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,14 +7,14 @@
     android:background="@android:color/black"
     tools:context="com.bitshares.bitshareswallet.ImportActivty">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:elevation="0dp"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -24,7 +24,7 @@
             app:title="@string/registration"
             app:titleTextColor="@color/beige_color" />
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
         android:id="@+id/fragment_container"
@@ -93,11 +93,15 @@
                     style="@style/EvrazTextHeaderViewStyle"
                     android:text="@string/create_password" />
 
-
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    app:passwordToggleEnabled="true">
                 <EditText
                     android:id="@+id/editTextPassword"
                     style="@style/EvrazEditTextStyle"
                     android:inputType="textPassword" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     android:id="@+id/textViewErrorPasswrod"
@@ -113,27 +117,36 @@
                     style="@style/EvrazTextHeaderViewStyle"
                     android:text="@string/confirm_password" />
 
-                <RelativeLayout
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <EditText
-                        android:id="@+id/editTextPasswordConfirm"
-                        style="@style/EvrazEditTextStyle"
-                        android:inputType="textPassword" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/editTextPasswordConfirmLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="45dp"
+                        android:layout_weight="1"
+                        app:passwordToggleEnabled="true">
+
+                        <EditText
+                            android:id="@+id/editTextPasswordConfirm"
+                            style="@style/EvrazEditTextStyle"
+                            android:inputType="textPassword" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <ImageView
                         android:id="@+id/imageViewPasswordConfirmCheck"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/editTextPasswordConfirm"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginBottom="12dp"
-                        android:layout_marginRight="12dp"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_gravity="center_vertical"
                         android:src="@mipmap/check"
-                        android:visibility="invisible" />
+                        android:layout_marginStart="5dp"
+                        android:visibility="gone" />
 
-                </RelativeLayout>
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/textViewErrorInfo"
@@ -145,7 +158,7 @@
                     android:textColor="@color/red"
                     android:textSize="14sp" />
 
-                <android.support.v7.widget.AppCompatCheckBox
+                <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/checkBoxConfirm"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -155,7 +168,7 @@
                     android:textColor="@color/beige_color"
                     app:buttonTint="@color/beige_color" />
 
-                <android.support.v7.widget.AppCompatCheckBox
+                <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/checkBoxConfirm2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -165,7 +178,7 @@
                     android:textColor="@color/beige_color"
                     app:buttonTint="@color/beige_color" />
 
-                <android.support.v7.widget.AppCompatCheckBox
+                <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/checkBoxConfirm3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -191,4 +204,4 @@
     </FrameLayout>
 
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

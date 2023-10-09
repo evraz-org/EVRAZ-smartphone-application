@@ -1,8 +1,9 @@
 package com.good.code.starts.here.servers;
 
-import android.arch.lifecycle.MutableLiveData;
+import androidx.lifecycle.MutableLiveData;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.bitshares.bitshareswallet.BitsharesApplication;
 
@@ -25,6 +26,7 @@ public class ServersRepository {
 
         Set<String> set = prefs.getStringSet("servers", new HashSet<>());
         for(Server s: servers) {
+            Log.w("levendeev2", s.getAddress() + "/");
             set.add(s.getName() + " " + s.getAddress());
         }
         prefs.edit().putStringSet("servers", set).apply();

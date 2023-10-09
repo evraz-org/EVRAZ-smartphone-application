@@ -18,6 +18,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
+            android:exported="true"
             android:name="com.ngse.ui.NewMainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

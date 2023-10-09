@@ -1,14 +1,12 @@
 package com.bitshares.bitshareswallet.repository;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MediatorLiveData;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import android.text.TextUtils;
-import android.util.Pair;
 
 import com.bitshares.bitshareswallet.BitsharesApplication;
 import com.bitshares.bitshareswallet.room.BitsharesAccountObject;
 import com.bitshares.bitshareswallet.room.BitsharesAssetObject;
-import com.bitshares.bitshareswallet.room.BitsharesBalanceAsset;
 import com.bitshares.bitshareswallet.room.BitsharesDao;
 import com.bitshares.bitshareswallet.room.BitsharesOperationHistory;
 import com.bitshares.bitshareswallet.wallet.BitsharesWalletWraper;

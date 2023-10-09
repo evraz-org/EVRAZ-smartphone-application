@@ -10,11 +10,11 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
+
     }
 }
 apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
+
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -23,15 +23,15 @@ repositories {
 }
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 34
     defaultConfig {
         applicationId "org.evrazcoin.evrazwallet"
-        minSdkVersion 15
-        targetSdkVersion 26
-        versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+        minSdkVersion 19
+        targetSdkVersion 33
+        versionCode 6397
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         setProperty("archivesBaseName", "evrazwallet-"  + versionName)
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         javaCompileOptions {
@@ -49,8 +49,10 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+           // minifyEnabled true
+            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            ext.enableCrashlytics = false
+
         }
         debug {
             applicationIdSuffix ".debug"
@@ -118,53 +120,57 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true;
     }
-    implementation 'com.android.support:multidex:1.0.2'
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    implementation 'com.android.support:support-v4:26.1.0'
-    implementation 'com.android.support:preference-v7:26.1.0'
-    implementation 'com.android.support:preference-v14:26.1.0'
-    implementation 'com.android.support:design:26.1.0'
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.preference:preference:1.2.1'
+    implementation 'androidx.legacy:legacy-preference-v14:1.0.0'
+    implementation 'com.google.android.material:material:1.10.0'
     implementation 'com.google.guava:guava:23.0-android'
     implementation 'com.madgag.spongycastle:core:1.56.0.0'
     implementation 'com.madgag.spongycastle:prov:1.56.0.0'
     implementation 'com.madgag.spongycastle:pkix:1.51.0.0'
     implementation 'com.madgag.spongycastle:pg:1.51.0.0'
     implementation 'org.slf4j:slf4j-android:1.7.25'
-    implementation 'com.google.protobuf:protobuf-java:3.4.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.9.0'
+    implementation 'com.google.protobuf:protobuf-java:3.19.3'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.5.1'
-    implementation 'com.google.code.gson:gson:2.8.1'
+    implementation 'com.google.code.gson:gson:2.9.0'
     implementation 'com.kaopiz:kprogresshud:1.0.2'
     implementation 'com.wang.avi:library:2.1.3'
-    implementation 'com.google.firebase:firebase-core:11.4.2'
+    implementation 'com.google.firebase:firebase-core:21.1.1'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
-    implementation 'com.jakewharton:butterknife:8.8.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-    implementation 'android.arch.persistence.room:runtime:1.0.0-rc1'
-    annotationProcessor "android.arch.persistence.room:compiler:1.0.0-rc1"
-    implementation 'android.arch.lifecycle:extensions:1.0.0-rc1'
-    annotationProcessor "android.arch.lifecycle:compiler:1.0.0-rc1"
+    implementation 'com.jakewharton:butterknife:10.2.3'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
+    implementation 'androidx.room:room-runtime:2.5.2'
+    annotationProcessor 'androidx.room:room-compiler:2.5.2'
+    implementation "androidx.annotation:annotation:1.7.0"
+    implementation "androidx.fragment:fragment:1.6.1"
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    //noinspection LifecycleAnnotationProcessorWithJava8
+    annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.6.2'
     testImplementation 'junit:junit:4.12'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.5'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation project(':graphenej:graphenej')
-    implementation 'org.bitcoinj:bitcoinj-core:0.14.3'
+    implementation 'org.bitcoinj:bitcoinj-core:0.14.4'
 
     implementation 'com.github.franmontiel:LocaleChanger:0.9.2'
 
     implementation 'com.dlazaro66.qrcodereaderview:qrcodereaderview:2.0.3'
     implementation 'me.dm7.barcodescanner:zxing:1.9.8'
 
-    implementation 'com.android.installreferrer:installreferrer:1.1.1'
+    implementation 'com.android.installreferrer:installreferrer:2.2'
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 }
 
 apply plugin: 'com.google.gms.google-services'

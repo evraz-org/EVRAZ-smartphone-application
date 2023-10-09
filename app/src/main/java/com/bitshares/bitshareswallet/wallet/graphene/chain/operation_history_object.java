@@ -1,9 +1,6 @@
 package com.bitshares.bitshareswallet.wallet.graphene.chain;
 
-import android.arch.persistence.room.ColumnInfo;
-
-import java.util.List;
-import java.util.Objects;
+import androidx.room.ColumnInfo;
 
 
 public class operation_history_object {

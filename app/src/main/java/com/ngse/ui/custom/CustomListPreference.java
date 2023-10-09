@@ -1,15 +1,10 @@
 package com.ngse.ui.custom;
 
-import java.util.ArrayList;
-
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 
 
-import android.support.v7.preference.ListPreference;
+import androidx.preference.ListPreference;
 import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
 

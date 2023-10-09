@@ -1,6 +1,6 @@
 package com.good.code.starts.here.servers;
 
-import android.support.v7.util.DiffUtil;
+import androidx.recyclerview.widget.DiffUtil;
 
 import java.util.List;
 

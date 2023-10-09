@@ -57,25 +57,33 @@
     </string-array>
 
     <string-array name="full_node_api_server_options">
-        <item>ws://116.203.99.47:8090</item>
         <item>wss://eu.nodes.bitshares.ws</item>
         <item>wss://bitshares.openledger.info/ws</item>
-        <item>wss://bitshares.nu/ws</item>
-        <item>wss://dallas.bitshares.apasia.tech/ws</item>
         <item>wss://atlanta.bitshares.apasia.tech/ws</item>
-        <item>wss://dex.rnglab.org</item>
-        <item>wss://citadel.li/node</item>
+        <item>wss://dex.iobanker.com/ws</item>
+        <item>wss://btsws.roelandp.nl/ws</item>
+        <item>wss://api.dex.trading/</item>
+        <item>wss://node.xbts.io/ws</item>
+        <item>wss://api.bitshares.bhuz.info/ws</item>
+        <item>wss://api.bts.mobi/ws</item>
+        <item>wss://node.xbts.io/ws</item>
+        <item>wss://public.xbts.io/ws</item>
+        <item>wss://newyork.bitshares.im/ws</item>
     </string-array>
 
     <string-array name="full_node_api_server_values">
-        <item>ws://116.203.99.47:8090</item>
         <item>wss://eu.nodes.bitshares.ws</item>
         <item>wss://bitshares.openledger.info/ws</item>
-        <item>wss://bitshares.nu/ws</item>
-        <item>wss://dallas.bitshares.apasia.tech/ws</item>
         <item>wss://atlanta.bitshares.apasia.tech/ws</item>
-        <item>wss://dex.rnglab.org</item>
-        <item>wss://citadel.li/node</item>
+        <item>wss://dex.iobanker.com/ws</item>
+        <item>wss://btsws.roelandp.nl/ws</item>
+        <item>wss://api.dex.trading/</item>
+        <item>wss://node.xbts.io/ws</item>
+        <item>wss://api.bitshares.bhuz.info/ws</item>
+        <item>wss://api.bts.mobi/ws</item>
+        <item>wss://node.xbts.io/ws</item>
+        <item>wss://public.xbts.io/ws</item>
+        <item>wss://newyork.bitshares.im/ws</item>
     </string-array>
 
 </resources>

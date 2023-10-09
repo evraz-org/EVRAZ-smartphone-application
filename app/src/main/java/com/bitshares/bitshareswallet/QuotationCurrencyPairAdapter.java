@@ -2,8 +2,8 @@ package com.bitshares.bitshareswallet;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v7.preference.PreferenceManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

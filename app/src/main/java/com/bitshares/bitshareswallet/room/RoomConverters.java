@@ -1,7 +1,7 @@
 package com.bitshares.bitshareswallet.room;
 
-import android.arch.persistence.room.TypeConverter;
-import android.arch.persistence.room.TypeConverters;
+import androidx.room.TypeConverter;
+import androidx.room.TypeConverters;
 
 import com.bitshares.bitshareswallet.wallet.account_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.asset_object;
@@ -9,7 +9,6 @@ import com.bitshares.bitshareswallet.wallet.graphene.chain.global_config_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.object_id;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.operations;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 /**
  * Created by lorne on 31/10/2017.

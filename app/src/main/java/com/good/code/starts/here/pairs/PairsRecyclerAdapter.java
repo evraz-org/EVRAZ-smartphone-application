@@ -2,8 +2,8 @@ package com.good.code.starts.here.pairs;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +17,6 @@ import android.widget.Toast;
 import org.evrazcoin.evrazwallet.R;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -56,29 +55,6 @@ public class PairsRecyclerAdapter extends RecyclerView.Adapter<PairsRecyclerAdap
             viewHolder.second.setText(pair[1]);
         }
 
-        CompoundButton.OnCheckedChangeListener onCheckedChangeListener = (buttonView, isChecked) -> {
-            if (isChecked && !onBind) {
-                lastSelected = selected;
-                selected = viewHolder.getAdapterPosition();
-                notifyItemChanged(lastSelected);
-                preferences.edit().putString("quotation_currency_pair", pairs.get(selected)).apply();
-            }
-        };
-
-        viewHolder.radioButton.setOnCheckedChangeListener(onCheckedChangeListener);
-
-        viewHolder.itemView.setOnClickListener(v -> {
-            if (!viewHolder.radioButton.isChecked() && !onBind) {
-                    lastSelected = selected;
-                    selected = viewHolder.getAdapterPosition();
-                    viewHolder.radioButton.setOnCheckedChangeListener(null);
-                    viewHolder.radioButton.setChecked(true);
-                    viewHolder.radioButton.setOnCheckedChangeListener(onCheckedChangeListener);
-                    notifyItemChanged(lastSelected);
-                    preferences.edit().putString("quotation_currency_pair", pairs.get(selected)).apply();
-            }
-        });
-
         viewHolder.delete.setOnClickListener(v -> {
             if(viewHolder.getAdapterPosition() == selected) {
                 Toast.makeText(context, R.string.cannot_delete_selected_pair, Toast.LENGTH_SHORT).show();
@@ -92,8 +68,6 @@ public class PairsRecyclerAdapter extends RecyclerView.Adapter<PairsRecyclerAdap
             }
         });
 
-        onBind = true;
-        viewHolder.radioButton.setChecked(i == selected);
         onBind = false;
     }
 
@@ -116,7 +90,6 @@ public class PairsRecyclerAdapter extends RecyclerView.Adapter<PairsRecyclerAdap
 
         TextView first;
         TextView second;
-        RadioButton radioButton;
         ImageView delete;
 
         public ViewHolder(@NonNull View itemView) {
@@ -124,9 +97,6 @@ public class PairsRecyclerAdapter extends RecyclerView.Adapter<PairsRecyclerAdap
 
             first = itemView.findViewById(R.id.first);
             second = itemView.findViewById(R.id.second);
-
-            radioButton = itemView.findViewById(R.id.radioButton);
-
             delete = itemView.findViewById(R.id.delete);
         }
     }

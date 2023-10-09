@@ -2,8 +2,8 @@ package com.ngse.ui.main;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v7.preference.PreferenceManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,14 +21,12 @@ import com.ngse.utility.Utils;
 import org.evrazcoin.evrazwallet.R;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 
 public class QuotationCurrencyPairAdapter extends RecyclerView.Adapter<QuotationCurrencyPairAdapter.ViewHolder> {
@@ -39,7 +37,6 @@ public class QuotationCurrencyPairAdapter extends RecyclerView.Adapter<Quotation
     public class ViewHolder extends RecyclerView.ViewHolder {
         private View mView;
 //        private View mViewSelected;
-        private ImageView mCurrencyIconView;
         private TextView mViewCurrencyPair;
         private TextView mViewPrice;
         private TextView mView24h;
@@ -48,7 +45,6 @@ public class QuotationCurrencyPairAdapter extends RecyclerView.Adapter<Quotation
             super(itemView);
             mView = itemView;
 //            mViewSelected = mView.findViewById(R.id.viewSelected);
-            mCurrencyIconView = (ImageView) mView.findViewById(R.id.imageViewCurrency);
             mViewCurrencyPair = (TextView) mView.findViewById(R.id.textViewCurrencyPair);
             mViewPrice = (TextView) mView.findViewById(R.id.textViewPrice);
             mView24h = (TextView) mView.findViewById(R.id.textView24h);
@@ -105,12 +101,6 @@ public class QuotationCurrencyPairAdapter extends RecyclerView.Adapter<Quotation
                 utils.getAssetSymbolDisply(marketTicker.base);
 
         holder.mViewCurrencyPair.setText(currencyPair);
-        Integer nId = mapSymbol2Id.get(utils.getAssetSymbolDisply(marketTicker.quote));
-        if (nId == null) {
-            nId = R.mipmap.bts;
-        }
-        holder.mCurrencyIconView.setImageResource(nId);
-
 
         holder.mViewPrice.setText(Utils.formatDecimal(marketTicker.latest));
 

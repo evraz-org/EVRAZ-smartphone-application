@@ -1,9 +1,6 @@
 package com.bitshares.bitshareswallet.wallet.common;
 
-import android.support.annotation.NonNull;
-
-import com.google.common.primitives.UnsignedInteger;
-
+import androidx.annotation.NonNull;
 
 
 public class UnsignedShort extends Number {

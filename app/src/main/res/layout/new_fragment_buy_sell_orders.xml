@@ -1,4 +1,4 @@
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -83,7 +83,7 @@
             android:layout_height="1dp"
             android:background="@color/beige_color" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/buy_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -168,7 +168,7 @@
             android:layout_height="1dp"
             android:background="@color/beige_color" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/sell_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -177,7 +177,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView8" />
     </LinearLayout>
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -190,4 +190,4 @@
         android:background="@color/beige_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

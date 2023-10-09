@@ -1,23 +1,18 @@
 package com.bitshares.bitshareswallet.repository;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MediatorLiveData;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Pair;
 
 import com.bitshares.bitshareswallet.BitsharesApplication;
-import org.evrazcoin.evrazwallet.R;
 import com.bitshares.bitshareswallet.market.MarketTicker;
 import com.bitshares.bitshareswallet.room.BitsharesAssetObject;
-import com.bitshares.bitshareswallet.room.BitsharesBalanceAsset;
 import com.bitshares.bitshareswallet.room.BitsharesDao;
 import com.bitshares.bitshareswallet.room.BitsharesMarketTicker;
 import com.bitshares.bitshareswallet.wallet.BitsharesWalletWraper;
 import com.bitshares.bitshareswallet.wallet.exception.NetworkStatusException;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.asset_object;
-import com.bitshares.bitshareswallet.wallet.graphene.chain.object_id;
-import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
 import com.bituniverse.network.Resource;
 
 import java.util.ArrayList;

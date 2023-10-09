@@ -14,7 +14,7 @@
         android:layout_marginTop="20dp"
         android:orientation="vertical">
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/btn_send"
@@ -198,7 +198,7 @@
                         android:textColor="@color/beige_color"
                         android:textSize="@dimen/send_fragment_text_size" />
 
-                    <android.support.v7.widget.AppCompatSpinner
+                    <androidx.appcompat.widget.AppCompatSpinner
                         android:id="@+id/spinner_unit"
                         android:layout_width="95dp"
                         android:layout_height="wrap_content"
@@ -262,7 +262,7 @@
                         android:textColor="@color/beige_color"
                         android:textSize="@dimen/send_fragment_text_size" />
 
-                    <android.support.v7.widget.AppCompatSpinner
+                    <androidx.appcompat.widget.AppCompatSpinner
                         android:id="@+id/spinner_fee_unit"
                         android:layout_width="95dp"
                         android:layout_height="wrap_content"
@@ -277,7 +277,7 @@
 
             </LinearLayout>
 
-        </android.support.v4.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
         <TextView
             android:id="@+id/btn_send"
