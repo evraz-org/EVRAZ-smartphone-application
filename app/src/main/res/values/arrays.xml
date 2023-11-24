@@ -20,40 +20,24 @@
 
     <string-array name="quotation_currency_pair_options">
         <item>EVRAZ:CNY</item>
+        <item>EVRAZ:JPY</item>
         <item>EVRAZ:EUR</item>
-        <item>EVRAZ:BTC</item>
         <item>EVRAZ:BTS</item>
-        <item>EVRAZ:USD</item>
         <item>EVRAZ:RUBLE</item>
-        <item>BTS:USD</item>
-        <item>BTS:CNY</item>
-        <item>BTC:BTS</item>
-        <item>BTC:USD</item>
-        <item>BTC:CNY</item>
-        <item>ETH:BTS</item>
-        <item>ETH:USD</item>
-        <item>ETH:CNY</item>
-        <item>YOYOW:CNY</item>
-        <item>DASH:BTS</item>
+        <item>EVRAZ:GBP</item>
+        <item>EVRAZ:XBTSX.BTC</item>
+        <item>EVRAZ:XBTSX.USDT</item>
     </string-array>
 
     <string-array name="quotation_currency_pair_values">
         <item>EVRAZ:CNY</item>
+        <item>EVRAZ:JPY</item>
         <item>EVRAZ:EUR</item>
-        <item>EVRAZ:BTC</item>
         <item>EVRAZ:BTS</item>
-        <item>EVRAZ:USD</item>
         <item>EVRAZ:RUBLE</item>
-        <item>BTS:USD</item>
-        <item>BTS:CNY</item>
-        <item>OPEN.BTC:BTS</item>
-        <item>OPEN.BTC:USD</item>
-        <item>OPEN.BTC:CNY</item>
-        <item>OPEN.ETH:BTS</item>
-        <item>OPEN.ETH:USD</item>
-        <item>OPEN.ETH:CNY</item>
-        <item>YOYOW:CNY</item>
-        <item>OPEN.DASH:BTS</item>
+        <item>EVRAZ:GBP</item>
+        <item>EVRAZ:XBTSX.BTC</item>
+        <item>EVRAZ:XBTSX.USDT</item>
     </string-array>
 
     <string-array name="full_node_api_server_options">
