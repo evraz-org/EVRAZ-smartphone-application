@@ -1,6 +1,8 @@
 package com.bitshares.bitshareswallet.wallet;
 
 import android.content.SharedPreferences;
+import android.util.Log;
+
 import androidx.preference.PreferenceManager;
 
 import com.bitshares.bitshareswallet.BitsharesApplication;
@@ -24,12 +26,7 @@ public class FullNodeServerSelect {
 
     public String getServer() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
-        //String strServer = sharedPreferences.getString("full_node_api_server", "autoselect");
-
-        String strServer = "wss://eu.nodes.bitshares.ws";
-
-        return strServer;
-/*
+        String strServer = sharedPreferences.getString("full_node_api_server", "autoselect");
         switch (strServer) {
             case "autoselect":
                 String server = getAutoSelectServer();
@@ -40,8 +37,6 @@ public class FullNodeServerSelect {
                 Log.w("FULL NODE", "?>" + strServer);
                 return strServer;
         }
-
- */
     }
 
     public String getAutoSelectServer() {

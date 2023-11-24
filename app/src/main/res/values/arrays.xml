@@ -41,33 +41,61 @@
     </string-array>
 
     <string-array name="full_node_api_server_options">
-        <item>wss://eu.nodes.bitshares.ws</item>
-        <item>wss://bitshares.openledger.info/ws</item>
-        <item>wss://atlanta.bitshares.apasia.tech/ws</item>
-        <item>wss://dex.iobanker.com/ws</item>
-        <item>wss://btsws.roelandp.nl/ws</item>
         <item>wss://api.dex.trading/</item>
+        <item>wss://api.bts.ai</item>
+        <item>wss://eu.nodes.bitshares.ws</item>
+        <item>wss://master.eu.api.bitshares.org/ws</item>
+        <item>wss://paris.eu.api.bitshares.org/ws</item>
+        <item>wss://amsterdam.eu.api.bitshares.org/ws</item>
+        <item>wss://api.fr.bitsharesdex.com</item>
+        <item>wss://london.eu.api.bitshares.org/ws</item>
+        <item>wss://ws.gdex.top</item>
+        <item>wss://dallas.us.api.bitshares.org/ws</item>
+        <item>wss://seattle.us.api.bitshares.org/ws</item>
+        <item>wss://bts-seoul.clockwork.gr</item>
+        <item>wss://btsfullnode.bangzi.info/ws</item>
+        <item>wss://btsws.roelandp.nl/ws</item>
+        <item>wss://kc-us-dex.xeldal.com/ws</item>
+        <item>wss://master.us.api.bitshares.org/ws</item>
+        <item>wss://new-york.us.api.bitshares.org/ws</item>
+        <item>wss://losangeles.us.api.bitshares.org/ws</item>
+        <item>wss://siliconvalley.us.api.bitshares.org/ws</item>
+        <item>wss://toronto2.ca.api.bitshares.org/ws</item>
+        <item>wss://sydney.au.api.bitshares.org/ws</item>
+        <item>wss://singapore.asia.api.bitshares.org/ws</item>
+        <item>wss://dex.iobanker.com/ws</item>
         <item>wss://node.xbts.io/ws</item>
         <item>wss://api.bitshares.bhuz.info/ws</item>
-        <item>wss://api.bts.mobi/ws</item>
-        <item>wss://node.xbts.io/ws</item>
         <item>wss://public.xbts.io/ws</item>
-        <item>wss://newyork.bitshares.im/ws</item>
     </string-array>
 
     <string-array name="full_node_api_server_values">
-        <item>wss://eu.nodes.bitshares.ws</item>
-        <item>wss://bitshares.openledger.info/ws</item>
-        <item>wss://atlanta.bitshares.apasia.tech/ws</item>
-        <item>wss://dex.iobanker.com/ws</item>
-        <item>wss://btsws.roelandp.nl/ws</item>
         <item>wss://api.dex.trading/</item>
+        <item>wss://api.bts.ai</item>
+        <item>wss://eu.nodes.bitshares.ws</item>
+        <item>wss://master.eu.api.bitshares.org/ws</item>
+        <item>wss://paris.eu.api.bitshares.org/ws</item>
+        <item>wss://amsterdam.eu.api.bitshares.org/ws</item>
+        <item>wss://api.fr.bitsharesdex.com</item>
+        <item>wss://london.eu.api.bitshares.org/ws</item>
+        <item>wss://ws.gdex.top</item>
+        <item>wss://dallas.us.api.bitshares.org/ws</item>
+        <item>wss://seattle.us.api.bitshares.org/ws</item>
+        <item>wss://bts-seoul.clockwork.gr</item>
+        <item>wss://btsfullnode.bangzi.info/ws</item>
+        <item>wss://btsws.roelandp.nl/ws</item>
+        <item>wss://kc-us-dex.xeldal.com/ws</item>
+        <item>wss://master.us.api.bitshares.org/ws</item>
+        <item>wss://new-york.us.api.bitshares.org/ws</item>
+        <item>wss://losangeles.us.api.bitshares.org/ws</item>
+        <item>wss://siliconvalley.us.api.bitshares.org/ws</item>
+        <item>wss://toronto2.ca.api.bitshares.org/ws</item>
+        <item>wss://sydney.au.api.bitshares.org/ws</item>
+        <item>wss://singapore.asia.api.bitshares.org/ws</item>
+        <item>wss://dex.iobanker.com/ws</item>
         <item>wss://node.xbts.io/ws</item>
         <item>wss://api.bitshares.bhuz.info/ws</item>
-        <item>wss://api.bts.mobi/ws</item>
-        <item>wss://node.xbts.io/ws</item>
         <item>wss://public.xbts.io/ws</item>
-        <item>wss://newyork.bitshares.im/ws</item>
     </string-array>
 
 </resources>
