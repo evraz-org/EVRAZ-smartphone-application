@@ -178,7 +178,6 @@ public class BalanceFragment extends BaseFragment {
                 WalletViewModel walletViewModel = ViewModelProviders.of(getActivity()).get(WalletViewModel.class);
                 String selectedCurrency = spinnerConvertBalanceSign.getSelectedItem().toString();
                 walletViewModel.changeCurrency(selectedCurrency);
-                onResume();
                 prefs.edit().putString("currency_setting", selectedCurrency).apply();
             }
 

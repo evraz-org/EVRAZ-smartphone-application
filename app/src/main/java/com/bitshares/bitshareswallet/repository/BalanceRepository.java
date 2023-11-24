@@ -1,5 +1,8 @@
 package com.bitshares.bitshareswallet.repository;
 
+import android.annotation.SuppressLint;
+import android.util.Pair;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -21,6 +24,8 @@ import com.bitshares.bitshareswallet.wallet.graphene.chain.limit_order_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.object_id;
 import com.bituniverse.network.Resource;
 
+import org.evrazcoin.evrazwallet.R;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -41,6 +46,8 @@ public class BalanceRepository {
     private BitsharesDao bitsharesDao;
 
     private MediatorLiveData<Resource<List<BitsharesBalanceAsset>>> result = new MediatorLiveData<>();
+
+    static private boolean bSubscribe = false;
 
     public BalanceRepository() {
         bitsharesDao = BitsharesApplication.getInstance().getBitsharesDatabase().getBitsharesDao();
@@ -64,9 +71,10 @@ public class BalanceRepository {
     }
 
     private boolean shouldFetch(List<BitsharesBalanceAsset> bitsharesBalanceAssetList) {
-        return true;
+        return !bSubscribe || bitsharesBalanceAssetList == null || bitsharesBalanceAssetList.isEmpty();
     }
 
+    @SuppressLint("CheckResult")
     private void fetchFromNetwork(final LiveData<List<BitsharesBalanceAsset>> dbSource) {
         result.addSource(dbSource, newData -> result.setValue(Resource.loading(newData)));
         // 向远程获取数据，并进行存储
@@ -77,10 +85,12 @@ public class BalanceRepository {
                     return 0;
                 }).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(retCode -> {
+                    bSubscribe = true;
                     LiveData<List<BitsharesBalanceAsset>> listLiveData = bitsharesDao.queryBalance(mCurrency);
                     result.removeSource(dbSource);
                     result.addSource(listLiveData, newData -> result.setValue(Resource.success(newData)));
                 }, throwable -> {
+                    bSubscribe = false;
                     result.removeSource(dbSource);
                     result.addSource(dbSource, newData -> result.setValue(Resource.error(throwable.getMessage(), newData)));
                 });
@@ -92,6 +102,8 @@ public class BalanceRepository {
             throw new NetworkStatusException("It can't connect to the server");
         }
 
+
+
         account_object accountObject = BitsharesWalletWraper.getInstance().get_account();
         List<full_account_object> fullAccountObjectList = BitsharesWalletWraper.getInstance().get_full_accounts(
                 Collections.singletonList(accountObject.name),
@@ -99,7 +111,6 @@ public class BalanceRepository {
         );
 
         full_account_object fullAccountObject = fullAccountObjectList.get(0);
-
         Set<object_id<asset_object>> objectIdSet = new HashSet<>();
         for (account_balance_object object : fullAccountObject.balances) {
             objectIdSet.add(object.asset_type);
@@ -152,14 +163,18 @@ public class BalanceRepository {
             bitsharesAssetObjectList.add(bitsharesAssetObject);
         }
 
-        asset_object assetObjectCurrency = BitsharesWalletWraper.getInstance()
-                .list_assets("USD", 1).get(0);
-        BitsharesAssetObject bitsharesAssetObject = new BitsharesAssetObject();
-        bitsharesAssetObject.symbol = assetObjectCurrency.symbol;
-        bitsharesAssetObject.precision = assetObjectCurrency.get_scaled_precision();
-        bitsharesAssetObject.asset_id = assetObjectCurrency.id;
-        bitsharesAssetObjectList.add(bitsharesAssetObject);
-        bitsharesDao.insertAssetObject(bitsharesAssetObjectList);
+        String[] curUnitValues = BitsharesApplication.getInstance().getResources().getStringArray(R.array.bts_currency_unit_values);
+
+        for(String curUnit : curUnitValues) {
+            asset_object assetObjectCurrency = BitsharesWalletWraper.getInstance()
+                    .list_assets(curUnit, 1).get(0);
+            BitsharesAssetObject bitsharesAssetObject = new BitsharesAssetObject();
+            bitsharesAssetObject.symbol = assetObjectCurrency.symbol;
+            bitsharesAssetObject.precision = assetObjectCurrency.get_scaled_precision();
+            bitsharesAssetObject.asset_id = assetObjectCurrency.id;
+            bitsharesAssetObjectList.add(bitsharesAssetObject);
+            bitsharesDao.insertAssetObject(bitsharesAssetObjectList);
+        }
 
         List<BitsharesMarketTicker> bitsharesMarketTickerList = new ArrayList<>();
         for (BitsharesAsset bitsharesAsset : bitsharesAssetList) {
@@ -205,7 +220,7 @@ public class BalanceRepository {
         bitsharesMarketTicker.marketTicker = marketTicker;
         bitsharesMarketTickerList.add(bitsharesMarketTicker);
 
-        bitsharesDao.insertMarketTicker(bitsharesMarketTickerList);
+       // bitsharesDao.insertMarketTicker(bitsharesMarketTickerList);
 
         marketTicker = BitsharesWalletWraper.getInstance().get_ticker(
                 "EUR",
@@ -216,7 +231,7 @@ public class BalanceRepository {
         bitsharesMarketTicker.marketTicker = marketTicker;
         bitsharesMarketTickerList.add(bitsharesMarketTicker);
 
-        bitsharesDao.insertMarketTicker(bitsharesMarketTickerList);
+       // bitsharesDao.insertMarketTicker(bitsharesMarketTickerList);
 
         marketTicker = BitsharesWalletWraper.getInstance().get_ticker(
                 "RUBLE",
