@@ -9,19 +9,19 @@
 6. google-services.json -> This file stores the info when connecting firebase
  
  ### Product info
-#### EVRAZ Wallet is an app for BitShares blockchain on Android devices. The main features are:
+#### EVRAZ Wallet is an app for EVRAZ in BitShares blockchain on Android devices. The main features are:
  
 * **Wallet:**
 1. Check your balance
 2. Check the transaction records
-3. Send your BTS/bitUSD or other properties to others using this wallet.
+3. Send your EVRAZ,bitEUR or other properties to others using this wallet.
  
 * **Quotes:**
  
-1. Check the latest or history price of BTS
+1. Check the latest or history price of EVRAZ
  
 * **Exchange:**
  
-1. Sell/Buy BTS easily
+1. Sell/Buy EVRAZ easily
 2. Check the SELL ORDER and BUY ORDER
 3. Check your open orders
