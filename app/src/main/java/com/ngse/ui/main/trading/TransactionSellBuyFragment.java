@@ -42,6 +42,7 @@ import com.bitshares.bitshareswallet.wallet.exception.NetworkStatusException;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.asset_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.global_property_object;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
+import com.bituniverse.network.Objects;
 import com.bituniverse.network.Status;
 import com.bituniverse.utils.NumericUtil;
 import com.kaopiz.kprogresshud.KProgressHUD;
@@ -518,7 +519,7 @@ public class TransactionSellBuyFragment extends BaseFragment
         Double fee = getFee();
 
         Double val = isBuy() ? total : quantity;
-        if (feeSpinner.getSelectedItem().equals(getTargetAsset())) {
+        if (Objects.equals(feeSpinner.getSelectedItem(), getTargetAsset())) {
             double diff = available - sumDouble(val, fee);
             return diff >= 0.0d;
         } else {
