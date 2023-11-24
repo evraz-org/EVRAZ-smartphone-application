@@ -31,7 +31,7 @@ android {
         applicationId "org.evrazcoin.evrazwallet"
         minSdkVersion 19
         targetSdkVersion 33
-        versionCode 6399
+        versionCode 6400
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         setProperty("archivesBaseName", "evrazwallet-"  + versionName)
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
