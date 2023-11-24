@@ -1,10 +1,9 @@
-package com.bitshares.bitshareswallet.wallet;
+package org.evrazcoin.evrazwallet.wallet;
 
 import android.content.SharedPreferences;
-import android.support.v7.preference.PreferenceManager;
-import android.text.TextUtils;
+import androidx.preference.PreferenceManager;
 
-import com.bitshares.bitshareswallet.BitsharesApplication;
+import org.evrazcoin.evrazwallet.BitsharesApplication;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,12 +36,17 @@ public class FullNodeServerSelect {
 
     public String getServer() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
-        String strServer = sharedPreferences.getString("full_node_api_server", "autoselect");
+        //String strServer = sharedPreferences.getString("full_node_api_server", "autoselect");
+        String strServer = "wss://eu.nodes.bitshares.ws";
+        /*
         if (strServer.equals("autoselect")) {
             return getAutoSelectServer();
         } else {
             return strServer;
         }
+
+         */
+        return strServer;
     }
 
     private String getAutoSelectServer() {

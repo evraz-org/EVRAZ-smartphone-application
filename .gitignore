@@ -59,3 +59,6 @@ freeline/
 freeline_project_description.json
 
 app/signing.gradle
+app/schemas
+
+gradle.properties
