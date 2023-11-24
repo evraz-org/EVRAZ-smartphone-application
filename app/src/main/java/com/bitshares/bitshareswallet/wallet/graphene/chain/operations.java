@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static com.bitshares.bitshareswallet.wallet.graphene.chain.config.GRAPHENE_BLOCKCHAIN_PRECISION;
@@ -135,7 +136,6 @@ public class operations {
         public object_id<account_object> to;
         public asset amount;
         public memo_data memo;
-        //public extensions_type   extensions;
         public Set<types.void_t> extensions;
 
         @Override
@@ -250,7 +250,7 @@ public class operations {
 
         /// If this flag is set the entire order must be filled or the operation is rejected
         public boolean fill_or_kill = false;
-        public Set<types.void_t>   extensions;
+        public Map<String, types.void_t> extensions;
 
         @Override
         public List<authority> get_required_authorities() {
@@ -421,7 +421,7 @@ public class operations {
         object_id<account_object> funding_account; ///< pays fee, collateral, and cover
         asset                     delta_collateral; ///< the amount of collateral to add to the margin position
         asset                     delta_debt; ///< the amount of the debt to be paid off, may be negative to issue new debt
-        Set<types.void_t>         extensions;
+        Map<String, types.void_t>         extensions;
 
         @Override
         public List<authority> get_required_authorities() {
@@ -553,7 +553,7 @@ public class operations {
         public authority owner;
         public authority active;
         public types.account_options options;
-
+        Map<String, types.void_t> extensions;
 
         public long calculate_fee(fee_parameters_type feeParametersType) {
             long lFeeRequired = feeParametersType.basic_fee;

@@ -788,7 +788,7 @@ public class wallet_api {
             op.expiration = new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(365));
         }
         op.fill_or_kill = fillOrKill;
-        op.extensions = new HashSet<>();
+        op.extensions = new HashMap<>();
 
         operations.operation_type operationType = new operations.operation_type();
         operationType.nOperationType = operations.ID_CREATE_LIMIT_ORDER_OPERATION;
