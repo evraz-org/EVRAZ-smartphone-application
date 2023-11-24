@@ -6,20 +6,23 @@ def versionBuild = 1
 
 buildscript {
     repositories {
+        google()
+        jcenter()
         maven { url 'https://maven.fabric.io/public' }
     }
 
     dependencies {
-
+        classpath 'io.fabric.tools:gradle:1.31.2'
     }
 }
 apply plugin: 'com.android.application'
 
 
 repositories {
+    google()
+    jcenter()
     maven { url 'https://maven.fabric.io/public' }
     maven { url "https://jitpack.io" }
-    google()
 }
 
 android {
@@ -28,7 +31,7 @@ android {
         applicationId "org.evrazcoin.evrazwallet"
         minSdkVersion 19
         targetSdkVersion 33
-        versionCode 6398
+        versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         setProperty("archivesBaseName", "evrazwallet-"  + versionName)
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -134,6 +137,12 @@ dependencies {
     implementation 'androidx.legacy:legacy-preference-v14:1.0.0'
     implementation 'com.google.android.material:material:1.10.0'
     implementation 'com.google.guava:guava:23.0-android'
+    implementation('com.crashlytics.sdk.android:crashlytics:2.10.1@aar') {
+        transitive = true
+    }
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.google.guava:guava:24.1-jre'
     implementation 'com.madgag.spongycastle:core:1.56.0.0'
     implementation 'com.madgag.spongycastle:prov:1.56.0.0'
     implementation 'com.madgag.spongycastle:pkix:1.51.0.0'
@@ -158,6 +167,23 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     //noinspection LifecycleAnnotationProcessorWithJava8
     annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.6.2'
+    implementation 'com.google.protobuf:protobuf-java:3.4.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.5.1'
+    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.kaopiz:kprogresshud:1.0.2'
+    implementation 'com.wang.avi:library:2.1.3'
+    implementation 'com.google.firebase:firebase-core:16.0.5'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    implementation 'android.arch.persistence.room:runtime:1.1.1'
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
+    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
     testImplementation 'junit:junit:4.12'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.5'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'

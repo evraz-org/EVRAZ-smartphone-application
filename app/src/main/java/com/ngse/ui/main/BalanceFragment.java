@@ -1,13 +1,16 @@
 package com.ngse.ui.main;
 
-import androidx.lifecycle.ViewModelProviders;
+import static com.bitshares.bitshareswallet.BitsharesApplication.LOCALE_EN;
+import static com.bitshares.bitshareswallet.BitsharesApplication.LOCALE_ES;
+import static com.bitshares.bitshareswallet.BitsharesApplication.LOCALE_NL;
+import static com.bitshares.bitshareswallet.BitsharesApplication.LOCALE_RU;
+import static com.bitshares.bitshareswallet.BitsharesApplication.LOCALE_ZH;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +19,10 @@ import android.widget.ArrayAdapter;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.preference.PreferenceManager;
 
 import com.bitshares.bitshareswallet.BaseFragment;
 import com.bitshares.bitshareswallet.BitsharesApplication;
@@ -32,12 +39,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.bitshares.bitshareswallet.BitsharesApplication.LOCALE_EN;
-import static com.bitshares.bitshareswallet.BitsharesApplication.LOCALE_ES;
-import static com.bitshares.bitshareswallet.BitsharesApplication.LOCALE_NL;
-import static com.bitshares.bitshareswallet.BitsharesApplication.LOCALE_RU;
-import static com.bitshares.bitshareswallet.BitsharesApplication.LOCALE_ZH;
 
 
 public class BalanceFragment extends BaseFragment {
@@ -77,9 +78,10 @@ public class BalanceFragment extends BaseFragment {
                             processShowdata(resourceBalanceList.data);
                             break;
                         case LOADING:
-                            if (resourceBalanceList.data != null && resourceBalanceList.data.size() != 0) {
-                                processShowdata(resourceBalanceList.data);
-                            }
+                            //TODO: maybe useless call
+//                            if (resourceBalanceList.data != null && resourceBalanceList.data.size() != 0) {
+//                                processShowdata(resourceBalanceList.data);
+//                            }
                             break;
                     }
                 });

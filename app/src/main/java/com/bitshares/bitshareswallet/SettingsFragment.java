@@ -1,22 +1,15 @@
 package com.bitshares.bitshareswallet;
 
 
-import android.app.Activity;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.good.code.starts.here.pairs.PairsFragment;
-
 import com.good.code.starts.here.servers.ServersFragment;
 
 import org.evrazcoin.evrazwallet.R;
-
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
