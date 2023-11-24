@@ -1,8 +1,8 @@
 // Manifest version information!
 def versionMajor = 0
 def versionMinor = 5
-def versionPatch = 3
-def versionBuild = 2
+def versionPatch = 5
+def versionBuild = 4
 
 buildscript {
     repositories {
@@ -31,7 +31,7 @@ android {
         applicationId "org.evrazcoin.evrazwallet"
         minSdkVersion 19
         targetSdkVersion 33
-        versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+        versionCode 6399
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         setProperty("archivesBaseName", "evrazwallet-"  + versionName)
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'

@@ -13,6 +13,7 @@ dependencies {
     implementation group: "org.tukaani", name: "xz", version: "1.6"
 }
 
+
 android {
     compileSdkVersion 31
    // buildToolsVersion "26.0.2"
@@ -22,7 +23,7 @@ android {
         targetSdkVersion 31
         versionCode 4
         versionName "0.4.2"
-        multiDexEnabled true
+
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
