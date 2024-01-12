@@ -59,7 +59,7 @@
                         <EditText
                             android:id="@+id/editTextAccountName"
                             style="@style/EvrazEditTextStyle"
-                            android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-"
+                            android:digits="0123456789abcdefghijklmnopqrstuvwxyz-"
                             android:gravity="center_vertical"
                             android:inputType="textNoSuggestions" />
 
