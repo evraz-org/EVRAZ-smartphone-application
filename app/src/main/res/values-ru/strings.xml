@@ -258,4 +258,9 @@
     <string name="Public_key">Публичный ключ</string>
     <string name="Private_key">Приватный ключ</string>
     <string name="show_keys">Ключи</string>
+
+    <string name="annual">Годовой подписчик</string>
+    <string name="basic">Обычный пользователь</string>
+    <string name="lifetime">Пожизненный член</string>
+    <string name="unknown">Неизвестный пользователь</string>
 </resources>

@@ -236,4 +236,9 @@
     <string name="menu_lang_zh">Chi</string>
 
     <string name="exchange_rate">Rate: %.7f %s/%s</string>
+
+    <string name="annual">Suscriptor anual</string>
+    <string name="basic">Miembro básico</string>
+    <string name="lifetime">Miembro vitalicio</string>
+    <string name="unknown">Miembro desconocido</string>
 </resources>

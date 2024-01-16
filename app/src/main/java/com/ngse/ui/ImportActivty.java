@@ -1,22 +1,29 @@
 package com.ngse.ui;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.bitshares.bitshareswallet.wallet.BitsharesWalletWraper;
+import com.bitshares.bitshareswallet.wallet.account_object;
 import com.bitshares.bitshareswallet.wallet.common.ConvertUriToFilePath;
 import com.bitshares.bitshareswallet.wallet.common.ErrorCode;
 import com.franmontiel.localechanger.LocaleChanger;
@@ -26,6 +33,13 @@ import org.evrazcoin.evrazwallet.R;
 
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ImportActivty extends AppCompatActivity {
     private Toolbar mToolbar;
@@ -40,6 +54,95 @@ public class ImportActivty extends AppCompatActivity {
     private static final int SELECT_FILE_CODE = 1;
 
     private static final int REQUEST_PERMISSION_READ_EXTERNAL_STORAGE = 1;
+
+    private static final class AccountNameWatcher implements TextWatcher {
+
+        private TextView mTextView;
+        private Activity mActivity;
+
+        private ExecutorService mExecutorService;
+
+        AccountNameWatcher(Activity activity) {
+            mActivity = activity;
+            mTextView = mActivity.findViewById(R.id.textViewAccountInfo);
+            mExecutorService = Executors.newSingleThreadExecutor();
+        }
+
+        private String getStatus(account_object account) {
+            if (account == null) return mActivity.getString(R.string.unknown);
+            if (Objects.equals(account.lifetime_referrer, account.id.toString())) return mActivity.getString(R.string.lifetime);
+
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+            try {
+                long exp = Objects.requireNonNull(sdf.parse(account.membership_expiration_date)).getTime();
+                long now = new Date().getTime();
+                if (exp < now) return mActivity.getString(R.string.basic);
+            } catch (Exception ignored) {
+            }
+            return mActivity.getString(R.string.annual);
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            mExecutorService.execute(new Runnable() {
+                private account_object mAcc = null;
+                private int mRet = 1;
+
+                @Override
+                public void run() {
+                    if (s.length() == 0) {
+                        mActivity.runOnUiThread(() -> {
+                            mTextView.setVisibility(View.GONE);
+                        });
+                        return;
+                    }
+
+                    try {
+                        mRet = BitsharesWalletWraper.getInstance().build_connect();
+                        if (mRet == 0) {
+                            mAcc = BitsharesWalletWraper.getInstance().get_account_object(s.toString());
+                        }
+                    } catch (Exception e) {
+                        mRet = 1;
+                    }
+
+                    mActivity.runOnUiThread(() -> {
+                        if (mRet != 0) {
+                            mTextView.setText(R.string.import_activity_connect_failed);
+                            mTextView.setTextColor(mActivity.getResources().getColor(R.color.red));
+                            mTextView.setVisibility(View.VISIBLE);
+                            return;
+                        }
+
+                        if (mAcc != null) {
+                            mTextView.setText(String.format(Locale.getDefault(), getStatus(mAcc) + " #%d", mAcc.id.get_instance()));
+                            mTextView.setTextColor(mActivity.getResources().getColor(R.color.quotation_top_green));
+                            mTextView.setVisibility(View.VISIBLE);
+                        } else {
+                            mTextView.setText(mActivity.getResources().getString(R.string.import_activity_account_invalid));
+                            mTextView.setTextColor(mActivity.getResources().getColor(R.color.red));
+                            mTextView.setVisibility(View.VISIBLE);
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    private AccountNameWatcher mAccountNameWatcher;
+    private EditText mAccountNameEdit;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -75,6 +178,10 @@ public class ImportActivty extends AppCompatActivity {
                 .setCancellable(false)
                 .setAnimationSpeed(2)
                 .setDimAmount(0.5f);
+
+        mAccountNameWatcher = new AccountNameWatcher(this);
+        mAccountNameEdit = findViewById(R.id.editTextAccountName);
+        mAccountNameEdit.addTextChangedListener(mAccountNameWatcher);
 
         findViewById(R.id.buttonImport).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,6 +254,12 @@ public class ImportActivty extends AppCompatActivity {
             default:
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        mAccountNameEdit.removeTextChangedListener(mAccountNameWatcher);
+        super.onDestroy();
     }
 
     @Override

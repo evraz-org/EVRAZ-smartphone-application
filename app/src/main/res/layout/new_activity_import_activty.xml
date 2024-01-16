@@ -66,6 +66,17 @@
                     android:gravity="center_vertical"
                     android:inputType="text" />
 
+                <TextView
+                    android:id="@+id/textViewAccountInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="4dp"
+                    android:textColor="@color/quotation_top_green"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
+
             </LinearLayout>
 
             <LinearLayout
