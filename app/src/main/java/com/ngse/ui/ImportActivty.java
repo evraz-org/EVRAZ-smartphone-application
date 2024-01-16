@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -59,11 +60,13 @@ public class ImportActivty extends AppCompatActivity {
 
         private TextView mTextView;
         private Activity mActivity;
+        private EditText mEdit;
 
         private ExecutorService mExecutorService;
 
         AccountNameWatcher(Activity activity) {
             mActivity = activity;
+            mEdit = mActivity.findViewById(R.id.editTextAccountName);
             mTextView = mActivity.findViewById(R.id.textViewAccountInfo);
             mExecutorService = Executors.newSingleThreadExecutor();
         }
@@ -104,6 +107,7 @@ public class ImportActivty extends AppCompatActivity {
                 public void run() {
                     if (s.length() == 0) {
                         mActivity.runOnUiThread(() -> {
+                            mEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                             mTextView.setVisibility(View.GONE);
                         });
                         return;
@@ -120,6 +124,7 @@ public class ImportActivty extends AppCompatActivity {
 
                     mActivity.runOnUiThread(() -> {
                         if (mRet != 0) {
+                            mEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.cross_circle, 0);
                             mTextView.setText(R.string.import_activity_connect_failed);
                             mTextView.setTextColor(mActivity.getResources().getColor(R.color.red));
                             mTextView.setVisibility(View.VISIBLE);
@@ -127,10 +132,12 @@ public class ImportActivty extends AppCompatActivity {
                         }
 
                         if (mAcc != null) {
+                            mEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.checkmark_circle, 0);
                             mTextView.setText(String.format(Locale.getDefault(), getStatus(mAcc) + " #%d", mAcc.id.get_instance()));
                             mTextView.setTextColor(mActivity.getResources().getColor(R.color.quotation_top_green));
                             mTextView.setVisibility(View.VISIBLE);
                         } else {
+                            mEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.cross_circle, 0);
                             mTextView.setText(mActivity.getResources().getString(R.string.import_activity_account_invalid));
                             mTextView.setTextColor(mActivity.getResources().getColor(R.color.red));
                             mTextView.setVisibility(View.VISIBLE);
