@@ -273,4 +273,5 @@
     <string name="basic">Basic member</string>
     <string name="lifetime">Lifetime member</string>
     <string name="unknown">Unknown member</string>
+    <string name="hidden">hidden assets</string>
 </resources>

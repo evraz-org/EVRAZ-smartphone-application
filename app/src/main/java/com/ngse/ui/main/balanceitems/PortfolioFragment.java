@@ -1,9 +1,15 @@
 package com.ngse.ui.main.balanceitems;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,22 +23,31 @@ import android.widget.TextView;
 import com.bitshares.bitshareswallet.BaseFragment;
 import com.bitshares.bitshareswallet.room.BitsharesBalanceAsset;
 import com.bitshares.bitshareswallet.viewmodel.WalletViewModel;
+import com.google.android.material.tabs.TabLayout;
 import com.ngse.utility.Utils;
 
 import org.evrazcoin.evrazwallet.R;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.ButterKnife;
 
 
 public class PortfolioFragment extends BaseFragment {
 
+    private static final String PORTFOLIO_PREFERENCES = "PORTFOLIO_PREFERENCES";
+    private static final String FILTER_PORTFOLIO = "filterPortfolio";
+
     public static final String TAG = PortfolioFragment.class.getName();
     private BalancesAdapter mBalancesAdapter;
 
     private OnFragmentInteractionListener mListener;
     private MenuItem backMenuItem;
+
+    private TabLayout tabs;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -58,6 +73,10 @@ public class PortfolioFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
 
+        updateData();
+    }
+
+    private void updateData() {
         WalletViewModel walletViewModel = ViewModelProviders.of(getActivity()).get(WalletViewModel.class);
         walletViewModel.getBalanceData().observe(
                 this, resourceBalanceList -> {
@@ -85,10 +104,58 @@ public class PortfolioFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.new_fragment_portfolio, container, false);
+        tabs = view.findViewById(R.id.tabs);
+
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mBalancesAdapter = new BalancesAdapter();
+        mBalancesAdapter.tabIndex = tabs.getSelectedTabPosition();
+        mBalancesAdapter.filterPortfolio = strSetToIntSet(getContext().getSharedPreferences(PORTFOLIO_PREFERENCES, MODE_PRIVATE).getStringSet(FILTER_PORTFOLIO, new HashSet<>()));
+
         recyclerView.setAdapter(mBalancesAdapter);
+
+        ItemTouchHelper.Callback callback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT){
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int pos = viewHolder.getAdapterPosition();
+                int id = mBalancesAdapter.bitsharesBalanceAssetList.get(pos).hashCode();
+
+                if(tabs.getSelectedTabPosition() == 0) {
+                    mBalancesAdapter.filterPortfolio.add(id);
+                } else {
+                    mBalancesAdapter.filterPortfolio.remove(id);
+                }
+
+                mBalancesAdapter.bitsharesBalanceAssetList.remove(pos);
+                mBalancesAdapter.notifyItemRemoved(pos);
+            }
+        };
+
+        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                mBalancesAdapter.tabIndex = tabs.getSelectedTabPosition();
+                updateData();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(recyclerView);
 
         ButterKnife.bind(this, view);
         return view;
@@ -124,7 +191,29 @@ public class PortfolioFragment extends BaseFragment {
     @Override
     public void onDetach() {
         super.onDetach();
+
+        getContext().getSharedPreferences(PORTFOLIO_PREFERENCES, MODE_PRIVATE)
+                .edit()
+                .putStringSet(FILTER_PORTFOLIO, intSetToStrSet(mBalancesAdapter.filterPortfolio))
+                .apply();
+
         mListener = null;
+    }
+
+    private Set<Integer> strSetToIntSet(Set<String> stringSet) {
+        Set<Integer> result = new HashSet<>();
+        for (String item : stringSet) {
+            result.add(Integer.valueOf(item));
+        }
+        return result;
+    }
+
+    private Set<String> intSetToStrSet(Set<Integer> integerSet) {
+        Set<String> result = new HashSet<>(integerSet.size());
+        for(Integer integer : integerSet) {
+            result.add(integer.toString());
+        }
+        return result;
     }
 
     /**
@@ -167,6 +256,25 @@ public class PortfolioFragment extends BaseFragment {
 
     class BalancesAdapter extends RecyclerView.Adapter<BalanceItemViewHolder> {
         private List<BitsharesBalanceAsset> bitsharesBalanceAssetList;
+        Set<Integer> filterPortfolio = new HashSet<>();
+        int tabIndex = 0;
+
+        private List<BitsharesBalanceAsset> filter(List<BitsharesBalanceAsset> balanceAssets) {
+
+            List<BitsharesBalanceAsset> result = new ArrayList<>();
+            for (BitsharesBalanceAsset item : balanceAssets) {
+                if (tabIndex == 0) {
+                    if (!filterPortfolio.contains(item.hashCode())) {
+                        result.add(item);
+                    }
+                } else {
+                    if (filterPortfolio.contains(item.hashCode())) {
+                        result.add(item);
+                    }
+                }
+            }
+            return result;
+        }
 
         @Override
         public BalanceItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -197,7 +305,7 @@ public class PortfolioFragment extends BaseFragment {
         }
 
         public void notifyBalancesDataChanged(List<BitsharesBalanceAsset> bitsharesBalanceAssetList) {
-            this.bitsharesBalanceAssetList = bitsharesBalanceAssetList;
+            this.bitsharesBalanceAssetList = filter(bitsharesBalanceAssetList);
 
             notifyDataSetChanged();
         }

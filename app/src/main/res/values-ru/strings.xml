@@ -263,4 +263,5 @@
     <string name="basic">Обычный пользователь</string>
     <string name="lifetime">Пожизненный член</string>
     <string name="unknown">Неизвестный пользователь</string>
+    <string name="hidden">скрытые активы</string>
 </resources>

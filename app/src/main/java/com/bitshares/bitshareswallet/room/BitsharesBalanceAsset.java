@@ -1,11 +1,13 @@
 package com.bitshares.bitshareswallet.room;
 
+import com.google.common.base.Objects;
+
 /**
  * Created by lorne on 31/10/2017.
  */
 
 public class BitsharesBalanceAsset {
-    int id;
+    public int id;
     public long amount;
     public String base;
     public long base_precision;
@@ -30,5 +32,10 @@ public class BitsharesBalanceAsset {
                 "balance =" + balance + "\n" +
                 "orders =" + orders + "\n" +
                 "currency_precision =" + currency_precision + "\n";
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(base, quote);
     }
 }
