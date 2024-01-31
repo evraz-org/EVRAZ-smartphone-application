@@ -17,8 +17,15 @@ public class TransactionSellBuyRecyclerViewAdapter extends RecyclerView.Adapter<
     private List<Order> list;
     private boolean reversePosition = false;
 
-    public TransactionSellBuyRecyclerViewAdapter() {
+    enum Type {
+        BUY,
+        SELL
+    }
 
+    private Type mType;
+
+    public TransactionSellBuyRecyclerViewAdapter(Type type) {
+        mType = type;
     }
 
     public void setList(List<Order> list) {
@@ -57,6 +64,16 @@ public class TransactionSellBuyRecyclerViewAdapter extends RecyclerView.Adapter<
             this.view = view;
             priceTextView = (TextView) view.findViewById(R.id.price_text);
             btsTextView = (TextView) view.findViewById(R.id.bts_text);
+
+            switch (mType) {
+                case BUY:
+                    priceTextView.setTextColor(view.getContext().getResources().getColor(R.color.quotation_top_green));
+                    break;
+
+                case SELL:
+                    btsTextView.setTextColor(view.getContext().getResources().getColor(R.color.red));
+                    break;
+            }
         }
 
         public void update(Order order) {

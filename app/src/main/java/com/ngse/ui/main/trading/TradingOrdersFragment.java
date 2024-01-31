@@ -1,5 +1,8 @@
 package com.ngse.ui.main.trading;
 
+import static com.ngse.ui.main.trading.TransactionSellBuyRecyclerViewAdapter.Type.BUY;
+import static com.ngse.ui.main.trading.TransactionSellBuyRecyclerViewAdapter.Type.SELL;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -242,12 +245,12 @@ public class TradingOrdersFragment extends BaseFragment
 
         buyRecyclerView = view.findViewById(R.id.buy_recycler);
         buyRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        buyRecyclerViewAdapter = new TransactionSellBuyRecyclerViewAdapter();
+        buyRecyclerViewAdapter = new TransactionSellBuyRecyclerViewAdapter(BUY);
         buyRecyclerView.setAdapter(buyRecyclerViewAdapter);
         buyRecyclerView.setItemAnimator(null);
 
         sellRecyclerView = view.findViewById(R.id.sell_recycler);
-        sellRecyclerViewAdapter = new TransactionSellBuyRecyclerViewAdapter();
+        sellRecyclerViewAdapter = new TransactionSellBuyRecyclerViewAdapter(SELL);
         sellRecyclerView.setAdapter(sellRecyclerViewAdapter);
         sellRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         sellRecyclerView.setItemAnimator(null);
