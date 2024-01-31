@@ -1,4 +1,6 @@
 package com.good.code.starts.here.pairs;
+import static com.ngse.ui.main.QuotationCurrencyPairAdapter.CURRENCY_PAIRS;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -35,7 +37,7 @@ public class PairsRecyclerAdapter extends RecyclerView.Adapter<PairsRecyclerAdap
     public PairsRecyclerAdapter(Context context) {
         this.context = context;
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        pairs = new ArrayList<>(preferences.getStringSet("pairs", new HashSet<>()));
+        pairs = new ArrayList<>(preferences.getStringSet(CURRENCY_PAIRS, new HashSet<>()));
         selected = pairs.indexOf(preferences.getString("quotation_currency_pair", "BTS:USD"));
     }
 
@@ -62,9 +64,9 @@ public class PairsRecyclerAdapter extends RecyclerView.Adapter<PairsRecyclerAdap
                 String currPair = pairs.get(viewHolder.getAdapterPosition());
                 pairs.remove(viewHolder.getAdapterPosition());
                 notifyItemRemoved(viewHolder.getAdapterPosition());
-                Set<String> temp = preferences.getStringSet("pairs", new HashSet<>());
+                Set<String> temp = preferences.getStringSet(CURRENCY_PAIRS, new HashSet<>());
                 temp.remove(currPair);
-                preferences.edit().putStringSet("pairs", temp).apply();
+                preferences.edit().putStringSet(CURRENCY_PAIRS, temp).apply();
             }
         });
 
@@ -77,10 +79,10 @@ public class PairsRecyclerAdapter extends RecyclerView.Adapter<PairsRecyclerAdap
     }
 
     public void add(String pairStr) {
-        Set<String> temp = preferences.getStringSet("pairs", new HashSet<>());
+        Set<String> temp = preferences.getStringSet(CURRENCY_PAIRS, new HashSet<>());
         if(temp.add(pairStr)) {
             pairs.add(pairStr);
-            preferences.edit().putStringSet("pairs", temp).apply();
+            preferences.edit().putStringSet(CURRENCY_PAIRS, temp).apply();
         } else {
             Toast.makeText(context, R.string.add_pair_exist, Toast.LENGTH_SHORT).show();
         }

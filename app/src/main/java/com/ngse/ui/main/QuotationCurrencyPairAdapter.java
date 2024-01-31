@@ -1,14 +1,16 @@
 package com.ngse.ui.main;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.bitshares.bitshareswallet.BitsharesApplication;
@@ -27,9 +29,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 
 public class QuotationCurrencyPairAdapter extends RecyclerView.Adapter<QuotationCurrencyPairAdapter.ViewHolder> {
+
+    public static final String CURRENCY_PAIRS = "pairs";
+
     public interface OnItemClickListner {
         void onItemClick(View view, int position);
     }
@@ -76,7 +82,6 @@ public class QuotationCurrencyPairAdapter extends RecyclerView.Adapter<Quotation
         mapSymbol2Id.put("OCT", R.mipmap.oct);
         mapSymbol2Id.put("YOYOW", R.mipmap.yoyow);
         mapSymbol2Id.put("DASH", R.mipmap.dash);
-
     }
 
     @Override
@@ -164,8 +169,8 @@ public class QuotationCurrencyPairAdapter extends RecyclerView.Adapter<Quotation
     }
 
     public void notifyDataUpdated(List<BitsharesMarketTicker> marketTickerList) {
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
-        List<String> currecnyPairSet = new ArrayList<>(prefs.getStringSet("pairs", new HashSet<>()));
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
+        List<String> currecnyPairSet = new ArrayList<>(prefs.getStringSet(CURRENCY_PAIRS, new HashSet<>()));
 //        currecnyPairSet.addAll(arrValues);
         bitsharesMarketTickerList = new ArrayList<>();
         for (BitsharesMarketTicker bitsharesMarketTicker : marketTickerList) {
@@ -199,5 +204,29 @@ public class QuotationCurrencyPairAdapter extends RecyclerView.Adapter<Quotation
         }
 
         return bitsharesMarketTickerList.get(selected);
+    }
+
+    public void addCurrencyPair(String pairStr) {
+       SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
+        Set<String> pars = prefs.getStringSet(CURRENCY_PAIRS, new HashSet<>());
+        Set<String> temp = new HashSet<>(pars);
+        if(temp.add(pairStr)) {
+            prefs.edit().putStringSet(CURRENCY_PAIRS, temp).apply();
+        } else {
+            Toast.makeText(BitsharesApplication.getInstance(), R.string.add_pair_exist, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void removeCurrencyPair(int pos) {
+        BitsharesMarketTicker bitsharesMarketTicker = bitsharesMarketTickerList.get(pos);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
+        Set<String> pars = prefs.getStringSet(CURRENCY_PAIRS, new HashSet<>());
+        Set<String> temp = new HashSet<>(pars);
+        temp.remove(bitsharesMarketTicker.marketTicker.quote + ":" + bitsharesMarketTicker.marketTicker.base);
+        prefs.edit().putStringSet(CURRENCY_PAIRS, temp).apply();
+
+        bitsharesMarketTickerList.remove(pos);
+        notifyItemRemoved(pos);
     }
 }

@@ -1,5 +1,7 @@
 package com.ngse.ui;
 
+import static com.ngse.ui.main.QuotationCurrencyPairAdapter.CURRENCY_PAIRS;
+
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -64,6 +66,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.ngse.ui.main.KeysAdapter;
 import com.ngse.ui.main.MainWalletFragment;
+import com.ngse.ui.main.QuotationCurrencyPairAdapter;
 import com.ngse.ui.main.balanceitems.OpenOrdersFragment;
 import com.ngse.ui.main.balanceitems.PortfolioFragment;
 import com.ngse.ui.main.balanceitems.TransactionsFragment;
@@ -192,13 +195,13 @@ public class NewMainActivity extends AppCompatActivity
         updateTitle();
         setTitleVisible(false);
 
-        List<String> arrValues = new ArrayList<>(prefs.getStringSet("pairs", new HashSet<>()));
+        List<String> arrValues = new ArrayList<>(prefs.getStringSet(CURRENCY_PAIRS, new HashSet<>()));
         if(arrValues.size() == 0) {
             String[] fromRes = getResources().getStringArray(R.array.quotation_currency_pair_values);
             Set<String> pairsSet = new HashSet<>();
             Collections.addAll(pairsSet, fromRes);
             Collections.addAll(arrValues, fromRes);
-            prefs.edit().putStringSet("pairs", pairsSet).apply();
+            prefs.edit().putStringSet(CURRENCY_PAIRS, pairsSet).apply();
         }
 
         mLayoutTitle.setOnClickListener(new View.OnClickListener() {
@@ -476,13 +479,13 @@ public class NewMainActivity extends AppCompatActivity
         Resources res = getResources();
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
 
-        List<String> arrValues = new ArrayList<>(prefs.getStringSet("pairs", new HashSet<>()));
+        List<String> arrValues = new ArrayList<>(prefs.getStringSet(CURRENCY_PAIRS, new HashSet<>()));
         if(arrValues.size() == 0) {
             String[] fromRes = getResources().getStringArray(R.array.quotation_currency_pair_values);
             Set<String> pairsSet = new HashSet<>();
             Collections.addAll(pairsSet, fromRes);
             Collections.addAll(arrValues, fromRes);
-            prefs.edit().putStringSet("pairs", pairsSet).apply();
+            prefs.edit().putStringSet(CURRENCY_PAIRS, pairsSet).apply();
         }
 
         String strCurrencySetting = prefs.getString("quotation_currency_pair", "BTS:USD");

@@ -13,7 +13,8 @@
         android:paddingTop="24dp"
         android:text="@string/exchange_title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints" />
 
     <View
         android:layout_width="match_parent"
@@ -27,9 +28,25 @@
         android:layout_height="0dp"
         android:layout_marginTop="1dp"
         android:background="@color/dark_gray_color"
-        tools:listitem="@layout/new_recyclerview_item_currency_pair"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titleExchange" />
+        app:layout_constraintTop_toBottomOf="@id/titleExchange"
+        app:layout_constraintVertical_bias="1.0"
+        tools:listitem="@layout/new_recyclerview_item_currency_pair" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addExchange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:clickable="true"
+        android:focusable="true"
+        app:backgroundTint="@color/quotation_top_green"
+        app:srcCompat="@drawable/ic_plus"
+        android:contentDescription="@string/add" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

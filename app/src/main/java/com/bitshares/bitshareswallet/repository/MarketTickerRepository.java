@@ -1,5 +1,7 @@
 package com.bitshares.bitshareswallet.repository;
 
+import static com.ngse.ui.main.QuotationCurrencyPairAdapter.CURRENCY_PAIRS;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import android.content.SharedPreferences;
@@ -89,7 +91,7 @@ public class MarketTickerRepository {
         bitsharesAssetObjectList.clear();
         List<BitsharesMarketTicker> bitsharesMarketTickerList = new ArrayList<>();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
-        ArrayList<String> pairs = new ArrayList<>(preferences.getStringSet("pairs", new HashSet<>()));
+        ArrayList<String> pairs = new ArrayList<>(preferences.getStringSet(CURRENCY_PAIRS, new HashSet<>()));
 
         for (String strValue : pairs) {
             String[] strAssetArray = strValue.split(":");
