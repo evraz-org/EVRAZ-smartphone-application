@@ -32,13 +32,14 @@ import com.bitshares.bitshareswallet.wallet.BitsharesWalletWraper;
 import com.bitshares.bitshareswallet.wallet.Broadcast;
 import com.bitshares.bitshareswallet.wallet.exception.NetworkStatusException;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
-import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.evrazcoin.evrazwallet.R;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+
+import io.github.rupinderjeet.kprogresshud.KProgressHUD;
 
 
 public class OpenOrdersFragment extends BaseFragment

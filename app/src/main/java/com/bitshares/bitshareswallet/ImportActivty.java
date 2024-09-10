@@ -18,12 +18,13 @@ import android.widget.TextView;
 import com.bitshares.bitshareswallet.wallet.BitsharesWalletWraper;
 import com.bitshares.bitshareswallet.wallet.common.ConvertUriToFilePath;
 import com.bitshares.bitshareswallet.wallet.common.ErrorCode;
-import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.evrazcoin.evrazwallet.R;
 
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
+import io.github.rupinderjeet.kprogresshud.KProgressHUD;
 
 public class ImportActivty extends AppCompatActivity {
     private Toolbar mToolbar;

@@ -45,7 +45,6 @@ import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
 import com.bituniverse.network.Objects;
 import com.bituniverse.network.Status;
 import com.bituniverse.utils.NumericUtil;
-import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.evrazcoin.evrazwallet.R;
 
@@ -58,6 +57,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import io.github.rupinderjeet.kprogresshud.KProgressHUD;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.exceptions.Exceptions;

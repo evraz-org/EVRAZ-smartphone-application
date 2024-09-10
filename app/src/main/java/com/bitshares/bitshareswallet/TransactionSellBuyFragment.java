@@ -36,7 +36,6 @@ import com.bitshares.bitshareswallet.wallet.graphene.chain.global_property_objec
 import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
 import com.bituniverse.network.Status;
 import com.bituniverse.utils.NumericUtil;
-import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.evrazcoin.evrazwallet.R;
 
@@ -44,6 +43,8 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
+
+import io.github.rupinderjeet.kprogresshud.KProgressHUD;
 
 
 public class TransactionSellBuyFragment extends BaseFragment

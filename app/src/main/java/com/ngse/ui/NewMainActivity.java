@@ -63,7 +63,6 @@ import com.bitshares.bitshareswallet.wallet.graphene.chain.types;
 import com.bitshares.bitshareswallet.wallet.graphene.chain.utils;
 import com.franmontiel.localechanger.LocaleChanger;
 import com.google.android.material.navigation.NavigationView;
-import com.kaopiz.kprogresshud.KProgressHUD;
 import com.ngse.ui.main.KeysAdapter;
 import com.ngse.ui.main.MainWalletFragment;
 import com.ngse.ui.main.QuotationCurrencyPairAdapter;
@@ -82,6 +81,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.github.rupinderjeet.kprogresshud.KProgressHUD;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 

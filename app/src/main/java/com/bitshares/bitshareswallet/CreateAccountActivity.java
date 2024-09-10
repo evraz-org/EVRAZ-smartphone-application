@@ -20,10 +20,10 @@ import com.bitshares.bitshareswallet.wallet.common.ErrorCode;
 import com.bitshares.bitshareswallet.wallet.exception.ErrorCodeException;
 import com.bitshares.bitshareswallet.wallet.exception.NetworkStatusException;
 import com.bitshares.bitshareswallet.wallet.faucet.CreateAccountException;
-import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.evrazcoin.evrazwallet.R;
 
+import io.github.rupinderjeet.kprogresshud.KProgressHUD;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;

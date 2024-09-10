@@ -17,7 +17,6 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.evrazcoin.evrazwallet.R;
 
@@ -31,6 +30,8 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import io.github.rupinderjeet.kprogresshud.KProgressHUD;
 
 public class Utils {
     static DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);

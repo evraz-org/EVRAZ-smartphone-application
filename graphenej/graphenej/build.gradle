@@ -21,8 +21,6 @@ android {
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 31
-        versionCode 4
-        versionName "0.4.2"
 
         vectorDrawables.useSupportLibrary = true
     }
@@ -32,4 +30,5 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    namespace 'de.bitsharesmunich.graphenej'
 }

@@ -28,7 +28,6 @@ import com.bitshares.bitshareswallet.wallet.account_object;
 import com.bitshares.bitshareswallet.wallet.common.ConvertUriToFilePath;
 import com.bitshares.bitshareswallet.wallet.common.ErrorCode;
 import com.franmontiel.localechanger.LocaleChanger;
-import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.evrazcoin.evrazwallet.R;
 
@@ -41,6 +40,8 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import io.github.rupinderjeet.kprogresshud.KProgressHUD;
 
 public class ImportActivty extends AppCompatActivity {
     private Toolbar mToolbar;
