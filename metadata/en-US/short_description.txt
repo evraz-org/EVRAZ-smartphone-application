@@ -1,0 +1,1 @@
+EVRAZ Wallet is designed for conducting transactions and trading on the decentralized exchange at BitShares blockchain.
