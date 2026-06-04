@@ -15,8 +15,8 @@ buildscript {
         classpath 'io.fabric.tools:gradle:1.31.2'
     }
 }
-apply plugin: 'com.android.application'
 
+apply plugin: 'com.android.application'
 
 repositories {
     google()
@@ -142,7 +142,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.9.0'
     implementation 'io.github.rupinderjeet:kprogresshud:1.0.0'
     implementation 'io.github.maitrungduc1410:AVLoadingIndicatorView:2.1.4'
-    implementation 'com.google.firebase:firebase-core:21.1.1'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
@@ -162,7 +161,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'io.github.rupinderjeet:kprogresshud:1.0.0'
     implementation 'io.github.maitrungduc1410:AVLoadingIndicatorView:2.1.4'
-    implementation 'com.google.firebase:firebase-core:16.0.5'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
@@ -186,5 +184,3 @@ dependencies {
     implementation 'com.android.installreferrer:installreferrer:2.2'
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 }
-
-apply plugin: 'com.google.gms.google-services'
