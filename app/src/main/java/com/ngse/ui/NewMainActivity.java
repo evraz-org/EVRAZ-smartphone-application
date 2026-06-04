@@ -42,9 +42,6 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.installreferrer.api.InstallReferrerClient;
-import com.android.installreferrer.api.InstallReferrerStateListener;
-import com.android.installreferrer.api.ReferrerDetails;
 import com.bitshares.bitshareswallet.AboutActivity;
 import com.bitshares.bitshareswallet.BitsharesApplication;
 import com.bitshares.bitshareswallet.OnFragmentInteractionListener;
@@ -89,8 +86,7 @@ import io.reactivex.schedulers.Schedulers;
 public class NewMainActivity extends AppCompatActivity
         implements OnFragmentInteractionListener,
         View.OnTouchListener,
-        Handler.Callback,
-        InstallReferrerStateListener {
+        Handler.Callback {
 
     private static final String TAG = NewMainActivity.class.getName();
 
@@ -115,7 +111,6 @@ public class NewMainActivity extends AppCompatActivity
 
     private KProgressHUD mProcessHud;
     private final Handler handler = new Handler(this);
-    private InstallReferrerClient mReferrerClient;
 
     final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
 
@@ -171,10 +166,6 @@ public class NewMainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BitsharesApplication.getInstance());
         boolean isReferrerConnectedOnce = prefs.getBoolean("is_referrer_connected_once", false);
-        if (!isReferrerConnectedOnce) {
-            mReferrerClient = InstallReferrerClient.newBuilder(this).build();
-            mReferrerClient.startConnection(this);
-        }
 
         mProcessHud = KProgressHUD.create(this)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
@@ -553,43 +544,5 @@ public class NewMainActivity extends AppCompatActivity
         ft.replace(R.id.fragmentFrameLayout, TradingScheduleFragment.newInstance(), TradingScheduleFragment.TAG);
         ft.addToBackStack(TradingScheduleFragment.TAG);
         ft.commitAllowingStateLoss();
-    }
-
-
-    @Override
-    public void onInstallReferrerSetupFinished(int responseCode) {
-        switch (responseCode) {
-            case InstallReferrerClient.InstallReferrerResponse.OK:
-                try {
-                    Log.v(TAG, "InstallReferrer conneceted");
-                    ReferrerDetails response = mReferrerClient.getInstallReferrer();
-                    String referrerUrl = response.getInstallReferrer();
-                    long referrerClickTime = response.getReferrerClickTimestampSeconds();
-                    long appInstallTime = response.getInstallBeginTimestampSeconds();
-                    boolean instantExperienceLaunched = response.getGooglePlayInstantParam();
-                    Log.d(TAG, "referrerUrl = " + referrerUrl);
-                    Log.d(TAG, "referrerClickTime = " + referrerClickTime);
-                    Log.d(TAG, "appInstallTime = " + appInstallTime);
-                    Log.d(TAG, "instantExperienceLaunched = " + instantExperienceLaunched);
-                    mReferrerClient.endConnection();
-                    prefs.edit().putBoolean("is_referrer_connected_once", true).apply();
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case InstallReferrerClient.InstallReferrerResponse.FEATURE_NOT_SUPPORTED:
-                Log.w(TAG, "InstallReferrer not supported");
-                break;
-            case InstallReferrerClient.InstallReferrerResponse.SERVICE_UNAVAILABLE:
-                Log.w(TAG, "Unable to connect to the service");
-                break;
-            default:
-                Log.w(TAG, "responseCode not found.");
-        }
-    }
-
-    @Override
-    public void onInstallReferrerServiceDisconnected() {
-        mReferrerClient.startConnection(this);
     }
 }

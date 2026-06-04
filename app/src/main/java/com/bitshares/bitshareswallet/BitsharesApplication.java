@@ -8,8 +8,6 @@ import androidx.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.bitshares.bitshareswallet.room.BitsharesDatabase;
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.core.CrashlyticsCore;
 import com.franmontiel.localechanger.LocaleChanger;
 import com.good.code.starts.here.servers.Server;
 import com.good.code.starts.here.servers.ServersRepository;
@@ -25,9 +23,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-
-import io.fabric.sdk.android.Fabric;
-
 
 public class BitsharesApplication extends MultiDexApplication {
     private static BitsharesApplication theApp;
@@ -58,10 +53,6 @@ public class BitsharesApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        Crashlytics crashlyticsKit = new Crashlytics.Builder()
-                .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
-                .build();
-        //Fabric.with(this, crashlyticsKit);
         Security.insertProviderAt(new BouncyCastleProvider(), 1);
 
         initServers();
