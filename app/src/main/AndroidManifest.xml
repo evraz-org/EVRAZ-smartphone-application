@@ -33,11 +33,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme" />
 
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="f1ec71485e34be2732f0231c939fcd2d8113fc80"
-            />
-
         <activity
             android:name="com.bitshares.bitshareswallet.SettingsActivity"
             android:theme="@style/SettingsActivityTheme"
