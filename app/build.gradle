@@ -88,6 +88,8 @@ android {
         resources {
             excludes += ['META-INF/DEPENDENCIES', 'META-INF/NOTICE', 'META-INF/LICENSE', 'META-INF/LICENSE.txt', 'META-INF/NOTICE.txt', 'license/LICENSE.dom-documentation.txt', 'license/LICENSE.dom-software.txt', 'license/README.dom.txt', 'license/README.sax.txt', 'license/NOTICE', 'license/LICENSE', 'license/*', 'lib/x86_64/darwin/libscrypt.dylib']
         }
+
+        exclude 'META-INF/*'
     }
     productFlavors {
 
